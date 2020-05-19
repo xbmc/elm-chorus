@@ -16,7 +16,6 @@ import FontAwesome.Solid as Icon
 import FontAwesome.Styles as Icon
 import FontAwesome.Svg as SvgIcon
 import FontAwesome.Transforms as Icon
-import Json.Decode as D
 
 
 blue =
@@ -25,7 +24,7 @@ blue =
 purple =
     Element.rgb255 208 208 208
 
--- Main controls
+{- Player controls -}
 reverseButton =
     Input.button[]
         { onPress = Nothing
@@ -44,7 +43,13 @@ skipButton =
         , label = Element.html (Html.i [ Html.Attributes.class "fa fa-fast-forward fa-lg" ] [])
         }
         
---Secondary controls
+{- Secondary controls 
+    includes:
+    | volume
+    | repeat
+    | shuffle
+    | controls
+-}
 volumeButton =
     Input.button[]
         { onPress = Nothing
@@ -65,7 +70,8 @@ controlButton =
         { onPress = Nothing
         , label = Element.html (Html.i [ Html.Attributes.class "fa fa-ellipsis-v fa-lg" ] [])
         }
---left sidebar controls
+
+{- left sidebar controls -}
 musicButton =
     Input.button[]
         { onPress = Nothing
@@ -205,11 +211,6 @@ view model =
         ]
     }
 
-ifIsEnter : msg -> D.Decoder msg
-ifIsEnter msg =
-  D.field "key" D.string
-    |> D.andThen (\key -> if key == "Enter" then D.succeed msg else D.fail "some other key")
-
 header : Element Msg
 header =
     row [ width fill, Background.color (rgb 0.1 0.1 0.1), spacing 10, padding 0 ]
@@ -218,14 +219,14 @@ header =
 
 leftSidebar : Element Msg
 leftSidebar =
-    column [ height fill, Background.color (rgb 0.9 0.9 0.9), spacing 30, padding 10, alignLeft ]
-        [ el [centerY] (musicButton)
-        , el [centerY] (movieButton)
-        , el [centerY] (tvshowButton)
-        , el [centerY] (browserButton)
-        , el [centerY] (addonsButton)
-        , el [centerY] (likesButton)
-        , el [centerY] (playlistButton)
+    column [ height fill, Background.color (rgb 0.9 0.9 0.9), spacing 30, paddingXY 10 70, alignLeft ]
+        [ el [] (musicButton)
+        , el [] (movieButton)
+        , el [] (tvshowButton)
+        , el [] (browserButton)
+        , el [] (addonsButton)
+        , el [] (likesButton)
+        , el [] (playlistButton)
         ]
 
 hero : Element Msg
