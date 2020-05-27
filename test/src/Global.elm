@@ -1,14 +1,24 @@
 module Global exposing
     ( Flags
     , Model
-    , Msg(..)
+    , Msg
     , init
+    , navigate
     , subscriptions
     , update
+    , view
     )
 
-import Generated.Routes as Routes exposing (Route)
-import Ports
+import Browser.Navigation as Nav
+import Components
+import Document exposing (Document)
+import Generated.Route as Route exposing (Route)
+import Task
+import Url exposing (Url)
+
+
+
+-- INIT
 
 
 type alias Flags =
@@ -16,34 +26,73 @@ type alias Flags =
 
 
 type alias Model =
-    {}
-
-
-type Msg
-    = Msg
-
-
-type alias Commands msg =
-    { navigate : Route -> Cmd msg
+    { flags : Flags
+    , url : Url
+    , key : Nav.Key
     }
 
 
-init : Commands msg -> Flags -> ( Model, Cmd Msg, Cmd msg )
-init _ _ =
-    ( {}
+init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
+    ( Model
+        flags
+        url
+        key
     , Cmd.none
-    , Ports.log "Hello!"
     )
 
 
-update : Commands msg -> Msg -> Model -> ( Model, Cmd Msg, Cmd msg )
-update _ _ model =
-    ( model
-    , Cmd.none
-    , Cmd.none
-    )
+
+-- UPDATE
+
+
+type Msg
+    = Navigate Route
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Navigate route ->
+            ( model
+            , Nav.pushUrl model.key (Route.toHref route)
+            )
+
+
+
+-- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
+subscriptions model =
     Sub.none
+
+
+
+-- VIEW
+
+
+view :
+    { page : Document msg
+    , global : Model
+    , toMsg : Msg -> msg
+    }
+    -> Document msg
+view { page, global, toMsg } =
+    Components.layout
+        { page = page
+        }
+
+
+
+-- COMMANDS
+
+
+send : msg -> Cmd msg
+send =
+    Task.succeed >> Task.perform identity
+
+
+navigate : Route -> Cmd Msg
+navigate route =
+    send (Navigate route)

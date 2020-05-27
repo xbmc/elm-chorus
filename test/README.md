@@ -1,24 +1,18 @@
-# your elm-spa
-> learn more at [https://elm-spa.dev](https://elm-spa.dev)
-
-### local development
+# examples/elm-ui
 
 ```
-npm run dev
+npm start
 ```
 
-## folder structure
+## how i upgraded to elm-ui
 
-```elm
-README.md          -- this file you're reading 👀
-elm.json           -- has project dependencies
-src/
-  Main.elm         -- the entrypoint to the app
-  Global.elm       -- share state across pages
-  Transitions.elm  -- smoothly animate between pages
-  Ports.elm        -- communicate with JS
-  Pages/           -- where all your pages go
-  Layouts/         -- reusable views around pages
-  Components/      -- views shared across the site
-  Utils/           -- a place for helper functions
 ```
+npm install -g elm-spa
+elm-spa init my-project
+cd my-project
+elm install mdgriffith/elm-ui
+```
+
+Checkout the `src/Page.elm` and `src/Document.elm` files, they allow us to create pages with `Element msg` and `Html msg`
+
+From there, I just replaced `Html` with `Element` in the `src/Pages/*.elm` files.
