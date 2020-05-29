@@ -56,12 +56,30 @@ header =
 leftSidebar : Element msg
 leftSidebar =
     column [ height fill, Background.color (rgb 0.9 0.9 0.9), spacing 30, paddingXY 10 20, alignLeft ]
-        [ el [] (musicButton)
-        , el [] (movieButton)
-        , el [] (tvshowButton)
-        , el [] (browserButton)
-        , el [] (addonsButton)
-        , el [] (likesButton)
+        [ Element.link [] {
+            label = Element.html (FeatherIcons.music |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+            , url = Route.Music |> Route.toHref
+        }
+        , Element.link [] {
+            label = Element.html (FeatherIcons.video |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+            , url = Route.Movies |> Route.toHref
+        }
+        , Element.link [] {
+            label = Element.html (FeatherIcons.tv |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+            , url = Route.TVshows |> Route.toHref
+        }
+        , Element.link [] {
+            label = Element.html (FeatherIcons.menu |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+            , url = Route.Browser |> Route.toHref
+        }
+        , Element.link [] {
+            label = Element.html (FeatherIcons.package |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+            , url = Route.Addons |> Route.toHref
+        }
+        , Element.link [] {
+            label = Element.html (FeatherIcons.thumbsUp |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+            , url = Route.Thumbups |> Route.toHref
+        }
         , el [] (playlistButton)
         , el [] (settingsButton)
         , el [] (helpButton)

@@ -10689,7 +10689,15 @@ var $elm$url$Url$Parser$parse = F2(
 					url.fragment,
 					$elm$core$Basics$identity)));
 	});
+var $author$project$Generated$Route$Addons = {$: 'Addons'};
+var $author$project$Generated$Route$Browser = {$: 'Browser'};
 var $author$project$Generated$Route$Docs = {$: 'Docs'};
+var $author$project$Generated$Route$Help = {$: 'Help'};
+var $author$project$Generated$Route$Movies = {$: 'Movies'};
+var $author$project$Generated$Route$Music = {$: 'Music'};
+var $author$project$Generated$Route$Playlist = {$: 'Playlist'};
+var $author$project$Generated$Route$TVshows = {$: 'TVshows'};
+var $author$project$Generated$Route$Thumbups = {$: 'Thumbups'};
 var $author$project$Generated$Route$Top = {$: 'Top'};
 var $elm$url$Url$Parser$Parser = function (a) {
 	return {$: 'Parser', a: a};
@@ -10775,23 +10783,85 @@ var $author$project$Generated$Route$routes = $elm$url$Url$Parser$oneOf(
 			A2($elm$url$Url$Parser$map, $author$project$Generated$Route$Top, $elm$url$Url$Parser$top),
 			A2(
 			$elm$url$Url$Parser$map,
+			$author$project$Generated$Route$Addons,
+			$elm$url$Url$Parser$s('addons')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Generated$Route$Browser,
+			$elm$url$Url$Parser$s('browser')),
+			A2(
+			$elm$url$Url$Parser$map,
 			$author$project$Generated$Route$Docs,
 			$elm$url$Url$Parser$s('docs')),
 			A2(
 			$elm$url$Url$Parser$map,
+			$author$project$Generated$Route$Help,
+			$elm$url$Url$Parser$s('help')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Generated$Route$Movies,
+			$elm$url$Url$Parser$s('movies')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Generated$Route$Music,
+			$elm$url$Url$Parser$s('music')),
+			A2(
+			$elm$url$Url$Parser$map,
 			$author$project$Generated$Route$NotFound,
-			$elm$url$Url$Parser$s('not-found'))
+			$elm$url$Url$Parser$s('not-found')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Generated$Route$Playlist,
+			$elm$url$Url$Parser$s('playlist')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Generated$Route$TVshows,
+			$elm$url$Url$Parser$s('t-vshows')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Generated$Route$Thumbups,
+			$elm$url$Url$Parser$s('thumbups'))
 		]));
 var $author$project$Generated$Route$fromUrl = $elm$url$Url$Parser$parse($author$project$Generated$Route$routes);
 var $author$project$Main$fromUrl = A2(
 	$elm$core$Basics$composeR,
 	$author$project$Generated$Route$fromUrl,
 	$elm$core$Maybe$withDefault($author$project$Generated$Route$NotFound));
+var $author$project$Generated$Pages$Addons_Model = function (a) {
+	return {$: 'Addons_Model', a: a};
+};
+var $author$project$Generated$Pages$Addons_Msg = function (a) {
+	return {$: 'Addons_Msg', a: a};
+};
+var $author$project$Generated$Pages$Browser_Model = function (a) {
+	return {$: 'Browser_Model', a: a};
+};
+var $author$project$Generated$Pages$Browser_Msg = function (a) {
+	return {$: 'Browser_Msg', a: a};
+};
 var $author$project$Generated$Pages$Docs_Model = function (a) {
 	return {$: 'Docs_Model', a: a};
 };
 var $author$project$Generated$Pages$Docs_Msg = function (a) {
 	return {$: 'Docs_Msg', a: a};
+};
+var $author$project$Generated$Pages$Help_Model = function (a) {
+	return {$: 'Help_Model', a: a};
+};
+var $author$project$Generated$Pages$Help_Msg = function (a) {
+	return {$: 'Help_Msg', a: a};
+};
+var $author$project$Generated$Pages$Movies_Model = function (a) {
+	return {$: 'Movies_Model', a: a};
+};
+var $author$project$Generated$Pages$Movies_Msg = function (a) {
+	return {$: 'Movies_Msg', a: a};
+};
+var $author$project$Generated$Pages$Music_Model = function (a) {
+	return {$: 'Music_Model', a: a};
+};
+var $author$project$Generated$Pages$Music_Msg = function (a) {
+	return {$: 'Music_Msg', a: a};
 };
 var $author$project$Generated$Pages$NotFound_Model = function (a) {
 	return {$: 'NotFound_Model', a: a};
@@ -10799,14 +10869,91 @@ var $author$project$Generated$Pages$NotFound_Model = function (a) {
 var $author$project$Generated$Pages$NotFound_Msg = function (a) {
 	return {$: 'NotFound_Msg', a: a};
 };
+var $author$project$Generated$Pages$Playlist_Model = function (a) {
+	return {$: 'Playlist_Model', a: a};
+};
+var $author$project$Generated$Pages$Playlist_Msg = function (a) {
+	return {$: 'Playlist_Msg', a: a};
+};
+var $author$project$Generated$Pages$TVshows_Model = function (a) {
+	return {$: 'TVshows_Model', a: a};
+};
+var $author$project$Generated$Pages$TVshows_Msg = function (a) {
+	return {$: 'TVshows_Msg', a: a};
+};
+var $author$project$Generated$Pages$Thumbups_Model = function (a) {
+	return {$: 'Thumbups_Model', a: a};
+};
+var $author$project$Generated$Pages$Thumbups_Msg = function (a) {
+	return {$: 'Thumbups_Msg', a: a};
+};
 var $author$project$Generated$Pages$Top_Model = function (a) {
 	return {$: 'Top_Model', a: a};
 };
 var $author$project$Generated$Pages$Top_Msg = function (a) {
 	return {$: 'Top_Msg', a: a};
 };
+var $author$project$Pages$Addons$init = {};
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $ryannhg$elm_spa$Spa$Advanced$sandbox = function (options) {
+	return {
+		init: F2(
+			function (_v0, _v1) {
+				return _Utils_Tuple3(options.init, $elm$core$Platform$Cmd$none, $elm$core$Platform$Cmd$none);
+			}),
+		subscriptions: F2(
+			function (_v2, _v3) {
+				return $elm$core$Platform$Sub$none;
+			}),
+		update: F3(
+			function (_v4, msg, model) {
+				return _Utils_Tuple3(
+					A2(options.update, msg, model),
+					$elm$core$Platform$Cmd$none,
+					$elm$core$Platform$Cmd$none);
+			}),
+		view: $elm$core$Basics$always(options.view)
+	};
+};
+var $author$project$Page$sandbox = $ryannhg$elm_spa$Spa$Advanced$sandbox;
+var $author$project$Pages$Addons$update = F2(
+	function (msg, model) {
+		return {};
+	});
+var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
+	return {$: 'Text', a: a};
+};
+var $mdgriffith$elm_ui$Element$text = function (content) {
+	return $mdgriffith$elm_ui$Internal$Model$Text(content);
+};
+var $author$project$Pages$Addons$view = function (model) {
+	return {
+		body: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('Addons')
+			]),
+		title: 'Addons'
+	};
+};
+var $author$project$Pages$Addons$page = $author$project$Page$sandbox(
+	{init: $author$project$Pages$Addons$init, update: $author$project$Pages$Addons$update, view: $author$project$Pages$Addons$view});
+var $author$project$Pages$Browser$init = {};
+var $author$project$Pages$Browser$update = F2(
+	function (msg, model) {
+		return {};
+	});
+var $author$project$Pages$Browser$view = function (model) {
+	return {
+		body: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('Browser')
+			]),
+		title: 'Browser'
+	};
+};
+var $author$project$Pages$Browser$page = $author$project$Page$sandbox(
+	{init: $author$project$Pages$Browser$init, update: $author$project$Pages$Browser$update, view: $author$project$Pages$Browser$view});
 var $ryannhg$elm_spa$Spa$Advanced$static = function (options) {
 	return {
 		init: F2(
@@ -10828,12 +10975,6 @@ var $ryannhg$elm_spa$Spa$Advanced$static = function (options) {
 	};
 };
 var $author$project$Page$static = $ryannhg$elm_spa$Spa$Advanced$static;
-var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
-	return {$: 'Text', a: a};
-};
-var $mdgriffith$elm_ui$Element$text = function (content) {
-	return $mdgriffith$elm_ui$Internal$Model$Text(content);
-};
 var $author$project$Pages$Docs$view = {
 	body: _List_fromArray(
 		[
@@ -10843,6 +10984,47 @@ var $author$project$Pages$Docs$view = {
 };
 var $author$project$Pages$Docs$page = $author$project$Page$static(
 	{view: $author$project$Pages$Docs$view});
+var $author$project$Pages$Help$view = {
+	body: _List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$text('Help')
+		]),
+	title: 'Help'
+};
+var $author$project$Pages$Help$page = $author$project$Page$static(
+	{view: $author$project$Pages$Help$view});
+var $author$project$Pages$Movies$init = {};
+var $author$project$Pages$Movies$update = F2(
+	function (msg, model) {
+		return {};
+	});
+var $author$project$Pages$Movies$view = function (model) {
+	return {
+		body: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('Movies')
+			]),
+		title: 'Movies'
+	};
+};
+var $author$project$Pages$Movies$page = $author$project$Page$sandbox(
+	{init: $author$project$Pages$Movies$init, update: $author$project$Pages$Movies$update, view: $author$project$Pages$Movies$view});
+var $author$project$Pages$Music$init = {};
+var $author$project$Pages$Music$update = F2(
+	function (msg, model) {
+		return {};
+	});
+var $author$project$Pages$Music$view = function (model) {
+	return {
+		body: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('Music')
+			]),
+		title: 'Music'
+	};
+};
+var $author$project$Pages$Music$page = $author$project$Page$sandbox(
+	{init: $author$project$Pages$Music$init, update: $author$project$Pages$Music$update, view: $author$project$Pages$Music$view});
 var $author$project$Pages$NotFound$view = {
 	body: _List_fromArray(
 		[
@@ -10852,6 +11034,54 @@ var $author$project$Pages$NotFound$view = {
 };
 var $author$project$Pages$NotFound$page = $author$project$Page$static(
 	{view: $author$project$Pages$NotFound$view});
+var $author$project$Pages$Playlist$init = {};
+var $author$project$Pages$Playlist$update = F2(
+	function (msg, model) {
+		return {};
+	});
+var $author$project$Pages$Playlist$view = function (model) {
+	return {
+		body: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('Playlist')
+			]),
+		title: 'Playlist'
+	};
+};
+var $author$project$Pages$Playlist$page = $author$project$Page$sandbox(
+	{init: $author$project$Pages$Playlist$init, update: $author$project$Pages$Playlist$update, view: $author$project$Pages$Playlist$view});
+var $author$project$Pages$TVshows$init = {};
+var $author$project$Pages$TVshows$update = F2(
+	function (msg, model) {
+		return {};
+	});
+var $author$project$Pages$TVshows$view = function (model) {
+	return {
+		body: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('TVshows')
+			]),
+		title: 'TVshows'
+	};
+};
+var $author$project$Pages$TVshows$page = $author$project$Page$sandbox(
+	{init: $author$project$Pages$TVshows$init, update: $author$project$Pages$TVshows$update, view: $author$project$Pages$TVshows$view});
+var $author$project$Pages$Thumbups$init = {};
+var $author$project$Pages$Thumbups$update = F2(
+	function (msg, model) {
+		return {};
+	});
+var $author$project$Pages$Thumbups$view = function (model) {
+	return {
+		body: _List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$text('Thumbups')
+			]),
+		title: 'Thumbups'
+	};
+};
+var $author$project$Pages$Thumbups$page = $author$project$Page$sandbox(
+	{init: $author$project$Pages$Thumbups$init, update: $author$project$Pages$Thumbups$update, view: $author$project$Pages$Thumbups$view});
 var $author$project$Pages$Top$view = {
 	body: _List_fromArray(
 		[
@@ -10955,18 +11185,42 @@ var $ryannhg$elm_spa$Spa$Advanced$upgrade = F4(
 	});
 var $author$project$Page$upgrade = $ryannhg$elm_spa$Spa$Advanced$upgrade($author$project$Document$map);
 var $author$project$Generated$Pages$pages = {
+	addons: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Addons_Model, $author$project$Generated$Pages$Addons_Msg, $author$project$Pages$Addons$page),
+	browser: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Browser_Model, $author$project$Generated$Pages$Browser_Msg, $author$project$Pages$Browser$page),
 	docs: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Docs_Model, $author$project$Generated$Pages$Docs_Msg, $author$project$Pages$Docs$page),
+	help: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Help_Model, $author$project$Generated$Pages$Help_Msg, $author$project$Pages$Help$page),
+	movies: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Movies_Model, $author$project$Generated$Pages$Movies_Msg, $author$project$Pages$Movies$page),
+	music: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Music_Model, $author$project$Generated$Pages$Music_Msg, $author$project$Pages$Music$page),
 	notFound: A3($author$project$Page$upgrade, $author$project$Generated$Pages$NotFound_Model, $author$project$Generated$Pages$NotFound_Msg, $author$project$Pages$NotFound$page),
+	playlist: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Playlist_Model, $author$project$Generated$Pages$Playlist_Msg, $author$project$Pages$Playlist$page),
+	tVshows: A3($author$project$Page$upgrade, $author$project$Generated$Pages$TVshows_Model, $author$project$Generated$Pages$TVshows_Msg, $author$project$Pages$TVshows$page),
+	thumbups: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Thumbups_Model, $author$project$Generated$Pages$Thumbups_Msg, $author$project$Pages$Thumbups$page),
 	top: A3($author$project$Page$upgrade, $author$project$Generated$Pages$Top_Model, $author$project$Generated$Pages$Top_Msg, $author$project$Pages$Top$page)
 };
 var $author$project$Generated$Pages$init = function (route) {
 	switch (route.$) {
 		case 'Top':
 			return $author$project$Generated$Pages$pages.top.init(_Utils_Tuple0);
+		case 'Addons':
+			return $author$project$Generated$Pages$pages.addons.init(_Utils_Tuple0);
+		case 'Browser':
+			return $author$project$Generated$Pages$pages.browser.init(_Utils_Tuple0);
 		case 'Docs':
 			return $author$project$Generated$Pages$pages.docs.init(_Utils_Tuple0);
-		default:
+		case 'Help':
+			return $author$project$Generated$Pages$pages.help.init(_Utils_Tuple0);
+		case 'Movies':
+			return $author$project$Generated$Pages$pages.movies.init(_Utils_Tuple0);
+		case 'Music':
+			return $author$project$Generated$Pages$pages.music.init(_Utils_Tuple0);
+		case 'NotFound':
 			return $author$project$Generated$Pages$pages.notFound.init(_Utils_Tuple0);
+		case 'Playlist':
+			return $author$project$Generated$Pages$pages.playlist.init(_Utils_Tuple0);
+		case 'TVshows':
+			return $author$project$Generated$Pages$pages.tVshows.init(_Utils_Tuple0);
+		default:
+			return $author$project$Generated$Pages$pages.thumbups.init(_Utils_Tuple0);
 	}
 };
 var $author$project$Global$Model = F3(
@@ -11006,12 +11260,36 @@ var $author$project$Generated$Pages$bundle = function (bigModel) {
 		case 'Top_Model':
 			var model = bigModel.a;
 			return $author$project$Generated$Pages$pages.top.bundle(model);
+		case 'Addons_Model':
+			var model = bigModel.a;
+			return $author$project$Generated$Pages$pages.addons.bundle(model);
+		case 'Browser_Model':
+			var model = bigModel.a;
+			return $author$project$Generated$Pages$pages.browser.bundle(model);
 		case 'Docs_Model':
 			var model = bigModel.a;
 			return $author$project$Generated$Pages$pages.docs.bundle(model);
-		default:
+		case 'Help_Model':
+			var model = bigModel.a;
+			return $author$project$Generated$Pages$pages.help.bundle(model);
+		case 'Movies_Model':
+			var model = bigModel.a;
+			return $author$project$Generated$Pages$pages.movies.bundle(model);
+		case 'Music_Model':
+			var model = bigModel.a;
+			return $author$project$Generated$Pages$pages.music.bundle(model);
+		case 'NotFound_Model':
 			var model = bigModel.a;
 			return $author$project$Generated$Pages$pages.notFound.bundle(model);
+		case 'Playlist_Model':
+			var model = bigModel.a;
+			return $author$project$Generated$Pages$pages.playlist.bundle(model);
+		case 'TVshows_Model':
+			var model = bigModel.a;
+			return $author$project$Generated$Pages$pages.tVshows.bundle(model);
+		default:
+			var model = bigModel.a;
+			return $author$project$Generated$Pages$pages.thumbups.bundle(model);
 	}
 };
 var $author$project$Generated$Pages$subscriptions = function (model) {
@@ -11090,7 +11368,7 @@ var $elm$url$Url$toString = function (url) {
 var $author$project$Generated$Pages$update = F2(
 	function (bigMsg, bigModel) {
 		var _v0 = _Utils_Tuple2(bigMsg, bigModel);
-		_v0$3:
+		_v0$11:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'Top_Msg':
@@ -11099,7 +11377,23 @@ var $author$project$Generated$Pages$update = F2(
 						var model = _v0.b.a;
 						return A2($author$project$Generated$Pages$pages.top.update, msg, model);
 					} else {
-						break _v0$3;
+						break _v0$11;
+					}
+				case 'Addons_Msg':
+					if (_v0.b.$ === 'Addons_Model') {
+						var msg = _v0.a.a;
+						var model = _v0.b.a;
+						return A2($author$project$Generated$Pages$pages.addons.update, msg, model);
+					} else {
+						break _v0$11;
+					}
+				case 'Browser_Msg':
+					if (_v0.b.$ === 'Browser_Model') {
+						var msg = _v0.a.a;
+						var model = _v0.b.a;
+						return A2($author$project$Generated$Pages$pages.browser.update, msg, model);
+					} else {
+						break _v0$11;
 					}
 				case 'Docs_Msg':
 					if (_v0.b.$ === 'Docs_Model') {
@@ -11107,15 +11401,63 @@ var $author$project$Generated$Pages$update = F2(
 						var model = _v0.b.a;
 						return A2($author$project$Generated$Pages$pages.docs.update, msg, model);
 					} else {
-						break _v0$3;
+						break _v0$11;
 					}
-				default:
+				case 'Help_Msg':
+					if (_v0.b.$ === 'Help_Model') {
+						var msg = _v0.a.a;
+						var model = _v0.b.a;
+						return A2($author$project$Generated$Pages$pages.help.update, msg, model);
+					} else {
+						break _v0$11;
+					}
+				case 'Movies_Msg':
+					if (_v0.b.$ === 'Movies_Model') {
+						var msg = _v0.a.a;
+						var model = _v0.b.a;
+						return A2($author$project$Generated$Pages$pages.movies.update, msg, model);
+					} else {
+						break _v0$11;
+					}
+				case 'Music_Msg':
+					if (_v0.b.$ === 'Music_Model') {
+						var msg = _v0.a.a;
+						var model = _v0.b.a;
+						return A2($author$project$Generated$Pages$pages.music.update, msg, model);
+					} else {
+						break _v0$11;
+					}
+				case 'NotFound_Msg':
 					if (_v0.b.$ === 'NotFound_Model') {
 						var msg = _v0.a.a;
 						var model = _v0.b.a;
 						return A2($author$project$Generated$Pages$pages.notFound.update, msg, model);
 					} else {
-						break _v0$3;
+						break _v0$11;
+					}
+				case 'Playlist_Msg':
+					if (_v0.b.$ === 'Playlist_Model') {
+						var msg = _v0.a.a;
+						var model = _v0.b.a;
+						return A2($author$project$Generated$Pages$pages.playlist.update, msg, model);
+					} else {
+						break _v0$11;
+					}
+				case 'TVshows_Msg':
+					if (_v0.b.$ === 'TVshows_Model') {
+						var msg = _v0.a.a;
+						var model = _v0.b.a;
+						return A2($author$project$Generated$Pages$pages.tVshows.update, msg, model);
+					} else {
+						break _v0$11;
+					}
+				default:
+					if (_v0.b.$ === 'Thumbups_Model') {
+						var msg = _v0.a.a;
+						var model = _v0.b.a;
+						return A2($author$project$Generated$Pages$pages.thumbups.update, msg, model);
+					} else {
+						break _v0$11;
 					}
 			}
 		}
@@ -11128,12 +11470,36 @@ var $author$project$Generated$Route$toHref = function (route) {
 		switch (route.$) {
 			case 'Top':
 				return _List_Nil;
+			case 'Addons':
+				return _List_fromArray(
+					['addons']);
+			case 'Browser':
+				return _List_fromArray(
+					['browser']);
 			case 'Docs':
 				return _List_fromArray(
 					['docs']);
-			default:
+			case 'Help':
+				return _List_fromArray(
+					['help']);
+			case 'Movies':
+				return _List_fromArray(
+					['movies']);
+			case 'Music':
+				return _List_fromArray(
+					['music']);
+			case 'NotFound':
 				return _List_fromArray(
 					['not-found']);
+			case 'Playlist':
+				return _List_fromArray(
+					['playlist']);
+			case 'TVshows':
+				return _List_fromArray(
+					['t-vshows']);
+			default:
+				return _List_fromArray(
+					['thumbups']);
 		}
 	}();
 	return A2(
@@ -11221,7 +11587,7 @@ var $mdgriffith$elm_ui$Internal$Model$Unkeyed = function (a) {
 };
 var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
 var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
-var $mdgriffith$elm_ui$Internal$Style$classes = {above: 'a', active: 'atv', alignBottom: 'ab', alignCenterX: 'cx', alignCenterY: 'cy', alignContainerBottom: 'acb', alignContainerCenterX: 'accx', alignContainerCenterY: 'accy', alignContainerRight: 'acr', alignLeft: 'al', alignRight: 'ar', alignTop: 'at', alignedHorizontally: 'ah', alignedVertically: 'av', any: 's', behind: 'bh', below: 'b', bold: 'w7', borderDashed: 'bd', borderDotted: 'bdt', borderNone: 'bn', borderSolid: 'bs', capturePointerEvents: 'cpe', clip: 'cp', clipX: 'cpx', clipY: 'cpy', column: 'c', container: 'ctr', contentBottom: 'cb', contentCenterX: 'ccx', contentCenterY: 'ccy', contentLeft: 'cl', contentRight: 'cr', contentTop: 'ct', cursorPointer: 'cptr', cursorText: 'ctxt', focus: 'fcs', focusedWithin: 'focus-within', fullSize: 'fs', grid: 'g', hasBehind: 'hbh', heightContent: 'hc', heightExact: 'he', heightFill: 'hf', heightFillPortion: 'hfp', hover: 'hv', imageContainer: 'ic', inFront: 'fr', inputMultiline: 'iml', inputMultilineFiller: 'imlf', inputMultilineParent: 'imlp', inputMultilineWrapper: 'implw', inputText: 'it', italic: 'i', link: 'lnk', nearby: 'nb', noTextSelection: 'notxt', onLeft: 'ol', onRight: 'or', opaque: 'oq', overflowHidden: 'oh', page: 'pg', paragraph: 'p', passPointerEvents: 'ppe', root: 'ui', row: 'r', scrollbars: 'sb', scrollbarsX: 'sbx', scrollbarsY: 'sby', seButton: 'sbt', single: 'e', sizeByCapital: 'cap', spaceEvenly: 'sev', strike: 'sk', text: 't', textCenter: 'tc', textExtraBold: 'w8', textExtraLight: 'w2', textHeavy: 'w9', textJustify: 'tj', textJustifyAll: 'tja', textLeft: 'tl', textLight: 'w3', textMedium: 'w5', textNormalWeight: 'w4', textRight: 'tr', textSemiBold: 'w6', textThin: 'w1', textUnitalicized: 'tun', transition: 'ts', transparent: 'clr', underline: 'u', widthContent: 'wc', widthExact: 'we', widthFill: 'wf', widthFillPortion: 'wfp', wrapped: 'wrp'};
+var $mdgriffith$elm_ui$Internal$Style$classes = {above: 'a', active: 'atv', alignBottom: 'ab', alignCenterX: 'cx', alignCenterY: 'cy', alignContainerBottom: 'acb', alignContainerCenterX: 'accx', alignContainerCenterY: 'accy', alignContainerRight: 'acr', alignLeft: 'al', alignRight: 'ar', alignTop: 'at', alignedHorizontally: 'ah', alignedVertically: 'av', any: 's', behind: 'bh', below: 'b', bold: 'w7', borderDashed: 'bd', borderDotted: 'bdt', borderNone: 'bn', borderSolid: 'bs', capturePointerEvents: 'cpe', clip: 'cp', clipX: 'cpx', clipY: 'cpy', column: 'c', container: 'ctr', contentBottom: 'cb', contentCenterX: 'ccx', contentCenterY: 'ccy', contentLeft: 'cl', contentRight: 'cr', contentTop: 'ct', cursorPointer: 'cptr', cursorText: 'ctxt', focus: 'fcs', focusedWithin: 'focus-within', fullSize: 'fs', grid: 'g', hasBehind: 'hbh', heightContent: 'hc', heightExact: 'he', heightFill: 'hf', heightFillPortion: 'hfp', hover: 'hv', imageContainer: 'ic', inFront: 'fr', inputLabel: 'lbl', inputMultiline: 'iml', inputMultilineFiller: 'imlf', inputMultilineParent: 'imlp', inputMultilineWrapper: 'implw', inputText: 'it', italic: 'i', link: 'lnk', nearby: 'nb', noTextSelection: 'notxt', onLeft: 'ol', onRight: 'or', opaque: 'oq', overflowHidden: 'oh', page: 'pg', paragraph: 'p', passPointerEvents: 'ppe', root: 'ui', row: 'r', scrollbars: 'sb', scrollbarsX: 'sbx', scrollbarsY: 'sby', seButton: 'sbt', single: 'e', sizeByCapital: 'cap', spaceEvenly: 'sev', strike: 'sk', text: 't', textCenter: 'tc', textExtraBold: 'w8', textExtraLight: 'w2', textHeavy: 'w9', textJustify: 'tj', textJustifyAll: 'tja', textLeft: 'tl', textLight: 'w3', textMedium: 'w5', textNormalWeight: 'w4', textRight: 'tr', textSemiBold: 'w6', textThin: 'w1', textUnitalicized: 'tun', transition: 'ts', transparent: 'clr', underline: 'u', widthContent: 'wc', widthExact: 'we', widthFill: 'wf', widthFillPortion: 'wfp', wrapped: 'wrp'};
 var $mdgriffith$elm_ui$Internal$Model$Generic = {$: 'Generic'};
 var $mdgriffith$elm_ui$Internal$Model$div = $mdgriffith$elm_ui$Internal$Model$Generic;
 var $mdgriffith$elm_ui$Internal$Model$NoNearbyChildren = {$: 'NoNearbyChildren'};
@@ -11687,6 +12053,10 @@ var $elm$virtual_dom$VirtualDom$property = F2(
 			_VirtualDom_noInnerHtmlOrFormAction(key),
 			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
+var $mdgriffith$elm_ui$Internal$Style$AllChildren = F2(
+	function (a, b) {
+		return {$: 'AllChildren', a: a, b: b};
+	});
 var $mdgriffith$elm_ui$Internal$Style$Batch = function (a) {
 	return {$: 'Batch', a: a};
 };
@@ -12019,7 +12389,16 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.imageContainer))),
 		_List_fromArray(
 			[
-				A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'block')
+				A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'block'),
+				A2(
+				$mdgriffith$elm_ui$Internal$Style$Child,
+				'img',
+				_List_fromArray(
+					[
+						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'max-height', '100%'),
+						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'max-width', '100%'),
+						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'object-fit', 'cover')
+					]))
 			])),
 		A2(
 		$mdgriffith$elm_ui$Internal$Style$Class,
@@ -12063,7 +12442,8 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.nearby),
 						_List_fromArray(
 							[
-								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'position', 'fixed')
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'position', 'fixed'),
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'z-index', '20')
 							]))
 					]))
 			])),
@@ -12503,7 +12883,8 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				_List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'line-height', '1.05'),
-						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'background', 'transparent')
+						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'background', 'transparent'),
+						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'text-align', 'inherit')
 					])),
 				A2(
 				$mdgriffith$elm_ui$Internal$Style$Descriptor,
@@ -12693,6 +13074,13 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 						_List_fromArray(
 							[
 								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'justify-content', 'space-between')
+							])),
+						A2(
+						$mdgriffith$elm_ui$Internal$Style$Descriptor,
+						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.inputLabel),
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'align-items', 'baseline')
 							]))
 					])),
 				A2(
@@ -12707,21 +13095,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.any),
 						_List_fromArray(
 							[
-								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'flex-basis', '0%'),
-								A2(
-								$mdgriffith$elm_ui$Internal$Style$Descriptor,
-								$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.heightExact),
-								_List_fromArray(
-									[
-										A2($mdgriffith$elm_ui$Internal$Style$Prop, 'flex-basis', 'auto')
-									])),
-								A2(
-								$mdgriffith$elm_ui$Internal$Style$Descriptor,
-								$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.column),
-								_List_fromArray(
-									[
-										A2($mdgriffith$elm_ui$Internal$Style$Prop, 'flex-basis', 'auto')
-									]))
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'flex-basis', 'auto')
 							])),
 						A2(
 						$mdgriffith$elm_ui$Internal$Style$Child,
@@ -13041,7 +13415,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.inputMultiline),
 				_List_fromArray(
 					[
-						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'pre-wrap'),
+						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'pre-wrap !important'),
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'height', '100%'),
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'width', '100%'),
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'background-color', 'transparent')
@@ -13064,14 +13438,14 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 				$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.inputMultilineParent),
 				_List_fromArray(
 					[
-						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'pre-wrap'),
+						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'pre-wrap !important'),
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'cursor', 'text'),
 						A2(
 						$mdgriffith$elm_ui$Internal$Style$Child,
 						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.inputMultilineFiller),
 						_List_fromArray(
 							[
-								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'pre-wrap'),
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'pre-wrap !important'),
 								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'color', 'transparent')
 							]))
 					])),
@@ -13082,6 +13456,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 					[
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'block'),
 						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'normal'),
+						A2($mdgriffith$elm_ui$Internal$Style$Prop, 'overflow-wrap', 'break-word'),
 						A2(
 						$mdgriffith$elm_ui$Internal$Style$Descriptor,
 						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.hasBehind),
@@ -13097,7 +13472,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 									]))
 							])),
 						A2(
-						$mdgriffith$elm_ui$Internal$Style$Child,
+						$mdgriffith$elm_ui$Internal$Style$AllChildren,
 						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.text),
 						_List_fromArray(
 							[
@@ -13105,12 +13480,40 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'normal')
 							])),
 						A2(
-						$mdgriffith$elm_ui$Internal$Style$Child,
+						$mdgriffith$elm_ui$Internal$Style$AllChildren,
+						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.paragraph),
+						_List_fromArray(
+							[
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'inline'),
+								A2(
+								$mdgriffith$elm_ui$Internal$Style$Descriptor,
+								'::after',
+								_List_fromArray(
+									[
+										A2($mdgriffith$elm_ui$Internal$Style$Prop, 'content', 'none')
+									])),
+								A2(
+								$mdgriffith$elm_ui$Internal$Style$Descriptor,
+								'::before',
+								_List_fromArray(
+									[
+										A2($mdgriffith$elm_ui$Internal$Style$Prop, 'content', 'none')
+									]))
+							])),
+						A2(
+						$mdgriffith$elm_ui$Internal$Style$AllChildren,
 						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.single),
 						_List_fromArray(
 							[
 								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'inline'),
 								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'normal'),
+								A2(
+								$mdgriffith$elm_ui$Internal$Style$Descriptor,
+								$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.widthExact),
+								_List_fromArray(
+									[
+										A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'inline-block')
+									])),
 								A2(
 								$mdgriffith$elm_ui$Internal$Style$Descriptor,
 								$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.inFront),
@@ -13160,20 +13563,6 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 									[
 										A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'inline'),
 										A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'normal')
-									])),
-								A2(
-								$mdgriffith$elm_ui$Internal$Style$Child,
-								$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.single),
-								_List_fromArray(
-									[
-										A2(
-										$mdgriffith$elm_ui$Internal$Style$Child,
-										$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.text),
-										_List_fromArray(
-											[
-												A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'inline'),
-												A2($mdgriffith$elm_ui$Internal$Style$Prop, 'white-space', 'normal')
-											]))
 									]))
 							])),
 						A2(
@@ -13181,7 +13570,7 @@ var $mdgriffith$elm_ui$Internal$Style$baseSheet = _List_fromArray(
 						$mdgriffith$elm_ui$Internal$Style$dot($mdgriffith$elm_ui$Internal$Style$classes.row),
 						_List_fromArray(
 							[
-								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'inline-flex')
+								A2($mdgriffith$elm_ui$Internal$Style$Prop, 'display', 'inline')
 							])),
 						A2(
 						$mdgriffith$elm_ui$Internal$Style$Child,
@@ -13554,6 +13943,20 @@ var $mdgriffith$elm_ui$Internal$Style$renderRules = F2(
 										childRules),
 									rendered.others)
 							});
+					case 'AllChildren':
+						var child = rule.a;
+						var childRules = rule.b;
+						return _Utils_update(
+							rendered,
+							{
+								others: A2(
+									$elm$core$List$cons,
+									A2(
+										$mdgriffith$elm_ui$Internal$Style$renderRules,
+										A2($mdgriffith$elm_ui$Internal$Style$emptyIntermediate, parent.selector + (' ' + child), ''),
+										childRules),
+									rendered.others)
+							});
 					case 'Descriptor':
 						var descriptor = rule.a;
 						var descriptorRules = rule.b;
@@ -13794,7 +14197,7 @@ var $mdgriffith$elm_ui$Internal$Model$renderStyle = F4(
 						'',
 						props);
 					return _List_fromArray(
-						[selector + ('-fs:focus {' + (renderedProps + '\n}')), '.' + ($mdgriffith$elm_ui$Internal$Style$classes.any + (':focus ~ ' + (selector + ('-fs:not(.focus)  {' + (renderedProps + '\n}'))))), '.' + ($mdgriffith$elm_ui$Internal$Style$classes.any + (':focus ' + (selector + ('-fs  {' + (renderedProps + '\n}'))))), selector + ('-fs:focus-within {' + (renderedProps + '\n}')), '.focusable-parent:focus ~ ' + ('.' + ($mdgriffith$elm_ui$Internal$Style$classes.any + (' ' + (selector + ('-fs {' + (renderedProps + '\n}'))))))]);
+						[selector + ('-fs:focus {' + (renderedProps + '\n}')), ('.' + ($mdgriffith$elm_ui$Internal$Style$classes.any + (':focus ' + (selector + '-fs  {')))) + (renderedProps + '\n}'), (selector + '-fs:focus-within {') + (renderedProps + '\n}'), ('.focusable-parent:focus ~ ' + ('.' + ($mdgriffith$elm_ui$Internal$Style$classes.any + (' ' + (selector + '-fs {'))))) + (renderedProps + '\n}')]);
 				default:
 					return _List_fromArray(
 						[
@@ -14139,7 +14542,7 @@ var $mdgriffith$elm_ui$Internal$Model$renderStyleRule = F3(
 							A2(
 							$mdgriffith$elm_ui$Internal$Model$Property,
 							'padding',
-							$elm$core$String$fromInt(top) + ('px ' + ($elm$core$String$fromInt(right) + ('px ' + ($elm$core$String$fromInt(bottom) + ('px ' + ($elm$core$String$fromInt(left) + 'px')))))))
+							$elm$core$String$fromFloat(top) + ('px ' + ($elm$core$String$fromFloat(right) + ('px ' + ($elm$core$String$fromFloat(bottom) + ('px ' + ($elm$core$String$fromFloat(left) + 'px')))))))
 						]));
 			case 'BorderWidth':
 				var cls = rule.a;
@@ -17234,38 +17637,46 @@ var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
 	});
 var $mdgriffith$elm_ui$Internal$Flag$padding = $mdgriffith$elm_ui$Internal$Flag$flag(2);
 var $mdgriffith$elm_ui$Element$padding = function (x) {
+	var f = x;
 	return A2(
 		$mdgriffith$elm_ui$Internal$Model$StyleClass,
 		$mdgriffith$elm_ui$Internal$Flag$padding,
 		A5(
 			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
 			'p-' + $elm$core$String$fromInt(x),
-			x,
-			x,
-			x,
-			x));
+			f,
+			f,
+			f,
+			f));
 };
 var $mdgriffith$elm_ui$Element$paddingXY = F2(
 	function (x, y) {
-		return _Utils_eq(x, y) ? A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + $elm$core$String$fromInt(x),
-				x,
-				x,
-				x,
-				x)) : A2(
-			$mdgriffith$elm_ui$Internal$Model$StyleClass,
-			$mdgriffith$elm_ui$Internal$Flag$padding,
-			A5(
-				$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-				'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
-				y,
-				x,
-				y,
-				x));
+		if (_Utils_eq(x, y)) {
+			var f = x;
+			return A2(
+				$mdgriffith$elm_ui$Internal$Model$StyleClass,
+				$mdgriffith$elm_ui$Internal$Flag$padding,
+				A5(
+					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+					'p-' + $elm$core$String$fromInt(x),
+					f,
+					f,
+					f,
+					f));
+		} else {
+			var yFloat = y;
+			var xFloat = x;
+			return A2(
+				$mdgriffith$elm_ui$Internal$Model$StyleClass,
+				$mdgriffith$elm_ui$Internal$Flag$padding,
+				A5(
+					$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+					'p-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y))),
+					yFloat,
+					xFloat,
+					yFloat,
+					xFloat));
+		}
 	});
 var $elm$svg$Svg$Attributes$points = _VirtualDom_attribute('points');
 var $elm$svg$Svg$polygon = $elm$svg$Svg$trustedNode('polygon');
@@ -17794,104 +18205,6 @@ var $author$project$Components$header = A2(
 				]),
 			$mdgriffith$elm_ui$Element$text('Kodi'))
 		]));
-var $feathericons$elm_feather$FeatherIcons$package = A2(
-	$feathericons$elm_feather$FeatherIcons$makeBuilder,
-	'package',
-	_List_fromArray(
-		[
-			A2(
-			$elm$svg$Svg$line,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$x1('16.5'),
-					$elm$svg$Svg$Attributes$y1('9.4'),
-					$elm$svg$Svg$Attributes$x2('7.5'),
-					$elm$svg$Svg$Attributes$y2('4.21')
-				]),
-			_List_Nil),
-			A2(
-			$elm$svg$Svg$path,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$d('M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z')
-				]),
-			_List_Nil),
-			A2(
-			$elm$svg$Svg$polyline,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$points('3.27 6.96 12 12.01 20.73 6.96')
-				]),
-			_List_Nil),
-			A2(
-			$elm$svg$Svg$line,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$x1('12'),
-					$elm$svg$Svg$Attributes$y1('22.08'),
-					$elm$svg$Svg$Attributes$x2('12'),
-					$elm$svg$Svg$Attributes$y2('12')
-				]),
-			_List_Nil)
-		]));
-var $author$project$Components$addonsButton = A2(
-	$mdgriffith$elm_ui$Element$Input$button,
-	_List_Nil,
-	{
-		label: $mdgriffith$elm_ui$Element$html(
-			A2(
-				$feathericons$elm_feather$FeatherIcons$toHtml,
-				_List_Nil,
-				A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$package))),
-		onPress: $elm$core$Maybe$Nothing
-	});
-var $feathericons$elm_feather$FeatherIcons$menu = A2(
-	$feathericons$elm_feather$FeatherIcons$makeBuilder,
-	'menu',
-	_List_fromArray(
-		[
-			A2(
-			$elm$svg$Svg$line,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$x1('3'),
-					$elm$svg$Svg$Attributes$y1('12'),
-					$elm$svg$Svg$Attributes$x2('21'),
-					$elm$svg$Svg$Attributes$y2('12')
-				]),
-			_List_Nil),
-			A2(
-			$elm$svg$Svg$line,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$x1('3'),
-					$elm$svg$Svg$Attributes$y1('6'),
-					$elm$svg$Svg$Attributes$x2('21'),
-					$elm$svg$Svg$Attributes$y2('6')
-				]),
-			_List_Nil),
-			A2(
-			$elm$svg$Svg$line,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$x1('3'),
-					$elm$svg$Svg$Attributes$y1('18'),
-					$elm$svg$Svg$Attributes$x2('21'),
-					$elm$svg$Svg$Attributes$y2('18')
-				]),
-			_List_Nil)
-		]));
-var $author$project$Components$browserButton = A2(
-	$mdgriffith$elm_ui$Element$Input$button,
-	_List_Nil,
-	{
-		label: $mdgriffith$elm_ui$Element$html(
-			A2(
-				$feathericons$elm_feather$FeatherIcons$toHtml,
-				_List_Nil,
-				A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$menu))),
-		onPress: $elm$core$Maybe$Nothing
-	});
 var $feathericons$elm_feather$FeatherIcons$helpCircle = A2(
 	$feathericons$elm_feather$FeatherIcons$makeBuilder,
 	'help-circle',
@@ -17935,71 +18248,42 @@ var $author$project$Components$helpButton = A2(
 				A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$helpCircle))),
 		onPress: $elm$core$Maybe$Nothing
 	});
-var $feathericons$elm_feather$FeatherIcons$thumbsUp = A2(
+var $feathericons$elm_feather$FeatherIcons$menu = A2(
 	$feathericons$elm_feather$FeatherIcons$makeBuilder,
-	'thumbs-up',
+	'menu',
 	_List_fromArray(
 		[
 			A2(
-			$elm$svg$Svg$path,
+			$elm$svg$Svg$line,
 			_List_fromArray(
 				[
-					$elm$svg$Svg$Attributes$d('M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3')
-				]),
-			_List_Nil)
-		]));
-var $author$project$Components$likesButton = A2(
-	$mdgriffith$elm_ui$Element$Input$button,
-	_List_Nil,
-	{
-		label: $mdgriffith$elm_ui$Element$html(
-			A2(
-				$feathericons$elm_feather$FeatherIcons$toHtml,
-				_List_Nil,
-				A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$thumbsUp))),
-		onPress: $elm$core$Maybe$Nothing
-	});
-var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
-var $elm$svg$Svg$Attributes$rx = _VirtualDom_attribute('rx');
-var $elm$svg$Svg$Attributes$ry = _VirtualDom_attribute('ry');
-var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
-var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
-var $feathericons$elm_feather$FeatherIcons$video = A2(
-	$feathericons$elm_feather$FeatherIcons$makeBuilder,
-	'video',
-	_List_fromArray(
-		[
-			A2(
-			$elm$svg$Svg$polygon,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$points('23 7 16 12 23 17 23 7')
+					$elm$svg$Svg$Attributes$x1('3'),
+					$elm$svg$Svg$Attributes$y1('12'),
+					$elm$svg$Svg$Attributes$x2('21'),
+					$elm$svg$Svg$Attributes$y2('12')
 				]),
 			_List_Nil),
 			A2(
-			$elm$svg$Svg$rect,
+			$elm$svg$Svg$line,
 			_List_fromArray(
 				[
-					$elm$svg$Svg$Attributes$x('1'),
-					$elm$svg$Svg$Attributes$y('5'),
-					$elm$svg$Svg$Attributes$width('15'),
-					$elm$svg$Svg$Attributes$height('14'),
-					$elm$svg$Svg$Attributes$rx('2'),
-					$elm$svg$Svg$Attributes$ry('2')
+					$elm$svg$Svg$Attributes$x1('3'),
+					$elm$svg$Svg$Attributes$y1('6'),
+					$elm$svg$Svg$Attributes$x2('21'),
+					$elm$svg$Svg$Attributes$y2('6')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x1('3'),
+					$elm$svg$Svg$Attributes$y1('18'),
+					$elm$svg$Svg$Attributes$x2('21'),
+					$elm$svg$Svg$Attributes$y2('18')
 				]),
 			_List_Nil)
 		]));
-var $author$project$Components$movieButton = A2(
-	$mdgriffith$elm_ui$Element$Input$button,
-	_List_Nil,
-	{
-		label: $mdgriffith$elm_ui$Element$html(
-			A2(
-				$feathericons$elm_feather$FeatherIcons$toHtml,
-				_List_Nil,
-				A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$video))),
-		onPress: $elm$core$Maybe$Nothing
-	});
 var $feathericons$elm_feather$FeatherIcons$music = A2(
 	$feathericons$elm_feather$FeatherIcons$makeBuilder,
 	'music',
@@ -18031,17 +18315,51 @@ var $feathericons$elm_feather$FeatherIcons$music = A2(
 				]),
 			_List_Nil)
 		]));
-var $author$project$Components$musicButton = A2(
-	$mdgriffith$elm_ui$Element$link,
-	_List_Nil,
-	{
-		label: $mdgriffith$elm_ui$Element$html(
+var $feathericons$elm_feather$FeatherIcons$package = A2(
+	$feathericons$elm_feather$FeatherIcons$makeBuilder,
+	'package',
+	_List_fromArray(
+		[
 			A2(
-				$feathericons$elm_feather$FeatherIcons$toHtml,
-				_List_Nil,
-				A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$music))),
-		url: $author$project$Generated$Route$toHref($author$project$Generated$Route$Docs)
-	});
+			$elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x1('16.5'),
+					$elm$svg$Svg$Attributes$y1('9.4'),
+					$elm$svg$Svg$Attributes$x2('7.5'),
+					$elm$svg$Svg$Attributes$y2('4.21')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$polyline,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$points('3.27 6.96 12 12.01 20.73 6.96')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$line,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x1('12'),
+					$elm$svg$Svg$Attributes$y1('22.08'),
+					$elm$svg$Svg$Attributes$x2('12'),
+					$elm$svg$Svg$Attributes$y2('12')
+				]),
+			_List_Nil)
+		]));
+var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
+var $elm$svg$Svg$Attributes$rx = _VirtualDom_attribute('rx');
+var $elm$svg$Svg$Attributes$ry = _VirtualDom_attribute('ry');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
 var $feathericons$elm_feather$FeatherIcons$clipboard = A2(
 	$feathericons$elm_feather$FeatherIcons$makeBuilder,
 	'clipboard',
@@ -18111,6 +18429,19 @@ var $author$project$Components$settingsButton = A2(
 				A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$settings))),
 		onPress: $elm$core$Maybe$Nothing
 	});
+var $feathericons$elm_feather$FeatherIcons$thumbsUp = A2(
+	$feathericons$elm_feather$FeatherIcons$makeBuilder,
+	'thumbs-up',
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$path,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$d('M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3')
+				]),
+			_List_Nil)
+		]));
 var $feathericons$elm_feather$FeatherIcons$tv = A2(
 	$feathericons$elm_feather$FeatherIcons$makeBuilder,
 	'tv',
@@ -18136,17 +18467,31 @@ var $feathericons$elm_feather$FeatherIcons$tv = A2(
 				]),
 			_List_Nil)
 		]));
-var $author$project$Components$tvshowButton = A2(
-	$mdgriffith$elm_ui$Element$Input$button,
-	_List_Nil,
-	{
-		label: $mdgriffith$elm_ui$Element$html(
+var $feathericons$elm_feather$FeatherIcons$video = A2(
+	$feathericons$elm_feather$FeatherIcons$makeBuilder,
+	'video',
+	_List_fromArray(
+		[
 			A2(
-				$feathericons$elm_feather$FeatherIcons$toHtml,
-				_List_Nil,
-				A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$tv))),
-		onPress: $elm$core$Maybe$Nothing
-	});
+			$elm$svg$Svg$polygon,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$points('23 7 16 12 23 17 23 7')
+				]),
+			_List_Nil),
+			A2(
+			$elm$svg$Svg$rect,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$x('1'),
+					$elm$svg$Svg$Attributes$y('5'),
+					$elm$svg$Svg$Attributes$width('15'),
+					$elm$svg$Svg$Attributes$height('14'),
+					$elm$svg$Svg$Attributes$rx('2'),
+					$elm$svg$Svg$Attributes$ry('2')
+				]),
+			_List_Nil)
+		]));
 var $author$project$Components$leftSidebar = A2(
 	$mdgriffith$elm_ui$Element$column,
 	_List_fromArray(
@@ -18160,12 +18505,72 @@ var $author$project$Components$leftSidebar = A2(
 		]),
 	_List_fromArray(
 		[
-			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$musicButton),
-			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$movieButton),
-			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$tvshowButton),
-			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$browserButton),
-			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$addonsButton),
-			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$likesButton),
+			A2(
+			$mdgriffith$elm_ui$Element$link,
+			_List_Nil,
+			{
+				label: $mdgriffith$elm_ui$Element$html(
+					A2(
+						$feathericons$elm_feather$FeatherIcons$toHtml,
+						_List_Nil,
+						A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$music))),
+				url: $author$project$Generated$Route$toHref($author$project$Generated$Route$Music)
+			}),
+			A2(
+			$mdgriffith$elm_ui$Element$link,
+			_List_Nil,
+			{
+				label: $mdgriffith$elm_ui$Element$html(
+					A2(
+						$feathericons$elm_feather$FeatherIcons$toHtml,
+						_List_Nil,
+						A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$video))),
+				url: $author$project$Generated$Route$toHref($author$project$Generated$Route$Movies)
+			}),
+			A2(
+			$mdgriffith$elm_ui$Element$link,
+			_List_Nil,
+			{
+				label: $mdgriffith$elm_ui$Element$html(
+					A2(
+						$feathericons$elm_feather$FeatherIcons$toHtml,
+						_List_Nil,
+						A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$tv))),
+				url: $author$project$Generated$Route$toHref($author$project$Generated$Route$TVshows)
+			}),
+			A2(
+			$mdgriffith$elm_ui$Element$link,
+			_List_Nil,
+			{
+				label: $mdgriffith$elm_ui$Element$html(
+					A2(
+						$feathericons$elm_feather$FeatherIcons$toHtml,
+						_List_Nil,
+						A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$menu))),
+				url: $author$project$Generated$Route$toHref($author$project$Generated$Route$Browser)
+			}),
+			A2(
+			$mdgriffith$elm_ui$Element$link,
+			_List_Nil,
+			{
+				label: $mdgriffith$elm_ui$Element$html(
+					A2(
+						$feathericons$elm_feather$FeatherIcons$toHtml,
+						_List_Nil,
+						A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$package))),
+				url: $author$project$Generated$Route$toHref($author$project$Generated$Route$Addons)
+			}),
+			A2(
+			$mdgriffith$elm_ui$Element$link,
+			_List_Nil,
+			{
+				label: $mdgriffith$elm_ui$Element$html(
+					A2(
+						$feathericons$elm_feather$FeatherIcons$toHtml,
+						_List_Nil,
+						A2($feathericons$elm_feather$FeatherIcons$withSize, 24, $feathericons$elm_feather$FeatherIcons$thumbsUp))),
+				url: $author$project$Generated$Route$toHref($author$project$Generated$Route$Thumbups)
+			}),
 			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$playlistButton),
 			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$settingsButton),
 			A2($mdgriffith$elm_ui$Element$el, _List_Nil, $author$project$Components$helpButton)
@@ -18242,4 +18647,4 @@ var $author$project$Main$view = function (model) {
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Pages.Docs.Msg":{"args":[],"type":"Basics.Never"},"Pages.NotFound.Msg":{"args":[],"type":"Basics.Never"},"Pages.Top.Msg":{"args":[],"type":"Basics.Never"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"Global":["Global.Msg"],"Page":["Generated.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Generated.Pages.Msg":{"args":[],"tags":{"Top_Msg":["Pages.Top.Msg"],"Docs_Msg":["Pages.Docs.Msg"],"NotFound_Msg":["Pages.NotFound.Msg"]}},"Global.Msg":{"args":[],"tags":{"Navigate":["Generated.Route.Route"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Basics.Never":{"args":[],"tags":{"JustOneMore":["Basics.Never"]}},"Generated.Route.Route":{"args":[],"tags":{"Top":[],"Docs":[],"NotFound":[]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Pages.Docs.Msg":{"args":[],"type":"Basics.Never"},"Pages.Help.Msg":{"args":[],"type":"Basics.Never"},"Pages.NotFound.Msg":{"args":[],"type":"Basics.Never"},"Pages.Top.Msg":{"args":[],"type":"Basics.Never"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"Global":["Global.Msg"],"Page":["Generated.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Generated.Pages.Msg":{"args":[],"tags":{"Top_Msg":["Pages.Top.Msg"],"Addons_Msg":["Pages.Addons.Msg"],"Browser_Msg":["Pages.Browser.Msg"],"Docs_Msg":["Pages.Docs.Msg"],"Help_Msg":["Pages.Help.Msg"],"Movies_Msg":["Pages.Movies.Msg"],"Music_Msg":["Pages.Music.Msg"],"NotFound_Msg":["Pages.NotFound.Msg"],"Playlist_Msg":["Pages.Playlist.Msg"],"TVshows_Msg":["Pages.TVshows.Msg"],"Thumbups_Msg":["Pages.Thumbups.Msg"]}},"Global.Msg":{"args":[],"tags":{"Navigate":["Generated.Route.Route"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Addons.Msg":{"args":[],"tags":{"NoOp":[]}},"Pages.Browser.Msg":{"args":[],"tags":{"NoOp":[]}},"Pages.Movies.Msg":{"args":[],"tags":{"NoOp":[]}},"Pages.Music.Msg":{"args":[],"tags":{"NoOp":[]}},"Pages.Playlist.Msg":{"args":[],"tags":{"NoOp":[]}},"Pages.TVshows.Msg":{"args":[],"tags":{"NoOp":[]}},"Pages.Thumbups.Msg":{"args":[],"tags":{"NoOp":[]}},"Basics.Never":{"args":[],"tags":{"JustOneMore":["Basics.Never"]}},"Generated.Route.Route":{"args":[],"tags":{"Top":[],"Addons":[],"Browser":[],"Docs":[],"Help":[],"Movies":[],"Music":[],"NotFound":[],"Playlist":[],"TVshows":[],"Thumbups":[]}}}}})}});}(this));
