@@ -1,4 +1,4 @@
-module Global exposing
+port module Global exposing
     ( Flags
     , Model
     , Msg
@@ -41,13 +41,17 @@ init flags url key =
     , Cmd.none
     )
 
+-- PORTS
 
+port sendMessage : String -> Cmd msg
+port messageReceiver : (String -> msg) -> Sub msg
 
 -- UPDATE
 
 
 type Msg
     = Navigate Route
+    | PlayPause
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -56,6 +60,11 @@ update msg model =
         Navigate route ->
             ( model
             , Nav.pushUrl model.key (Route.toHref route)
+            )
+
+        PlayPause ->
+            ( model
+            , sendMessage """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
             )
 
 
@@ -81,6 +90,7 @@ view :
 view { page, global, toMsg } =
     Components.layout
         { page = page
+        , playPauseMsg = toMsg PlayPause
         }
 
 

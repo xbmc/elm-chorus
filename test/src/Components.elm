@@ -14,8 +14,8 @@ import Svg.Attributes
 import FeatherIcons
 
 
-layout : { page : Document msg } -> Document msg
-layout { page } =
+layout : { page : Document msg, playPauseMsg: msg } -> Document msg
+layout { page, playPauseMsg } =
     { title = page.title
     , body = 
         [ 
@@ -25,7 +25,8 @@ layout { page } =
                     el [width (fillPortion 1), height fill] leftSidebar
                     , column [width (fillPortion 20), height fill, paddingXY 0 25] page.body
                     ]
-                , footer
+                , Input.button[] { onPress = Just playPauseMsg, label = Element.html (FeatherIcons.play |> FeatherIcons.withSize 48 |> FeatherIcons.toHtml [Svg.Attributes.color "lightgrey"])}
+                , footer {playPauseMsg = playPauseMsg}
             ]
         ]
     }
@@ -85,11 +86,11 @@ leftSidebar =
         , el [] (helpButton)
         ]
 
-footer : Element msg
-footer = row [ height (px 70), width fill, alignBottom][
+footer : { playPauseMsg: msg } -> Element msg
+footer {playPauseMsg} = row [ height (px 70), width fill, alignBottom][
             row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30  ][
                 el [centerX] (reverseButton),
-                el [centerX] (playButton),
+                el [centerX] (playButton {action = playPauseMsg}),
                 el [centerX] (skipButton)
             ]
             , column [height fill, width (fillPortion 2)] [
@@ -147,7 +148,6 @@ footer =
     row [] [ text "built with elm ❤" ]
 -}
 
-
 -- STYLES
 
 
@@ -185,11 +185,12 @@ reverseButton =
         , label = Element.html (FeatherIcons.skipBack |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [Svg.Attributes.color "lightgrey"])
         }
 
-playButton =
+playButton : { action: msg } -> Element msg
+playButton { action } =
     Input.button[]
-        { onPress = Nothing
+        { onPress = Just action
         , label = Element.html (FeatherIcons.play |> FeatherIcons.withSize 48 |> FeatherIcons.toHtml [Svg.Attributes.color "lightgrey"])
-    }
+        }
     
 skipButton =
     Input.button[]
