@@ -1,8 +1,0 @@
-# untracked folders
-node_modules/
-
-#compiled elm
-elm-stuff
-
-#DS_Store
-*.DS_Store
