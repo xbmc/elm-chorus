@@ -1,341 +1,133 @@
-port module Main exposing (main)
+module Main exposing (main)
 
-import Browser exposing (Document)
-import Element exposing (..)
-import Element.Background as Background
-import Html exposing (Html)
-import Html.Attributes
-import Element.Input as Input
-import Element exposing (Element, el, html)
-import Element.Font as Font
-import FontAwesome.Attributes as Icon
-import FontAwesome.Brands as Icon
-import FontAwesome.Icon as Icon exposing (Icon)
-import FontAwesome.Layering as Icon
-import FontAwesome.Solid as Icon
-import FontAwesome.Styles as Icon
-import FontAwesome.Svg as SvgIcon
-import FontAwesome.Transforms as Icon
+import Browser
+import Browser.Navigation as Nav exposing (Key)
+import Document exposing (Document)
+import Element
+import Generated.Pages as Pages
+import Generated.Route as Route exposing (Route)
+import Global
+import Url exposing (Url)
 
 
-blue =
-    Element.rgb255 238 238 238
-
-purple =
-    Element.rgb255 208 208 208
-
-{- Player controls -}
-reverseButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-fast-backward fa-lg" ] [])
-        }
-
-playButton =
-    Input.button[]
-        { onPress = Just PlayPause
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-play fa-2x" ] [])
-    }
-    
-skipButton =
-    Input.button[]
-        { onPress = Just Skip
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-fast-forward fa-lg" ] [])
-        }
-        
-{- Secondary controls 
-    includes:
-    | volume
-    | repeat
-    | shuffle
-    | controls
--}
-volumeButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-volume-up fa-lg" ] [])
-        }
-repeatButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-redo-alt fa-lg" ] [])
-    }  
-shuffleButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-random fa-lg" ] [])
-        }
-controlButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-ellipsis-v fa-lg" ] [])
-        }
-
-{- left sidebar controls -}
-musicButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-music fa-lg" ] [])
-        }
-movieButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-film fa-lg" ] [])
-        }
-tvshowButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-tv fa-md" ] [])
-        }
-browserButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-bars fa-lg" ] [])
-        }
-addonsButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-puzzle-piece fa-lg" ] [])
-        }
-likesButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-thumbs-up fa-lg" ] [])
-        }
-playlistButton =
-    Input.button[]
-        { onPress = Nothing
-        , label = Element.html (Html.i [ Html.Attributes.class "fa fa-clipboard-list fa-lg" ] [])
-        }     
--- MAIN
-
-
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
-    Browser.document
+    Browser.application
         { init = init
         , view = view
         , update = update
         , subscriptions = subscriptions
+        , onUrlRequest = LinkClicked
+        , onUrlChange = UrlChanged
         }
 
--- PORTS
-
-port sendMessage : String -> Cmd msg
-port messageReceiver : (String -> msg) -> Sub msg
 
 
--- MODEL
+-- INIT
+
+
+type alias Flags =
+    ()
 
 
 type alias Model =
-    { draft : String
-    , messages: List String
+    { key : Key
+    , url : Url
+    , global : Global.Model
+    , page : Pages.Model
     }
 
 
-type Msg
-    = Send
-    | PlayPause
-    | Skip
-    | Recv String
+init : Flags -> Url -> Key -> ( Model, Cmd Msg )
+init flags url key =
+    let
+        ( global, globalCmd ) =
+            Global.init flags url key
 
-
-init : () -> ( Model, Cmd Msg )
-init flags =
-    ( { draft = "", messages = [] }
-    , Cmd.none
+        ( page, pageCmd, pageGlobalCmd ) =
+            Pages.init (fromUrl url) global
+    in
+    ( Model key url global page
+    , Cmd.batch
+        [ Cmd.map Global globalCmd
+        , Cmd.map Global pageGlobalCmd
+        , Cmd.map Page pageCmd
+        ]
     )
 
 
-
--- UPDATE
+type Msg
+    = LinkClicked Browser.UrlRequest
+    | UrlChanged Url
+    | Global Global.Msg
+    | Page Pages.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case msg of
-    Send ->
-      ( { model | draft = "" }
-      , sendMessage model.draft
-      )
-    PlayPause ->
-      ( { model | draft = "" }
-      , sendMessage """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
-      )
+    case msg of
+        LinkClicked (Browser.Internal url) ->
+            ( model, Nav.pushUrl model.key (Url.toString url) )
 
-    Skip ->
-      ( { model | draft = "" }
-      , sendMessage """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "skipnext" }, "id": 1 }"""
-      )
+        LinkClicked (Browser.External href) ->
+            ( model, Nav.load href )
 
-    Recv message ->
-      ( { model | messages = model.messages ++ [message] }
-      , Cmd.none
-      )
+        UrlChanged url ->
+            let
+                ( page, pageCmd, globalCmd ) =
+                    Pages.init (fromUrl url) model.global
+            in
+            ( { model | url = url, page = page }
+            , Cmd.batch
+                [ Cmd.map Page pageCmd
+                , Cmd.map Global globalCmd
+                ]
+            )
 
+        Global globalMsg ->
+            let
+                ( global, globalCmd ) =
+                    Global.update globalMsg model.global
+            in
+            ( { model | global = global }
+            , Cmd.map Global globalCmd
+            )
 
-
--- SUBSCRIPTIONS
+        Page pageMsg ->
+            let
+                ( page, pageCmd, globalCmd ) =
+                    Pages.update pageMsg model.page model.global
+            in
+            ( { model | page = page }
+            , Cmd.batch
+                [ Cmd.map Page pageCmd
+                , Cmd.map Global globalCmd
+                ]
+            )
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-  messageReceiver Recv
+subscriptions model =
+    Sub.batch
+        [ model.global
+            |> Global.subscriptions
+            |> Sub.map Global
+        , model.page
+            |> (\page -> Pages.subscriptions page model.global)
+            |> Sub.map Page
+        ]
 
 
-
--- VIEW
-
-
-edges =
-    { top = 0
-    , right = 0
-    , bottom = 0
-    , left = 0
-    }
-
-
-view : Model -> Document Msg
+view : Model -> Browser.Document Msg
 view model =
-    { title = "Kodi"
-    , body =
-        [ layout [ inFront <| leftSidebar, inFront <| header, inFront <|  footer ] <|
-            column [ width fill ]
-                [ header
-                , leftSidebar
-                , hero
-                , content
-                , footer
-                ]
-        ]
-    }
-
-header : Element Msg
-header =
-    row [ width fill, Background.color (rgb 0.1 0.1 0.1), spacing 10, padding 0 ]
-        [ el [] (image [width (px 50)] {description = "", src = "https://kodi.wiki/images/8/8e/Thumbnail-symbol-transparent.png" })
-        ]
-
-leftSidebar : Element Msg
-leftSidebar =
-    column [ height fill, Background.color (rgb 0.9 0.9 0.9), spacing 30, paddingXY 10 70, alignLeft ]
-        [ el [] (musicButton)
-        , el [] (movieButton)
-        , el [] (tvshowButton)
-        , el [] (browserButton)
-        , el [] (addonsButton)
-        , el [] (likesButton)
-        , el [] (playlistButton)
-        ]
-
-hero : Element Msg
-hero =
-    row [ width fill, Background.color (rgb 0 0.7 0) ]
-        [ image [ width fill ]
-            { src = "https://via.placeholder.com/1400x400"
-            , description = "Hero Image"
+    Document.toBrowserDocument <|
+        Global.view
+            { page = Pages.view model.page model.global |> Document.map Page
+            , global = model.global
+            , toMsg = Global
             }
-        ]
 
 
-content : Element Msg
-content =
-    column
-        [ width
-            (fill
-                |> maximum 750
-                |> minimum 250
-            )
-        , Background.color (rgb 0 0.9 0)
-        , centerX
-        , spacing 10
-        , padding 10
-        ]
-        [ textColumn []
-            [ image [ alignRight ]
-                { src = "https://via.placeholder.com/250"
-                , description = "Hero Image"
-                }
-            , home
-            ]
-        , textColumn []
-            [ image [ paddingEach { edges | right = 10 }, alignLeft ]
-                { src = "https://via.placeholder.com/250"
-                , description = "Hero Image"
-                }
-            , about
-            ]
-        , textColumn []
-            [ image [ alignRight ]
-                { src = "https://via.placeholder.com/250"
-                , description = "Hero Image"
-                }
-            , services
-            ]
-        , textColumn []
-            [ image [ paddingEach { edges | right = 10 }, alignLeft ]
-                { src = "https://via.placeholder.com/250"
-                , description = "Hero Image"
-                }
-            , contactUs
-            ]
-        ]
-
-
-home : Element Msg
-home =
-    paragraph []
-        [ text
-            "Home lots of text ...."
-        ]
-
-
-about : Element Msg
-about =
-    paragraph []
-        [ text
-            "About lots of text ...."
-        ]
-
-
-services : Element Msg
-services =
-    paragraph []
-        [ text
-            "lots of text ...."
-        ]
-
-
-contactUs : Element Msg
-contactUs =
-    paragraph []
-        [ text
-            "lots of text ...."
-        ]
-
-
-footer : Element Msg
-footer = row[width fill, alignBottom][
-            row [ height (px 70), width (fillPortion 1), Background.color (rgb 0.3 0.3 0.3), alignBottom, padding 10, spacing 30  ][
-                el [centerX] (reverseButton),
-                el [centerX] (playButton),
-                el [centerX] (skipButton)
-            ],
-            row [ height (px 70), width (fillPortion 2), Background.color (rgb 0.3 0.3 0.3), alignBottom, padding 10, spacing 30  ][
-                image [ alignLeft]
-                    { src = "https://via.placeholder.com/70"
-                    , description = "Hero Image"
-                    },
-                column[] [
-                    el [ Font.color (Element.rgb 0.6 0.6 0.6) , Font.size 18 , Font.family [ Font.typeface "Open Sans" , Font.sansSerif ] ] (text "Nothing playing"),
-                    el [ Font.color (Element.rgb 0.6 0.6 0.6) , Font.size 18 , Font.family [ Font.typeface "Open Sans" , Font.sansSerif ] ] (text "Nothing playing")
-                ]
-            ],
-            row [ height (px 70), width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30][
-                el [centerX] (volumeButton),
-                el [centerX] (repeatButton),
-                el [centerX] (shuffleButton),
-                el [centerX] (controlButton)
-            ]
-        ]
+fromUrl : Url -> Route
+fromUrl =
+    Route.fromUrl >> Maybe.withDefault Route.NotFound
