@@ -39,16 +39,26 @@ init flags url key =
         flags
         url
         key
+        False
     , Cmd.none
     )
 
+
+
 -- PORTS
 
+
 port sendAction : String -> Cmd msg
+
+
 port messageReceiver : (String -> msg) -> Sub msg
 
+
+
 -- UPDATE
-type Param 
+
+
+type Param
     = Analogfastforward
     | Analogmove
     | Analogmovexleft
@@ -260,27 +270,42 @@ type Param
     | Zoomnormal
     | Zoomout
 
+
 type Method
     = InputExecuteAction
 
-{- only action should be of method Input.ExecuteAction-}
-type alias Action = 
+
+
+{- only action should be of method Input.ExecuteAction -}
+
+
+type alias Action =
     { method : Method
     , params : Param
     , id : Int
     }
 
+
 type Msg
     = Navigate Route
     | Send Action
 
-{-todo-}
+
+
+{- todo -}
+
+
 actionToStr : Action -> String
 actionToStr action =
     """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
-    {-case action.method of
-        InputExecuteAction ->
-            (object ++ )-}
+
+
+
+{- case action.method of
+   InputExecuteAction ->
+       (object ++ )
+-}
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -292,8 +317,7 @@ update msg model =
 
         Send action ->
             ( model
-            , sendAction (actionToStr action)
-            {-"""{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""-}
+            , sendAction (actionToStr action) {- """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }""" -}
             )
 
 
@@ -319,7 +343,7 @@ view :
 view { page, global, toMsg } =
     Components.layout
         { page = page
-        , action = toMsg (Send action)
+        , action = toMsg (Send { method = InputExecuteAction, params = Play, id = 0 })
         }
 
 
