@@ -14,8 +14,8 @@ import Svg.Attributes
 import FeatherIcons
 
 
-layout : { page : Document msg, playPauseMsg: msg } -> Document msg
-layout { page, playPauseMsg } =
+layout : { page : Document msg, action: Action } -> Document msg
+layout { page, action } =
     { title = page.title
     , body = 
         [ 
@@ -25,8 +25,7 @@ layout { page, playPauseMsg } =
                     el [width (fillPortion 1), height fill] leftSidebar
                     , column [width (fillPortion 20), height fill, paddingXY 0 25] page.body
                     ]
-                , Input.button[] { onPress = Just playPauseMsg, label = Element.html (FeatherIcons.play |> FeatherIcons.withSize 48 |> FeatherIcons.toHtml [Svg.Attributes.color "lightgrey"])}
-                , footer {playPauseMsg = playPauseMsg}
+                , player {action = action}
             ]
         ]
     }
@@ -86,11 +85,11 @@ leftSidebar =
         , el [] (helpButton)
         ]
 
-footer : { playPauseMsg: msg } -> Element msg
-footer {playPauseMsg} = row [ height (px 70), width fill, alignBottom][
+player : { action: Action } -> Element Action
+player { action } = row [ height (px 70), width fill, alignBottom][
             row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30  ][
                 el [centerX] (reverseButton),
-                el [centerX] (playButton {action = playPauseMsg}),
+                el [centerX] (playButton {action = action}),
                 el [centerX] (skipButton)
             ]
             , column [height fill, width (fillPortion 2)] [
@@ -134,6 +133,13 @@ link ( label, route ) =
         , url = Route.toHref route
         }
 
+{-iconLink : ( Icon, Int, Route ) -> Element msg
+iconLink ( icon, size, route ) =
+    Element.link styles.link
+        { label = Element.html (icon |> FeatherIcons.withSize size |> FeatherIcons.toHtml [Svg.Attributes.color "lightgrey"])
+        , url = Route.toHref route
+        }
+-}
 
 externalButtonLink : ( String, String ) -> Element msg
 externalButtonLink ( label, url ) =
@@ -141,12 +147,6 @@ externalButtonLink ( label, url ) =
         { label = text label
         , url = url
         }
-
-{-
-footer : Element msg
-footer =
-    row [] [ text "built with elm ❤" ]
--}
 
 -- STYLES
 
@@ -185,7 +185,7 @@ reverseButton =
         , label = Element.html (FeatherIcons.skipBack |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [Svg.Attributes.color "lightgrey"])
         }
 
-playButton : { action: msg } -> Element msg
+playButton : { action: Action } -> Element Action
 playButton { action } =
     Input.button[]
         { onPress = Just action
@@ -272,3 +272,226 @@ helpButton =
         { onPress = Nothing
         , label = Element.html (FeatherIcons.helpCircle |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
         }  
+
+{-Action stuff-}
+type Param 
+    = Analogfastforward
+    | Analogmove
+    | Analogmovexleft
+    | Analogmovexright
+    | Analogmoveydown
+    | Analogmoveyup
+    | Analogrewind
+    | Analogseekback
+    | Analogseekforward
+    | Aspectratio
+    | Audiodelay
+    | Audiodelayminus
+    | Audiodelayplus
+    | Audionextlanguage
+    | Audiotoggledigital
+    | Back
+    | Backspace
+    | Bigstepback
+    | Bigstepforward
+    | Blue
+    | Browsesubtitle
+    | Channeldown
+    | Channelnumberseparator
+    | Channelup
+    | Chapterorbigstepback
+    | Chapterorbigstepforward
+    | Close
+    | Codecinfo
+    | Contextmenu
+    | Copy
+    | Createbookmark
+    | Createepisodebookmark
+    | Cursorleft
+    | Cursorright
+    | Cyclesubtitle
+    | Decreasepar
+    | Decreaserating
+    | Decreasevisrating
+    | Delete
+    | Doubleclick
+    | Down
+    | Enter
+    | Error
+    | Fastforward
+    | Filter
+    | Filterclear
+    | Filtersms2
+    | Filtersms3
+    | Filtersms4
+    | Filtersms5
+    | Filtersms6
+    | Filtersms7
+    | Filtersms8
+    | Filtersms9
+    | Firstpage
+    | Fullscreen
+    | Green
+    | Guiprofile
+    | Highlight
+    | Increasepar
+    | Increaserating
+    | Increasevisrating
+    | Info
+    | Jumpsms2
+    | Jumpsms3
+    | Jumpsms4
+    | Jumpsms5
+    | Jumpsms6
+    | Jumpsms7
+    | Jumpsms8
+    | Jumpsms9
+    | Lastpage
+    | Left
+    | Leftclick
+    | Lockpreset
+    | Longclick
+    | Longpress
+    | Menu
+    | Middleclick
+    | Mousedrag
+    | Mousedragend
+    | Mousemove
+    | Move
+    | Moveitemdown
+    | Moveitemup
+    | Mute
+    | Nextcalibration
+    | Nextchannelgroup
+    | Nextletter
+    | Nextpicture
+    | Nextpreset
+    | Nextresolution
+    | Nextscene
+    | Nextstereomode
+    | Nextsubtitle
+    | Noop
+    | Number0
+    | Number1
+    | Number2
+    | Number3
+    | Number4
+    | Number5
+    | Number6
+    | Number7
+    | Number8
+    | Number9
+    | Osd
+    | Pagedown
+    | Pageup
+    | Pangesture
+    | Parentdir
+    | Parentfolder
+    | Pause
+    | Play
+    | Playerdebug
+    | Playerprocessinfo
+    | Playerprogramselect
+    | Playerresolutionselect
+    | Playlist
+    | Playnext
+    | Playpause
+    | Playpvr
+    | Playpvrradio
+    | Playpvrtv
+    | Previouschannelgroup
+    | Previousmenu
+    | Previouspicture
+    | Previouspreset
+    | Previousscene
+    | Previousstereomode
+    | Prevletter
+    | Queue
+    | Randompreset
+    | Record
+    | Red
+    | Reloadkeymaps
+    | Rename
+    | Resetcalibration
+    | Rewind
+    | Right
+    | Rightclick
+    | Rotate
+    | Rotateccw
+    | Rotategesture
+    | Scanitem
+    | Screenshot
+    | Scrolldown
+    | Scrollup
+    | Select
+    | Setrating
+    | Settingslevelchange
+    | Settingsreset
+    | Shift
+    | Showpreset
+    | Showsubtitles
+    | Showtime
+    | Showtimerrule
+    | Showvideomenu
+    | Skipnext
+    | Skipprevious
+    | Smallstepback
+    | Stepback
+    | Stepforward
+    | Stereomode
+    | Stereomodetomono
+    | Stop
+    | Subtitlealign
+    | Subtitledelay
+    | Subtitledelayminus
+    | Subtitledelayplus
+    | Subtitleshiftdown
+    | Subtitleshiftup
+    | Swipedown
+    | Swipeleft
+    | Swiperight
+    | Swipeup
+    | Switchplayer
+    | Symbols
+    | Tap
+    | Togglecommskip
+    | Togglefont
+    | Togglefullscreen
+    | Togglestereomode
+    | Togglewatched
+    | Up
+    | Verticalshiftdown
+    | Verticalshiftup
+    | Videonextstream
+    | Voicerecognizer
+    | Volampdown
+    | Volampup
+    | Volumeamplification
+    | Volumedown
+    | Volumeup
+    | Wheeldown
+    | Wheelup
+    | Yellow
+    | Zoomgesture
+    | Zoomin
+    | Zoomlevel1
+    | Zoomlevel2
+    | Zoomlevel3
+    | Zoomlevel4
+    | Zoomlevel5
+    | Zoomlevel6
+    | Zoomlevel7
+    | Zoomlevel8
+    | Zoomlevel9
+    | Zoomnormal
+    | Zoomout
+
+type Method
+    = InputExecuteAction
+
+{- only action should be of method Input.ExecuteAction-}
+type alias Action = 
+    { method : Method
+    , params : Param
+    , id : Int
+    }

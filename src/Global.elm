@@ -260,22 +260,27 @@ type Param
     | Zoomnormal
     | Zoomout
 
+type Method
+    = InputExecuteAction
+
 {- only action should be of method Input.ExecuteAction-}
 type alias Action = 
-    { method : String
+    { method : Method
     , params : Param
     , id : Int
     }
 
 type Msg
     = Navigate Route
-    | PlayPause
+    | Send Action
 
 {-todo-}
 actionToStr : Action -> String
 actionToStr action =
-    if action.method != "" then
-        " \"method\": \"" ++ action.method
+    """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
+    {-case action.method of
+        InputExecuteAction ->
+            (object ++ )-}
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -314,7 +319,7 @@ view :
 view { page, global, toMsg } =
     Components.layout
         { page = page
-        , playPauseMsg = toMsg PlayPause
+        , action = toMsg (Send action)
         }
 
 
