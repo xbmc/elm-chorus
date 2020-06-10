@@ -9,7 +9,7 @@ import Element.Input as Input
 import FeatherIcons
 import Generated.Route as Route exposing (Route)
 import Html exposing (Html)
-import Html.Attributes exposing (action)
+import Html.Attributes
 import Svg.Attributes
 
 

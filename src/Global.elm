@@ -48,7 +48,7 @@ init flags url key =
 -- PORTS
 
 
-port sendAction : String -> Cmd msg
+port sendMessage : String -> Cmd msg
 
 
 port messageReceiver : (String -> msg) -> Sub msg
@@ -288,23 +288,16 @@ type alias Action =
 
 type Msg
     = Navigate Route
-    | Send Action
+    | Send Method Param Int
 
 
 
 {- todo -}
 
 
-actionToStr : Action -> String
-actionToStr action =
-    """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
-
-
-
-{- case action.method of
-   InputExecuteAction ->
-       (object ++ )
--}
+toStr : Method -> Param -> Int -> String
+toStr method param int =
+    """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id":""" ++ (String.fromInt int) ++"}"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -315,11 +308,10 @@ update msg model =
             , Nav.pushUrl model.key (Route.toHref route)
             )
 
-        Send action ->
+        Send method param int ->
             ( model
-            , sendAction (actionToStr action) {- """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }""" -}
+            , sendMessage (toStr method param int)
             )
-
 
 
 -- SUBSCRIPTIONS
@@ -343,7 +335,7 @@ view :
 view { page, global, toMsg } =
     Components.layout
         { page = page
-        , action = toMsg (Send { method = InputExecuteAction, params = Play, id = 0 })
+        , action = toMsg (Send InputExecuteAction Play 0)
         }
 
 
