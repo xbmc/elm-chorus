@@ -48,10 +48,10 @@ init flags url key =
 -- PORTS
 
 
-port sendMessage : String -> Cmd msg
+port sendAction : String -> Cmd msg
 
 
-port messageReceiver : (String -> msg) -> Sub msg
+port responseReceiver : (String -> msg) -> Sub msg
 
 
 
@@ -310,7 +310,7 @@ update msg model =
 
         Send method param int ->
             ( model
-            , sendMessage (toStr method param int)
+            , sendAction (toStr method param int)
             )
 
 
