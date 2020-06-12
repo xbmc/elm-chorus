@@ -109,7 +109,12 @@ view :
 view { page, global, toMsg } =
     Components.layout
         { page = page
-        , action = toMsg (Send InputExecuteAction Play 0)
+        , playPauseMsg = toMsg (Send InputExecuteAction Play 0)
+        , skipMsg = toMsg (Send InputExecuteAction Play 0)
+        , reverseMsg = toMsg (Send InputExecuteAction Play 0)
+        , muteMsg = toMsg (Send InputExecuteAction Play 0)
+        , repeatMsg = toMsg (Send InputExecuteAction Play 0)
+        , shuffleMsg = toMsg (Send InputExecuteAction Play 0)
         }
 
 

@@ -14,8 +14,17 @@ import Html.Attributes
 import Svg.Attributes
 
 
-layout : { page : Document msg, action : msg } -> Document msg
-layout { page, action } =
+layout : 
+    { page : Document msg
+    , playPauseMsg : msg
+    , skipMsg : msg 
+    , reverseMsg : msg
+    , muteMsg : msg
+    , repeatMsg : msg
+    , shuffleMsg : msg
+    } 
+    -> Document msg
+layout { page, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
     { title = page.title
     , body =
         [ column [ width fill, height fill ]
@@ -24,7 +33,14 @@ layout { page, action } =
                 [ el [ width (fillPortion 1), height fill ] leftSidebar
                 , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] page.body
                 ]
-            , player { action = action }
+            , player 
+                    { playPauseMsg = playPauseMsg
+                    , skipMsg = skipMsg
+                    , reverseMsg = reverseMsg
+                    , muteMsg = muteMsg
+                    , repeatMsg = repeatMsg
+                    , shuffleMsg = shuffleMsg
+                    }
             ]
         ]
     }
@@ -92,13 +108,21 @@ leftSidebar =
         ]
 
 
-player : { action : msg } -> Element msg
-player { action } =
+player : 
+    { playPauseMsg : msg
+    , skipMsg : msg 
+    , reverseMsg : msg
+    , muteMsg : msg
+    , repeatMsg : msg
+    , shuffleMsg : msg 
+    } 
+    -> Element msg
+player { playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
     row [ height (px 70), width fill, alignBottom ]
         [ row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
-            [ el [ centerX ] reverseButton
-            , el [ centerX ] (playButton { action = action })
-            , el [ centerX ] skipButton
+            [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
+            , el [ centerX ] (playButton { playPauseMsg = playPauseMsg })
+            , el [ centerX ] (skipButton { skipMsg = skipMsg })
             ]
         , column [ height fill, width (fillPortion 2) ]
             [ row [ height (px 70), width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
@@ -113,9 +137,9 @@ player { action } =
         , column [ height fill, width (fillPortion 1) ]
             [ el [] (text "Volume")
             , row [ width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, paddingXY 10 0, spacing 30 ]
-                [ el [ centerX ] volumeButton
-                , el [ centerX ] repeatButton
-                , el [ centerX ] shuffleButton
+                [ el [ centerX ] (volumeButton { muteMsg = muteMsg })
+                , el [ centerX ] (repeatButton { repeatMsg = repeatMsg })
+                , el [ centerX ] (shuffleButton { shuffleMsg = shuffleMsg })
                 , el [ centerX ] controlButton
                 ]
             ]
@@ -198,29 +222,27 @@ styles =
 
 {- Player controls -}
 
+featherButton : ( FeatherIcons.Icon, msg ) -> Element msg
+featherButton ( icon, action ) =
+    el [] (
+        Input.button []
+            { onPress = Just action
+            , label = Element.html (icon |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
+            }
+        )
 
-reverseButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.skipBack |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
-        }
-
-
-playButton : { action : msg } -> Element msg
-playButton { action } =
-    Input.button []
-        { onPress = Just action
-        , label = Element.html (FeatherIcons.play |> FeatherIcons.withSize 48 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
-        }
+reverseButton : { reverseMsg : msg } -> Element msg
+reverseButton { reverseMsg } =
+    featherButton(FeatherIcons.skipBack, reverseMsg)
 
 
-skipButton : Element msg
-skipButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.skipForward |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
-        }
+playButton : { playPauseMsg : msg } -> Element msg
+playButton { playPauseMsg } =
+    featherButton(FeatherIcons.play, playPauseMsg)
 
+skipButton : { skipMsg : msg } -> Element msg
+skipButton { skipMsg } =
+    featherButton(FeatherIcons.skipForward, skipMsg)
 
 
 {- Secondary controls
@@ -231,27 +253,17 @@ skipButton =
    | controls
 -}
 
+volumeButton : { muteMsg : msg } -> Element msg
+volumeButton { muteMsg } =
+    featherButton(FeatherIcons.volume2, muteMsg)
 
-volumeButton =
-    Element.link []
-        { url = Route.Docs |> Route.toHref
-        , label = Element.html (FeatherIcons.volume2 |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
-        }
+repeatButton : { repeatMsg : msg } -> Element msg
+repeatButton { repeatMsg } =
+    featherButton(FeatherIcons.repeat, repeatMsg)
 
-
-repeatButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.repeat |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
-        }
-
-
-shuffleButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.shuffle |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
-        }
-
+shuffleButton : { shuffleMsg : msg } -> Element msg
+shuffleButton { shuffleMsg } =
+    featherButton(FeatherIcons.shuffle, shuffleMsg)
 
 controlButton =
     Input.button []
