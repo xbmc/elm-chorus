@@ -1,7 +1,7 @@
 {- Action stuff -}
 
 
-module Action exposing (Action, Method(..), Param(..))
+module Action exposing (Method(..), Param(..))
 
 
 type Param
@@ -216,17 +216,6 @@ type Param
     | Zoomnormal
     | Zoomout
 
-
+{- only action should be of method Input.ExecuteAction -}
 type Method
     = InputExecuteAction
-
-
-
-{- only action should be of method Input.ExecuteAction -}
-
-
-type alias Action =
-    { method : Method
-    , params : Param
-    , id : Int
-    }

@@ -1,6 +1,6 @@
 module Components exposing (layout)
 
-import Action exposing (Action, Method(..), Param(..))
+import Action exposing (Method(..), Param(..))
 import Document exposing (Document)
 import Element exposing (..)
 import Element.Background as Background

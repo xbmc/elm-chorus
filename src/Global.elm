@@ -9,7 +9,7 @@ port module Global exposing
     , view
     )
 
-import Action exposing (Action, Method(..), Param(..))
+import Action exposing (Method(..), Param(..))
 import Browser.Navigation as Nav
 import Components
 import Document exposing (Document)
