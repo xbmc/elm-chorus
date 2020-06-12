@@ -16,6 +16,7 @@ import Document exposing (Document)
 import Generated.Route as Route exposing (Route)
 import Task
 import Url exposing (Url)
+import Json.Encode as Encode
 
 
 
@@ -65,13 +66,20 @@ type Msg
 
 
 
-{- todo -}
-
-
+{- convert method param int to json action -}
 toStr : Method -> Param -> Int -> String
 toStr method param int =
-    """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id":""" ++ String.fromInt int ++ "}"
-
+    Encode.encode 0 
+        <| Encode.object
+            [ ( "jsonrpc", Encode.string "2.0" )
+            , ( "method", Encode.string "Input.ExecuteAction" )
+            , ( "params"
+              , Encode.object
+                    [ ("action", Encode.string "playpause")
+                    ]
+              )
+            , ( "id", Encode.int 0 )
+            ]
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -109,10 +117,10 @@ view :
 view { page, global, toMsg } =
     Components.layout
         { page = page
-        , playPauseMsg = toMsg (Send InputExecuteAction Play 0)
-        , skipMsg = toMsg (Send InputExecuteAction Play 0)
-        , reverseMsg = toMsg (Send InputExecuteAction Play 0)
-        , muteMsg = toMsg (Send InputExecuteAction Play 0)
+        , playPauseMsg = toMsg (Send InputExecuteAction Playpause 0)
+        , skipMsg = toMsg (Send InputExecuteAction Skipnext 0)
+        , reverseMsg = toMsg (Send InputExecuteAction Skipprevious 0)
+        , muteMsg = toMsg (Send InputExecuteAction Mute 0)
         , repeatMsg = toMsg (Send InputExecuteAction Play 0)
         , shuffleMsg = toMsg (Send InputExecuteAction Play 0)
         }
