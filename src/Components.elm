@@ -59,39 +59,62 @@ header =
         , el [ Font.color (Element.rgb 1 1 1) ] (text "Kodi")
         ]
 
+-- left sidebar stuff
 
 leftSidebar : Element msg
 leftSidebar =
     column [ height fill, Background.color (rgb 0.9 0.9 0.9), spacing 30, paddingXY 10 20, alignLeft ]
-        [ Element.link []
-            { label = Element.html (FeatherIcons.music |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-            , url = Route.Music |> Route.toHref
-            }
-        , Element.link []
-            { label = Element.html (FeatherIcons.video |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-            , url = Route.Movies |> Route.toHref
-            }
-        , Element.link []
-            { label = Element.html (FeatherIcons.tv |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-            , url = Route.TVshows |> Route.toHref
-            }
-        , Element.link []
-            { label = Element.html (FeatherIcons.menu |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-            , url = Route.Browser |> Route.toHref
-            }
-        , Element.link []
-            { label = Element.html (FeatherIcons.package |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-            , url = Route.Addons |> Route.toHref
-            }
-        , Element.link []
-            { label = Element.html (FeatherIcons.thumbsUp |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-            , url = Route.Thumbups |> Route.toHref
-            }
-        , el [] playlistButton
-        , el [] settingsButton
-        , el [] helpButton
+        [ musicButton
+        , movieButton
+        , tvshowButton
+        , browserButton
+        , addonsButton
+        , likesButton
+        , playlistButton
+        , settingsButton
+        , helpButton
         ]
 
+featherLink : ( FeatherIcons.Icon, Route ) -> Element msg
+featherLink ( icon, route ) =
+    el [ Element.mouseOver [
+            scale 1.2
+        ]
+    ] <|
+        Element.link []
+            { url = Route.toHref route
+            , label = Element.html (icon |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+            }
+
+-- buttons
+musicButton = 
+    featherLink (FeatherIcons.music, Route.Music)
+
+movieButton = 
+    featherLink (FeatherIcons.video, Route.Movies)
+
+tvshowButton = 
+    featherLink (FeatherIcons.tv, Route.TVshows)
+
+browserButton = 
+    featherLink (FeatherIcons.menu, Route.Browser)
+
+addonsButton = 
+    featherLink (FeatherIcons.package, Route.Addons)
+
+likesButton = 
+    featherLink (FeatherIcons.thumbsUp, Route.Thumbups)
+
+playlistButton = 
+    featherLink (FeatherIcons.clipboard, Route.Top)
+
+settingsButton = 
+    featherLink (FeatherIcons.settings, Route.Top)
+
+helpButton = 
+    featherLink (FeatherIcons.helpCircle, Route.Top)
+
+-- Player
 
 player : 
     { playPauseMsg : msg
@@ -131,56 +154,7 @@ player { playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
         ]
 
 
-link : ( String, Route ) -> Element msg
-link ( label, route ) =
-    Element.link styles.link
-        { label = text label
-        , url = Route.toHref route
-        }
-
-
-externalButtonLink : ( String, String ) -> Element msg
-externalButtonLink ( label, url ) =
-    Element.newTabLink styles.button
-        { label = text label
-        , url = url
-        }
-
-
-
--- STYLES
-
-
-colors : { blue : Color, white : Color, red : Color }
-colors =
-    { white = rgb 1 1 1
-    , red = rgb255 204 85 68
-    , blue = rgb255 50 100 150
-    }
-
-
-styles :
-    { link : List (Element.Attribute msg)
-    , button : List (Element.Attribute msg)
-    }
-styles =
-    { link =
-        [ Font.underline
-        , Font.color colors.blue
-        , mouseOver [ alpha 0.6 ]
-        ]
-    , button =
-        [ Font.color colors.white
-        , Background.color colors.red
-        , Border.rounded 4
-        , paddingXY 24 10
-        , mouseOver [ alpha 0.6 ]
-        ]
-    }
-
-
-
-{- Player controls -}
+-- Player controls
 
 featherButton : ( FeatherIcons.Icon, msg ) -> Element msg
 featherButton ( icon, action ) =
@@ -229,69 +203,50 @@ controlButton =
         , label = Element.html (FeatherIcons.moreVertical |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
         }
 
+--
 
-
-{- left sidebar controls -}
-
-
-musicButton =
-    Element.link []
-        { url = Route.Docs |> Route.toHref
-        , label = Element.html (FeatherIcons.music |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+link : ( String, Route ) -> Element msg
+link ( label, route ) =
+    Element.link styles.link
+        { label = text label
+        , url = Route.toHref route
         }
 
 
-movieButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.video |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+externalButtonLink : ( String, String ) -> Element msg
+externalButtonLink ( label, url ) =
+    Element.newTabLink styles.button
+        { label = text label
+        , url = url
         }
 
 
-tvshowButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.tv |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-        }
+-- STYLES
 
 
-browserButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.menu |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-        }
+colors : { blue : Color, white : Color, red : Color }
+colors =
+    { white = rgb 1 1 1
+    , red = rgb255 204 85 68
+    , blue = rgb255 50 100 150
+    }
 
 
-addonsButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.package |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-        }
-
-
-likesButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.thumbsUp |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-        }
-
-
-playlistButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.clipboard |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-        }
-
-
-settingsButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.settings |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-        }
-
-
-helpButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.helpCircle |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
-        }
+styles :
+    { link : List (Element.Attribute msg)
+    , button : List (Element.Attribute msg)
+    }
+styles =
+    { link =
+        [ Font.underline
+        , Font.color colors.blue
+        , mouseOver [ alpha 0.6 ]
+        ]
+    , button =
+        [ Font.color colors.white
+        , Background.color colors.red
+        , Border.rounded 4
+        , paddingXY 24 10
+        , mouseOver [ alpha 0.6 ]
+        ]
+    }
