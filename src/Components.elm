@@ -45,20 +45,6 @@ layout { page, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg
     }
 
 
-
-{- layout { page } =
-   { title = page.title
-   , body =
-       [ column [ spacing 32, padding 20, width (fill |> maximum 780), height fill, centerX ]
-           [ navbar
-           , column [ height fill ] page.body
-           , footer
-           ]
-       ]
-   }
--}
-
-
 header : Element msg
 header =
     row [ width fill, Background.color (rgb 0.1 0.1 0.1), spacing 10, padding 0 ]
@@ -145,37 +131,12 @@ player { playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
         ]
 
 
-
-{-
-   navbar : Element msg
-   navbar =
-       row [ width fill ]
-           [ el [ Font.size 24, Font.bold ] <| link ( "home", Route.Top )
-           , row [ alignRight, spacing 20 ]
-               [ link ( "docs", Route.Docs )
-               , link ( "a broken link", Route.NotFound )
-               , externalButtonLink ( "tweet about it", "https://twitter.com/intent/tweet?text=elm-spa is ez pz" )
-               ]
-           ]
--}
-
-
 link : ( String, Route ) -> Element msg
 link ( label, route ) =
     Element.link styles.link
         { label = text label
         , url = Route.toHref route
         }
-
-
-
-{- iconLink : ( Icon, Int, Route ) -> Element msg
-   iconLink ( icon, size, route ) =
-       Element.link styles.link
-           { label = Element.html (icon |> FeatherIcons.withSize size |> FeatherIcons.toHtml [Svg.Attributes.color "lightgrey"])
-           , url = Route.toHref route
-           }
--}
 
 
 externalButtonLink : ( String, String ) -> Element msg
