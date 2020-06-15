@@ -13,7 +13,6 @@ import Html exposing (Html)
 import Html.Attributes
 import Svg.Attributes
 
-
 layout : 
     { page : Document msg
     , playPauseMsg : msg
@@ -224,13 +223,11 @@ styles =
 
 featherButton : ( FeatherIcons.Icon, msg ) -> Element msg
 featherButton ( icon, action ) =
-    el [] (
-        Input.button []
-            { onPress = Just action
-            , label = Element.html (icon |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
-            }
-        )
-
+    Input.button []
+        { onPress = Just action
+        , label = Element.html (icon |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
+        }
+        
 reverseButton : { reverseMsg : msg } -> Element msg
 reverseButton { reverseMsg } =
     featherButton(FeatherIcons.skipBack, reverseMsg)
