@@ -1,6 +1,5 @@
 module Components exposing (layout)
 
-import Action exposing (Method(..), Param(..))
 import Document exposing (Document)
 import Element exposing (..)
 import Element.Background as Background
@@ -78,7 +77,8 @@ leftSidebar =
 featherLink : ( FeatherIcons.Icon, Route ) -> Element msg
 featherLink ( icon, route ) =
     el [ Element.mouseOver [
-            scale 1.2
+            scale 1.1
+            , Background.color(rgb255 25 180 228)
         ]
     ] <|
         Element.link []

@@ -1,7 +1,7 @@
 {- Action stuff -}
 
 
-module Action exposing (Method(..), Param(..))
+module Action exposing (Category(..), Function(..), Param(..))
 
 
 type Param
@@ -215,7 +215,17 @@ type Param
     | Zoomlevel9
     | Zoomnormal
     | Zoomout
+    --Player params
+    | Shuffle
+    | Cycle
+    | One
 
-{- only action should be of method Input.ExecuteAction -}
-type Method
-    = InputExecuteAction
+type Function
+    = ExecuteAction
+    | SetShuffle
+    | Repeat
+
+type Category
+    = Input
+    | Player
+
