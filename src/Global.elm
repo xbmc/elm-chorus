@@ -535,9 +535,15 @@ toStr category function param int =
                             Repeat ->
                                 case param of
                                     Cycle -> 
-                                        Encode.string ""
+                                        Encode.object
+                                            [ ("repeat"
+                                            , Encode.string "cycle"
+                                            )]
                                     One ->
-                                        Encode.string ""
+                                        Encode.object
+                                            [ ("repeat"
+                                            , Encode.string "one"
+                                            )]
                                     _ ->
                                         Encode.string ""
                             _ ->
