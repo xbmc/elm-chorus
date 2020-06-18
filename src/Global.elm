@@ -9,7 +9,7 @@ port module Global exposing
     , view
     )
 
-import Action exposing (Category(..), Function(..), Param(..))
+import Action exposing (Namespace(..), Method(..), Param(..))
 import Browser.Navigation as Nav
 import Components
 import Document exposing (Document)
@@ -62,7 +62,7 @@ port responseReceiver : (String -> msg) -> Sub msg
 
 type Msg
     = Navigate Route
-    | Send Category Function Param Int
+    | Send Namespace Method Param Int
 
 
 
@@ -70,30 +70,410 @@ type Msg
 format ->
     { "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id":0}
  -}
-toStr : Category -> Function -> Param -> Int -> String
-toStr category function param int =
+toStr : Namespace -> Method -> Param -> Int -> String
+toStr namespace method param int =
     Encode.encode 0
         <| Encode.object
             [ ( "jsonrpc", Encode.string "2.0" )
             , ( "method", 
-                case category of 
+                case namespace of 
+                    Addons -> 
+                        case method of
+                            ExecuteAddon ->
+                                Encode.string "Addons.ExecuteAddon"
+                            GetAddonDetails ->
+                                Encode.string "Addons.GetAddonDetails"
+                            GetAddons ->
+                                Encode.string "Addons.GetAddons"
+                            SetAddonEnabled ->
+                                Encode.string "Addons.SetAddonEnabled"
+                            _ ->
+                                Encode.string "Error, impossible method used with Addons namespace."
+                    Application -> 
+                        case method of
+                            GetProperties ->
+                                Encode.string "Application.GetProperties"
+                            Quit ->
+                                Encode.string "Application.Quit"
+                            SetMute ->
+                                Encode.string "Application.SetMute"
+                            SetVolume ->
+                                Encode.string "Application.SetVolume"
+                            _ ->
+                                Encode.string "Error, impossible method used with Application namespace."
+                    AudioLibrary ->
+                        case method of
+                            Clean ->
+                                Encode.string "AudioLibrary.Clean"
+                            Export ->
+                                Encode.string "AudioLibrary.Export"
+                            GetAlbumDetails ->
+                                Encode.string "AudioLibrary.GetAlbumDetails"
+                            GetAlbums ->
+                                Encode.string "AudioLibrary.GetAlbums"
+                            GetArtistDetails ->
+                                Encode.string "AudioLibrary.GetArtistDetails"
+                            GetArtists ->
+                                Encode.string "AudioLibrary.GetArtists"
+                            GetGenres ->
+                                Encode.string "AudioLibrary.GetGenres"
+                            GetProperties ->
+                                Encode.string "AudioLibrary.GetProperties"
+                            GetRecentlyAddedAlbums ->
+                                Encode.string "AudioLibrary.GetRecentlyAddedAlbums"
+                            GetRecentlyAddedSongs ->
+                                Encode.string "AudioLibrary.GetRecentlyAddedSongs"
+                            GetRecentlyPlayedAlbums ->
+                                Encode.string "AudioLibrary.GetRecentlyPlayedAlbums"
+                            GetRecentlyPlayedSongs ->
+                                Encode.string "AudioLibrary.GetRecentlyPlayedSongs"
+                            GetRoles ->
+                                Encode.string "AudioLibrary.GetRoles"
+                            GetSongDetails ->
+                                Encode.string "AudioLibrary.GetSongDetails"
+                            GetSongs ->
+                                Encode.string "AudioLibrary.GetSongs"
+                            GetSources ->
+                                Encode.string "AudioLibrary.GetSources"
+                            Scan ->
+                                Encode.string "AudioLibrary.Scan"
+                            SetAlbumDetails ->
+                                Encode.string "AudioLibrary.SetAlbumDetails"
+                            SetArtistDetails ->
+                                Encode.string "AudioLibrary.SetArtistDetails"
+                            SetSongDetails ->
+                                Encode.string "AudioLibrary.SetSongDetails"
+                            _ ->
+                                Encode.string "Error, impossible method used with AudioLibrary namespace."
+                    Favourites ->
+                        case method of
+                            AddFavourite ->
+                                Encode.string "Favourites.AddFavourite"
+                            GetFavourites ->
+                                Encode.string "Favourites.GetFavourites"
+                            _ ->
+                                Encode.string "Error, impossible method used with Favourites namespace."
+                    Files ->
+                        case method of
+                            Download ->
+                                Encode.string "Files.Download"
+                            GetDirectory ->
+                                Encode.string "Files.GetDirectory"
+                            GetFileDetails ->
+                                Encode.string "Files.GetFileDetails"
+                            GetSources ->
+                                Encode.string "Files.GetSources"
+                            PrepareDownload ->
+                                Encode.string "Files.PrepareDownload"
+                            SetFileDetails ->
+                                Encode.string "Files.SetFileDetails"
+                            _ ->
+                                Encode.string "Error, impossible method used with Files namespace."
+                    GUI ->
+                        case method of
+                            ActivateWindow ->
+                                Encode.string "GUI.ActivateWindow"
+                            GetProperties ->
+                                Encode.string "GUI.GetProperties"
+                            GetStereoscopicModes ->
+                                Encode.string "GUI.GetStereoscopicModes"
+                            SetFullscreen ->
+                                Encode.string "GUI.SetFullscreen"
+                            SetStereoscopicMode ->
+                                Encode.string "GUI.SetStereoscopicMode"
+                            ShowNotification ->
+                                Encode.string "GUI.ShowNotification"
+                            _ ->
+                                Encode.string "Error, impossible method used with GUI namespace."
                     Input -> 
-                        case function of
+                        case method of
+                            Back ->
+                                Encode.string "Input.Back"
+                            ButtonEvent ->
+                                Encode.string "Input.ButtonEvent"
+                            ContextMenu ->
+                                Encode.string "Input.ContextMenu"
+                            Down ->
+                                Encode.string "Input.Down"
                             ExecuteAction ->
                                 Encode.string "Input.ExecuteAction"
+                            Home ->
+                                Encode.string "Input.Home"
+                            Info ->
+                                Encode.string "Input.Info"
+                            Left ->
+                                Encode.string "Input.Left"
+                            Right ->
+                                Encode.string "Input.Right"
+                            Select ->
+                                Encode.string "Input.Select"
+                            SendText ->
+                                Encode.string "Input.SendText"
+                            ShowCodec ->
+                                Encode.string "Input.ShowCodec"
+                            ShowOSD ->
+                                Encode.string "Input.ShowOSD"
+                            ShowPlayerProcessInfo ->
+                                Encode.string "Input.ShowPlayerProcessInfo"
+                            Up ->
+                                Encode.string "Input.Up"
                             _ ->
-                                Encode.string ""
+                                Encode.string "Error, impossible method used with Input namespace."
+                    JSONRPC -> 
+                        case method of
+                            GetConfiguration ->
+                                Encode.string "JSONRPC.GetConfiguration"
+                            Introspect ->
+                                Encode.string "JSONRPC.Introspect"
+                            NotifyAll ->
+                                Encode.string "JSONRPC.NotifyAll"
+                            Permission ->
+                                Encode.string "JSONRPC.Permission"
+                            Ping ->
+                                Encode.string "JSONRPC.Ping"
+                            SetConfiguration ->
+                                Encode.string "JSONRPC.SetConfiguration"
+                            Version ->
+                                Encode.string "JSONRPC.Version"
+                            _ ->
+                                Encode.string "Error, impossible method used with JSONRPC namespace."
+                    PVR ->
+                        case method of
+                            AddTimer ->
+                                Encode.string "PVR.AddTimer"
+                            DeleteTimer ->
+                                Encode.string "PVR.DeleteTimer"
+                            GetBroadcastDetails ->
+                                Encode.string "PVR.GetBroadcastDetails"
+                            GetBroadcasts ->
+                                Encode.string "PVR.GetBroadcasts"
+                            GetChannelDetails ->
+                                Encode.string "PVR.GetChannelDetails"
+                            GetChannelGroupDetails ->
+                                Encode.string "PVR.GetChannelGroupDetails"
+                            GetChannelGroups ->
+                                Encode.string "PVR.GetChannelGroups"
+                            GetChannels ->
+                                Encode.string "PVR.GetChannels"
+                            GetProperties ->
+                                Encode.string "PVR.GetProperties"
+                            GetRecordingDetails ->
+                                Encode.string "PVR.GetRecordingDetails"
+                            GetRecordings ->
+                                Encode.string "PVR.GetRecordings"
+                            GetTimerDetails ->
+                                Encode.string "PVR.GetTimerDetails"
+                            GetTimers ->
+                                Encode.string "PVR.GetTimers"
+                            Record ->
+                                Encode.string "PVR.Record"
+                            Scan ->
+                                Encode.string "PVR.Scan"
+                            ToggleTimer ->
+                                Encode.string "PVR.ToggleTimer"
+                            _ ->
+                                Encode.string "Error, impossible method used with PVR namespace."
                     Player ->
-                        case function of
-                            SetShuffle -> 
+                        case method of
+                            GetActivePlayers ->
+                                Encode.string "Player.GetActivePlayers"
+                            GetItem ->
+                                Encode.string "Player.GetItem"
+                            GetPlayers ->
+                                Encode.string "Player.GetPlayers"
+                            GetProperties ->
+                                Encode.string "Player.GetProperties"
+                            GetViewMode ->
+                                Encode.string "Player.GetViewMode"
+                            GoTo ->
+                                Encode.string "Player.GoTo"
+                            Move ->
+                                Encode.string "Player.Move"
+                            Open ->
+                                Encode.string "Player.Open"
+                            PlayPause ->
+                                Encode.string "Player.PlayPause"
+                            Rotate ->
+                                Encode.string "Player.Rotate"
+                            Seek ->
+                                Encode.string "Player.Seek"
+                            SetAudioStream ->
+                                Encode.string "Player.SetAudioStream"
+                            SetPartyMode ->
+                                Encode.string "Player.SetPartyMode"
+                            SetRepeat ->
+                                Encode.string "Player.SetRepeat"
+                            SetShuffle ->
                                 Encode.string "Player.SetShuffle"
-                            Repeat -> 
-                                Encode.string "Player.Repeat" 
+                            SetSpeed ->
+                                Encode.string "Player.SetSpeed"
+                            SetSubtitle ->
+                                Encode.string "Player.SetSubtitle"
+                            SetVideoStream ->
+                                Encode.string "Player.SetVideoStream"
+                            SetViewMode ->
+                                Encode.string "Player.SetViewMode"
+                            Stop ->
+                                Encode.string "Player.Stop"
+                            Zoom ->
+                                Encode.string "Player.Zoom"
                             _ ->
-                                Encode.string ""
+                                Encode.string "Error, impossible method used with Player namespace."
+                    Playlist ->
+                        case method of
+                            Add ->
+                                Encode.string "Playlist.Add"
+                            Clear ->
+                                Encode.string "Playlist.Clear"
+                            GetItems ->
+                                Encode.string "Playlist.GetItems"
+                            GetPlaylists ->
+                                Encode.string "Playlist.GetPlaylists"
+                            GetProperties ->
+                                Encode.string "Playlist.GetProperties"
+                            Insert ->
+                                Encode.string "Playlist.Insert"
+                            Remove ->
+                                Encode.string "Playlist.Remove"
+                            Swap ->
+                                Encode.string "Playlist.Swap"
+                            _ ->
+                                Encode.string "Error, impossible method used with Playlist namespace."
+                    Profiles ->
+                        case method of
+                            GetCurrentProfile ->
+                                Encode.string "Profiles.GetCurrentProfile"
+                            GetProfiles ->
+                                Encode.string "Profiles.GetProfiles"
+                            LoadProfile ->
+                                Encode.string "Profiles.LoadProfile"
+                            _ ->
+                                Encode.string "Error, impossible method used with Profiles namespace."
+                    Settings ->
+                        case method of
+                            GetCategories ->
+                                Encode.string "Settings.GetCategories"
+                            GetSections ->
+                                Encode.string "Settings.GetSections"
+                            GetSettingValue ->
+                                Encode.string "Settings.GetSettingValue"
+                            GetSettings ->
+                                Encode.string "Settings.GetSettings"
+                            ResetSettingValue ->
+                                Encode.string "Settings.ResetSettingValue"
+                            SetSettingValue ->
+                                Encode.string "Settings.SetSettingValue"
+                            _ ->
+                                Encode.string "Error, impossible method used with Settings namespace."
+                    System ->
+                        case method of
+                            EjectOpticalDrive ->
+                                Encode.string "System.EjectOpticalDrive"
+                            GetProperties ->
+                                Encode.string "System.GetProperties"
+                            Hibernate ->
+                                Encode.string "System.Hibernate"
+                            Reboot ->
+                                Encode.string "System.Reboot"
+                            Shutdown ->
+                                Encode.string "System.Shutdown"
+                            Suspend ->
+                                Encode.string "System.Suspend"
+                            _ ->
+                                Encode.string "Error, impossible method used with System namespace."
+                    Textures ->
+                        case method of
+                            GetTextures ->
+                                Encode.string "Textures.GetTextures"
+                            RemoveTexture ->
+                                Encode.string "Textures.RemoveTexture"
+                            _ ->
+                                Encode.string "Error, impossible method used with Textures namespace."
+                    VideoLibrary ->
+                        case method of
+                            Clean ->
+                                Encode.string "VideoLibrary.Clean"
+                            Export ->
+                                Encode.string "VideoLibrary.Export"
+                            GetEpisodeDetails ->
+                                Encode.string "VideoLibrary.GetEpisodeDetails"
+                            GetEpisodes ->
+                                Encode.string "VideoLibrary.GetEpisodes"
+                            GetGenres ->
+                                Encode.string "VideoLibrary.GetGenres"
+                            GetInProgressTVShows ->
+                                Encode.string "VideoLibrary.GetInProgressTVShows"
+                            GetMovieDetails ->
+                                Encode.string "VideoLibrary.GetMovieDetails"
+                            GetMovieSetDetails ->
+                                Encode.string "VideoLibrary.GetMovieSetDetails"
+                            GetMovieSets ->
+                                Encode.string "VideoLibrary.GetMovieSets"
+                            GetMovies ->
+                                Encode.string "VideoLibrary.GetMovies"
+                            GetMusicVideoDetails ->
+                                Encode.string "VideoLibrary.GetMusicVideoDetails"
+                            GetMusicVideos ->
+                                Encode.string "VideoLibrary.GetMusicVideos"
+                            GetRecentlyAddedEpisodes ->
+                                Encode.string "VideoLibrary.GetRecentlyAddedEpisodes"
+                            GetRecentlyAddedMovies ->
+                                Encode.string "VideoLibrary.GetRecentlyAddedMovies"
+                            GetRecentlyAddedMusicVideos ->
+                                Encode.string "VideoLibrary.GetRecentlyAddedMusicVideos"
+                            GetSeasonDetails ->
+                                Encode.string "VideoLibrary.GetSeasonDetails"
+                            GetSeasons ->
+                                Encode.string "VideoLibrary.GetSeasons"
+                            GetTVShowDetails ->
+                                Encode.string "VideoLibrary.GetTVShowDetails"
+                            GetTVShows ->
+                                Encode.string "VideoLibrary.GetTVShows"
+                            GetTags ->
+                                Encode.string "VideoLibrary.GetTags"
+                            RefreshEpisode ->
+                                Encode.string "VideoLibrary.RefreshEpisode"
+                            RefreshMovie ->
+                                Encode.string "VideoLibrary.RefreshMovie"
+                            RefreshMusicVideo ->
+                                Encode.string "VideoLibrary.RefreshMusicVideo"
+                            RefreshTVShow ->
+                                Encode.string "VideoLibrary.RefreshTVShow"
+                            RemoveEpisode ->
+                                Encode.string "VideoLibrary.RemoveEpisode"
+                            RemoveMovie ->
+                                Encode.string "VideoLibrary.RemoveMovie"
+                            RemoveMusicVideo ->
+                                Encode.string "VideoLibrary.RemoveMusicVideo"
+                            RemoveTVShow ->
+                                Encode.string "VideoLibrary.RemoveTVShow"
+                            Scan ->
+                                Encode.string "VideoLibrary.Scan"
+                            SetEpisodeDetails ->
+                                Encode.string "VideoLibrary.SetEpisodeDetails"
+                            SetMovieDetails ->
+                                Encode.string "VideoLibrary.SetMovieDetails"
+                            SetMovieSetDetails ->
+                                Encode.string "VideoLibrary.SetMovieSetDetails"
+                            SetMusicVideoDetails ->
+                                Encode.string "VideoLibrary.SetMusicVideoDetails"
+                            SetSeasonDetails ->
+                                Encode.string "VideoLibrary.SetSeasonDetails"
+                            SetTVShowDetails ->
+                                Encode.string "VideoLibrary.SetTVShowDetails"
+                            _ ->
+                                Encode.string "Error, impossible method used with VideoLibrary namespace."
+                    XBMC ->
+                        case method of
+                            GetInfoBooleans ->
+                                Encode.string "XBMC.GetInfoBooleans"
+                            GetInfoLabels ->
+                                Encode.string "XBMC.GetInfoLabels"
+                            _ ->
+                                Encode.string "Error, impossible method used with XBMC namespace."
             )
             , ( "params", 
-                case category of
+                case namespace of
                     Input ->
                         Encode.object
                         [ ("action"
@@ -128,7 +508,7 @@ toStr category function param int =
                                     Encode.string "audionextlanguage"
                                 Audiotoggledigital ->
                                     Encode.string "audiotoggledigital"
-                                Back ->
+                                Back_ ->
                                     Encode.string "back"
                                 Backspace ->
                                     Encode.string "backspace"
@@ -178,7 +558,7 @@ toStr category function param int =
                                     Encode.string "delete"
                                 Doubleclick ->
                                     Encode.string "doubleclick"
-                                Down ->
+                                Down_ ->
                                     Encode.string "down"
                                 Enter ->
                                     Encode.string "enter"
@@ -222,7 +602,7 @@ toStr category function param int =
                                     Encode.string "increaserating"
                                 Increasevisrating ->
                                     Encode.string "increasevisrating"
-                                Info ->
+                                Info_ ->
                                     Encode.string "info"
                                 Jumpsms2 ->
                                     Encode.string "jumpsms2"
@@ -242,7 +622,7 @@ toStr category function param int =
                                     Encode.string "jumpsms9"
                                 Lastpage ->
                                     Encode.string "lastpage"
-                                Left ->
+                                Left_ ->
                                     Encode.string "left"
                                 Leftclick ->
                                     Encode.string "leftclick"
@@ -262,7 +642,7 @@ toStr category function param int =
                                     Encode.string "mousedragend"
                                 Mousemove ->
                                     Encode.string "mousemove"
-                                Move ->
+                                Move_ ->
                                     Encode.string "move"
                                 Moveitemdown ->
                                     Encode.string "moveitemdown"
@@ -334,7 +714,7 @@ toStr category function param int =
                                     Encode.string "playerprogramselect"
                                 Playerresolutionselect ->
                                     Encode.string "playerresolutionselect"
-                                Playlist ->
+                                Playlist_ ->
                                     Encode.string "playlist"
                                 Playnext ->
                                     Encode.string "playnext"
@@ -364,7 +744,7 @@ toStr category function param int =
                                     Encode.string "queue"
                                 Randompreset ->
                                     Encode.string "randompreset"
-                                Record ->
+                                Record_ ->
                                     Encode.string "record"
                                 Red ->
                                     Encode.string "red"
@@ -376,11 +756,11 @@ toStr category function param int =
                                     Encode.string "resetcalibration"
                                 Rewind ->
                                     Encode.string "rewind"
-                                Right ->
+                                Right_ ->
                                     Encode.string "right"
                                 Rightclick ->
                                     Encode.string "rightclick"
-                                Rotate ->
+                                Rotate_ ->
                                     Encode.string "rotate"
                                 Rotateccw ->
                                     Encode.string "rotateccw"
@@ -394,7 +774,7 @@ toStr category function param int =
                                     Encode.string "scrolldown"
                                 Scrollup ->
                                     Encode.string "scrollup"
-                                Select ->
+                                Select_ ->
                                     Encode.string "select"
                                 Setrating ->
                                     Encode.string "setrating"
@@ -428,7 +808,7 @@ toStr category function param int =
                                     Encode.string "stereomode"
                                 Stereomodetomono ->
                                     Encode.string "stereomodetomono"
-                                Stop ->
+                                Stop_ ->
                                     Encode.string "stop"
                                 Subtitlealign ->
                                     Encode.string "subtitlealign"
@@ -466,7 +846,7 @@ toStr category function param int =
                                     Encode.string "togglestereomode"
                                 Togglewatched ->
                                     Encode.string "togglewatched"
-                                Up ->
+                                Up_ ->
                                     Encode.string "up"
                                 Verticalshiftdown ->
                                     Encode.string "verticalshiftdown"
@@ -522,7 +902,7 @@ toStr category function param int =
                                     Encode.string ""
                                 )]
                     Player ->
-                        case function of
+                        case method of
                             SetShuffle ->
                                 case param of
                                     Shuffle ->
@@ -532,7 +912,7 @@ toStr category function param int =
                                             )]
                                     _ -> 
                                         Encode.string ""
-                            Repeat ->
+                            SetRepeat ->
                                 case param of
                                     Cycle -> 
                                         Encode.object
@@ -548,7 +928,9 @@ toStr category function param int =
                                         Encode.string ""
                             _ ->
                                 Encode.string ""
-            )               
+                    _ ->
+                        Encode.string "Implement more namespaces."
+            )
             , ( "id", Encode.int 0 )
             ]
 
@@ -560,9 +942,9 @@ update msg model =
             , Nav.pushUrl model.key (Route.toHref route)
             )
 
-        Send category function param int ->
+        Send namespace method param int ->
             ( model
-            , sendAction (toStr category function param int)
+            , sendAction (toStr namespace method param int)
             )
 
 -- SUBSCRIPTIONS
@@ -586,7 +968,7 @@ view { page, global, toMsg } =
         , skipMsg = toMsg (Send Input ExecuteAction Skipnext 0)
         , reverseMsg = toMsg (Send Input ExecuteAction Skipprevious 0)
         , muteMsg = toMsg (Send Input ExecuteAction Mute 0)
-        , repeatMsg = toMsg (Send Player Repeat Cycle 0)
+        , repeatMsg = toMsg (Send Player SetRepeat Cycle 0)
         , shuffleMsg = toMsg (Send Player SetShuffle Shuffle 0)
         }
 
