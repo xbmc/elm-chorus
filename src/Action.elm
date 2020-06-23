@@ -3,7 +3,6 @@
 
 module Action exposing (Namespace(..), Method(..), Param(..))
 
-
 type Param
     = Analogfastforward
     | Analogmove
@@ -215,10 +214,17 @@ type Param
     | Zoomlevel9
     | Zoomnormal
     | Zoomout
-    --Player params
+    -- Player params
     | Shuffle
     | Cycle
     | One
+    -- Application Properties
+    | Volume 
+    | Muted
+    | Name
+    | Version_
+    | Sorttokens
+    | Language
 
 type Method
     = ExecuteAddon -- Addons
