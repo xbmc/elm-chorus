@@ -534,7 +534,10 @@ toStr namespace method param int =
                             Export ->
                                 Encode.list Encode.object [[( "path", Encode.string "path"), ( "images", Encode.bool True)]]
                             GetAlbumDetails ->
-                                Encode.string "AudioLibrary.GetAlbumDetails"
+                                Encode.object 
+                                [ ("albumid", Encode.int 1)
+                                , ("properties", Encode.list Encode.string ["property"])
+                                ]
                             GetAlbums ->
                                 Encode.string "AudioLibrary.GetAlbums"
                             GetArtistDetails ->

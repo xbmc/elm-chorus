@@ -3,6 +3,41 @@
 
 module Action exposing (Namespace(..), Method(..), Param(..))
 
+type Filter
+    = GenreID 
+    | Genre 
+    | ArtistID
+    | RoleID
+    | Role
+
+type alias Limits =
+    { start : Int 
+    , end : Int 
+    }
+
+type Addon_Content
+    = Unknown
+    | Video
+    | Audio 
+    | Image 
+    | Executable
+
+type alias Addon_Details =
+    { addonid : String
+    , author : String
+    , dependencies : List String
+    }
+    
+
+type alias Action =
+    { namespace : Namespace
+    , method : Method
+    , params : List Param
+    , properties : List String
+    , limits : Limits
+    , sort: List String
+    , filter: List String }
+
 type Param
     = Analogfastforward
     | Analogmove
