@@ -3,6 +3,54 @@
 
 module Action exposing (Namespace(..), Method(..), Param(..))
 
+type alias Optional =
+    { null : Bool
+    , bool : Bool
+    , int : Int
+    , str : String
+    }
+
+type alias Array =
+    { string : List String
+    , int : List Int
+    }
+
+type alias Time =
+    { hours : Int
+    , minutes : Int 
+    , seconds : Int 
+    , milliseconds : Int
+    }
+
+type Weekday 
+    = Monday
+    | Tuesday
+    | Wednesday
+    | Thursday
+    | Friday
+
+type IncrementDecrement
+    = Increment 
+    | Decrement
+
+type alias Global =
+    { time : Time
+    , weekday : Weekday
+    , incrementDecrement : IncrementDecrement
+    , toggle : Bool
+    }
+
+type MediaType
+    = Video 
+    | Music 
+    | Pictures 
+    | Files 
+    | Programs
+    
+type alias Files =
+    { media : MediaType }
+
+-------- old stuff
 type Filter
     = GenreID 
     | Genre 
