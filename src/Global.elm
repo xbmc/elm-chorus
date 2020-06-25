@@ -17,7 +17,7 @@ import Generated.Route as Route exposing (Route)
 import Task
 import Url exposing (Url)
 import Json.Encode as Encode
-
+import Dict exposing (Dict)
 
 
 -- INIT
@@ -55,8 +55,53 @@ init flags url key =
     , Cmd.none
     )
 
+{-
+dictToStr : Dict Key Value -> String 
+dictToStr dict =
+    Dict.foldr (\key val str -> str  ++ key ++ ":" ++ val ++ ",") "" dict
+-}
+type Property
+    = Title
+    | Album
+    | Artist
+    | Season
+    | Episode
+    | Duration
+    | Showtitle
+    | TVshowid
+    | Thumbnail
+    | File
+    | Fanart
+    | Streamdetails
 
+type alias Limit =
+    { start : Int 
+    , end : Int
+    }
 
+type alias Params = 
+    { playerid : Maybe Int
+    , properties : Maybe (List Property)
+    , limits : Maybe Limit
+    }
+
+request : Method -> Maybe Params -> String
+request method params =
+    Encode.encode 0
+        <| case params of
+                Nothing -> -- No params provided
+                    Encode.object
+                    [ ( "jsonrpc", Encode.string "2.0" )
+                    , ( "method", Encode.string "method") 
+                    , ("id", Encode.int 1)
+                    ]
+                Just param -> -- params
+                    Encode.object
+                    [ ( "jsonrpc", Encode.string "2.0" )
+                    , ( "method", Encode.string "method") 
+                    , ("params", Encode.string "param") -- encode type alias to json
+                    , ("id", Encode.int 1)
+                    ]
 -- PORTS
 
 
