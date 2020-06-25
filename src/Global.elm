@@ -16,7 +16,7 @@ import Document exposing (Document)
 import Generated.Route as Route exposing (Route)
 import Task
 import Url exposing (Url)
-import Json.Encode as Encode
+import Json.Encode as Encode exposing (list, string)
 import Dict exposing (Dict)
 
 
@@ -41,6 +41,7 @@ type alias Model =
     , key : Nav.Key
     , rightMenu : Bool
     , players : List PlayerObj
+    , responses : List String
     }
 
 
@@ -52,14 +53,10 @@ init flags url key =
         key
         False
         []
+        []
     , Cmd.none
     )
 
-{-
-dictToStr : Dict Key Value -> String 
-dictToStr dict =
-    Dict.foldr (\key val str -> str  ++ key ++ ":" ++ val ++ ",") "" dict
--}
 type Property
     = Title
     | Album
@@ -74,6 +71,35 @@ type Property
     | Fanart
     | Streamdetails
 
+-- convert property type to string
+propertyToStr : Property -> String
+propertyToStr prop =
+    case prop of
+        Title ->
+            "title"
+        Album -> 
+            "album"
+        Artist ->
+            "artist"
+        Season ->
+            "season"
+        Episode ->
+            "episode"
+        Duration ->
+            "duration"
+        Showtitle ->
+            "showtitle"
+        TVshowid ->
+            "tvshowid"
+        Thumbnail ->
+            "thumbnail"
+        File ->
+            "file"
+        Fanart ->
+            "fanart"
+        Streamdetails ->
+            "streamdetails"
+
 type alias Limit =
     { start : Int 
     , end : Int
@@ -85,7 +111,23 @@ type alias Params =
     , limits : Maybe Limit
     }
 
+-- convert params record to Json object
+paramsToObj : Maybe { playerid: Maybe Int, properties : Maybe (List Property) } -> Encode.Value
+paramsToObj params =
+    case params of
+        Nothing ->
+            Encode.string "Nothing"
+        Just param ->
+            case param.properties of
+                Nothing ->
+                    Encode.string ""
+                Just properties ->
+                    Encode.object
+                        [ ("playerid", Encode.int (Maybe.withDefault 0 param.playerid))
+                        , ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
+                        ]
 
+-- send jsonrpc request with custom record
 request : Method -> Maybe { playerid : Maybe Int, properties : Maybe (List Property) } -> String
 request method params =
     Encode.encode 0
@@ -100,7 +142,7 @@ request method params =
                     Encode.object
                     [ ( "jsonrpc", Encode.string "2.0" )
                     , ( "method", Encode.string (methodToStr method)) 
-                    , ( "params", Encode.string "param") -- encode type alias to json
+                    , ( "params", paramsToObj (Just {playerid = param.playerid, properties = param.properties})) -- encode records to json
                     , ( "id", Encode.int 1)
                     ]
 
@@ -117,6 +159,7 @@ port responseReceiver : (String -> msg) -> Sub msg
 type Msg
     = Navigate Route
     | Request Method Params
+    | Recv String
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -131,11 +174,16 @@ update msg model =
             , sendAction (request method (Just {playerid = param.playerid, properties = param.properties}))
             )
 
+        Recv response ->
+            ( { model | responses = model.responses ++ [response] }
+            , Cmd.none
+            )
+
 -- SUBSCRIPTIONS
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    responseReceiver Recv
 
 -- VIEW
 

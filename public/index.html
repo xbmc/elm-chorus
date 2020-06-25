@@ -26,8 +26,8 @@
 
       // When a message comes into our WebSocket, we pass the message along
       // to the `messageReceiver` port.
-      socket.addEventListener("action", function (event) {
-        app.ports.actionReceiver.send(event.data);
+      socket.addEventListener("response", function (event) {
+        app.ports.responseReceiver.send(event.data);
       });
     </script>
   </body>
