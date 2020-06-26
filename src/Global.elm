@@ -70,6 +70,10 @@ type Property
     | File
     | Fanart
     | Streamdetails
+    | Percentage
+    | Time
+    | Totaltime
+    | Speed
 
 -- convert property type to string
 propertyToStr : Property -> String
@@ -99,6 +103,15 @@ propertyToStr prop =
             "fanart"
         Streamdetails ->
             "streamdetails"
+        --Player getPosition
+        Percentage->
+            "percentage"
+        Time ->
+            "time"
+        Totaltime ->
+            "totaltime"
+        Speed ->
+            "speed"
 
 type alias Limit =
     { start : Int 
@@ -118,15 +131,26 @@ paramsToObj params =
         Nothing ->
             Encode.string "Nothing"
         Just param ->
-            case param.properties of
+            case param.playerid of
                 Nothing ->
-                    Encode.string ""
-                Just properties ->
-                    Encode.object
-                        [ ("playerid", Encode.int (Maybe.withDefault 0 param.playerid))
-                        , ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
-                        ]
-
+                    case param.properties of
+                        Nothing ->
+                            Encode.object
+                                []
+                        Just properties ->
+                            Encode.object
+                                [ ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
+                                ]
+                Just playerid ->
+                    case param.properties of
+                        Nothing ->
+                            Encode.object
+                                [("playerid", Encode.int (Maybe.withDefault 0 param.playerid))]
+                        Just properties ->
+                            Encode.object
+                                [ ("playerid", Encode.int (Maybe.withDefault 0 param.playerid))
+                                , ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
+                                ]
 -- send jsonrpc request with custom record
 request : Method -> Maybe { playerid : Maybe Int, properties : Maybe (List Property) } -> String
 request method params =
@@ -134,17 +158,17 @@ request method params =
         <| case params of
                 Nothing -> -- No params provided
                     Encode.object
-                    [ ( "jsonrpc", Encode.string "2.0" )
-                    , ( "method", Encode.string (methodToStr method)) 
-                    , ( "id", Encode.int 1)
-                    ]
+                        [ ( "jsonrpc", Encode.string "2.0" )
+                        , ( "method", Encode.string (methodToStr method)) 
+                        , ( "id", Encode.int 1)
+                        ]
                 Just param -> -- params
                     Encode.object
-                    [ ( "jsonrpc", Encode.string "2.0" )
-                    , ( "method", Encode.string (methodToStr method)) 
-                    , ( "params", paramsToObj (Just {playerid = param.playerid, properties = param.properties})) -- encode records to json
-                    , ( "id", Encode.int 1)
-                    ]
+                        [ ( "jsonrpc", Encode.string "2.0" )
+                        , ( "method", Encode.string (methodToStr method)) 
+                        , ( "params", paramsToObj (Just {playerid = param.playerid, properties = param.properties})) -- encode records to json
+                        , ( "id", Encode.int 1)
+                        ]
 
 -- PORTS
 
@@ -158,7 +182,7 @@ port responseReceiver : (String -> msg) -> Sub msg
 
 type Msg
     = Navigate Route
-    | Request Method Params
+    | Request Method (Maybe Params)
     | Recv String
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -169,10 +193,16 @@ update msg model =
             , Nav.pushUrl model.key (Route.toHref route)
             )
 
-        Request method param ->
-            ( model
-            , sendAction (request method (Just {playerid = param.playerid, properties = param.properties}))
-            )
+        Request method params ->
+            case params of
+                Nothing ->
+                    ( model
+                    , sendAction (request method Nothing)
+                    )
+                Just param ->
+                    ( model
+                    , sendAction (request method (Just {playerid = param.playerid, properties = param.properties}))
+                    )
 
         Recv response ->
             ( { model | responses = model.responses ++ [response] }
@@ -196,12 +226,12 @@ view :
 view { page, global, toMsg } =
     Components.layout
         { page = page
-        , playPauseMsg = toMsg (Request Player_PlayPause (Params (Just 0) Nothing Nothing))
-        , skipMsg = toMsg (Request Player_PlayPause (Params (Just 0) Nothing Nothing))
-        , reverseMsg = toMsg (Request Player_PlayPause (Params (Just 0) Nothing Nothing))
-        , muteMsg = toMsg (Request Player_PlayPause (Params (Just 0) Nothing Nothing))
-        , repeatMsg = toMsg (Request Player_PlayPause (Params (Just 0) Nothing Nothing))
-        , shuffleMsg = toMsg (Request Player_PlayPause (Params (Just 0) Nothing Nothing))
+        , playPauseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
+        , skipMsg = toMsg (Request Input_Home (Nothing))
+        , reverseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
+        , muteMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
+        , repeatMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
+        , shuffleMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
         }
 
 -- COMMANDS
