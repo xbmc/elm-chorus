@@ -17,7 +17,7 @@ import Generated.Route as Route exposing (Route)
 import Task
 import Url exposing (Url)
 import Json.Encode as Encode exposing (list, string)
-import Dict exposing (Dict)
+import Json.Decode exposing (Decoder, field, int)
 
 
 -- INIT
@@ -124,6 +124,11 @@ type alias Params =
     , limits : Maybe Limit
     }
 
+type alias Response =
+    { method : String 
+    , params : Maybe Params
+    }
+
 -- convert params record to Json object
 paramsToObj : Maybe { playerid: Maybe Int, properties : Maybe (List Property) } -> Encode.Value
 paramsToObj params =
@@ -210,6 +215,11 @@ update msg model =
             )
 
 -- SUBSCRIPTIONS
+{-methodDecoder : Decoder Response
+methodDecoder =
+    map2 Response
+        (field "method" string)
+        (field "params" )-}
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
