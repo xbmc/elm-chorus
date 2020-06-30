@@ -17,7 +17,8 @@ import Generated.Route as Route exposing (Route)
 import Task
 import Url exposing (Url)
 import Json.Encode as Encode exposing (list, string)
-import Json.Decode exposing (Decoder, field, int)
+import Json.Decode.Exploration exposing (..)
+
 
 
 -- INIT
@@ -124,11 +125,6 @@ type alias Params =
     , limits : Maybe Limit
     }
 
-type alias Response =
-    { method : String 
-    , params : Maybe Params
-    }
-
 -- convert params record to Json object
 paramsToObj : Maybe { playerid: Maybe Int, properties : Maybe (List Property) } -> Encode.Value
 paramsToObj params =
@@ -190,6 +186,17 @@ type Msg
     | Request Method (Maybe Params)
     | Recv String
 
+type alias Response =
+    { result : List Result
+    }
+
+resultsDecoder : Decoder (List Result)
+resultsDecoder =
+  Decode.oneOf
+    [ Decode.list resultDecoder
+    , Decode.map (\result -> [result]) resultDecoder
+    ]
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -210,6 +217,12 @@ update msg model =
                     )
 
         Recv response ->
+            {-
+            let response 
+                = resultsDecoder response
+            in 
+            case (reponse.result)
+                -}
             ( { model | responses = model.responses ++ [response] }
             , Cmd.none
             )
