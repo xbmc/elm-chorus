@@ -26,22 +26,12 @@ import Json.Decode.Exploration exposing (..)
 type alias Flags =
     ()
 
-{-Player stuff-}
-type PlayerType
-    = Audio 
-    | Picture
-
-type alias PlayerObj =
-    { id : Int
-    , playertype: PlayerType
-    }
-
 type alias Model =
     { flags : Flags
     , url : Url
     , key : Nav.Key
     , rightMenu : Bool
-    , players : List PlayerObj
+    {-, players : List PlayerObj-}
     , responses : List String
     }
 
@@ -185,17 +175,6 @@ type Msg
     = Navigate Route
     | Request Method (Maybe Params)
     | Recv String
-
-type alias Response =
-    { result : List Result
-    }
-
-resultsDecoder : Decoder (List Result)
-resultsDecoder =
-  Decode.oneOf
-    [ Decode.list resultDecoder
-    , Decode.map (\result -> [result]) resultDecoder
-    ]
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
