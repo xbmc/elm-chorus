@@ -1,8 +1,4 @@
-{- Action stuff -}
-
-
-module Action exposing (Method(..), methodToStr)
-
+module Method exposing (Method(..), methodToStr, strToMethod)
 
 type Method
     = JSONRPC_Introspect
@@ -498,3 +494,335 @@ methodToStr method =
             "Settings.SetSettingValue"
         Settings_ResetSettingValue ->
             "Settings.ResetSettingValue"
+
+strToMethod : String -> Method 
+strToMethod str =
+    case str of
+        "JSONRPC.Introspect" ->
+            JSONRPC_Introspect
+        "JSONRPC.Version" ->
+            JSONRPC_Version
+        "JSONRPC.Permission" ->
+            JSONRPC_Permission
+        "JSONRPC.Ping" ->
+            JSONRPC_Ping
+        "JSONRPC.GetConfiguration" ->
+            JSONRPC_GetConfiguration
+        "JSONRPC.SetConfiguration" ->
+            JSONRPC_SetConfiguration
+        "JSONRPC.NotifyAll" ->
+            JSONRPC_NotifyAll
+        "Player.Open" ->
+            Player_Open
+        "Player.GetActivePlayers" ->
+            Player_GetActivePlayers
+        "Player.GetPlayers" ->
+            Player_GetPlayers
+        "Player.GetProperties" ->
+            Player_GetProperties
+        "Player.GetItem" ->
+            Player_GetItem
+        "Player.PlayPause" ->
+            Player_PlayPause
+        "Player.Stop" ->
+            Player_Stop
+        "Player.SetSpeed" ->
+            Player_SetSpeed
+        "Player.Seek" ->
+            Player_Seek
+        "Player.Move" ->
+            Player_Move
+        "Player.Zoom" ->
+            Player_Zoom
+        "Player.SetViewMode" ->
+            Player_SetViewMode
+        "Player.GetViewMode" ->
+            Player_GetViewMode
+        "Player.Rotate" ->
+            Player_Rotate
+        "Player.GoTo" ->
+            Player_GoTo
+        "Player.SetShuffle" ->
+            Player_SetShuffle
+        "Player.SetRepeat" ->
+            Player_SetRepeat
+        "Player.SetPartymode" ->
+            Player_SetPartymode
+        "Player.SetAudioStream" ->
+            Player_SetAudioStream
+        "Player.SetVideoStream" ->
+            Player_SetVideoStream
+        "Player.SetSubtitle" ->
+            Player_SetSubtitle
+        "Playlist.GetPlaylists" ->
+            Playlist_GetPlaylists
+        "Playlist.GetProperties" ->
+            Playlist_GetProperties
+        "Playlist.GetItems" ->
+            Playlist_GetItems
+        "Playlist.Add" ->
+            Playlist_Add
+        "Playlist.Insert" ->
+            Playlist_Insert
+        "Playlist.Remove" ->
+            Playlist_Remove
+        "Playlist.Clear" ->
+            Playlist_Clear
+        "Playlist.Swap" ->
+            Playlist_Swap
+        "Files.GetSources" ->
+            Files_GetSources
+        "Files.PrepareDownload" ->
+            Files_PrepareDownload
+        "Files.Download" ->
+            Files_Download
+        "Files.GetDirectory" ->
+            Files_GetDirectory
+        "Files.GetFileDetails" ->
+            Files_GetFileDetails
+        "Files.SetFileDetails" ->
+            Files_SetFileDetails
+        "AudioLibrary.GetProperties" ->
+            AudioLibrary_GetProperties
+        "AudioLibrary.GetArtists" ->
+            AudioLibrary_GetArtists
+        "AudioLibrary.GetArtistDetails" ->
+            AudioLibrary_GetArtistDetails
+        "AudioLibrary.GetAlbums" ->
+            AudioLibrary_GetAlbums
+        "AudioLibrary.GetAlbumDetails" ->
+            AudioLibrary_GetAlbumDetails
+        "AudioLibrary.GetSongs" ->
+            AudioLibrary_GetSongs
+        "AudioLibrary.GetSongDetails" ->
+            AudioLibrary_GetSongDetails
+        "AudioLibrary.GetRecentlyAddedAlbums" ->
+            AudioLibrary_GetRecentlyAddedAlbums
+        "AudioLibrary.GetRecentlyAddedSongs" ->
+            AudioLibrary_GetRecentlyAddedSongs
+        "AudioLibrary.GetRecentlyPlayedAlbums" ->
+            AudioLibrary_GetRecentlyPlayedAlbums
+        "AudioLibrary.GetRecentlyPlayedSongs" ->
+            AudioLibrary_GetRecentlyPlayedSongs
+        "AudioLibrary.GetGenres" ->
+            AudioLibrary_GetGenres
+        "AudioLibrary.GetSources" ->
+            AudioLibrary_GetSources
+        "AudioLibrary.GetRoles" ->
+            AudioLibrary_GetRoles
+        "AudioLibrary.SetArtistDetails" ->
+            AudioLibrary_SetArtistDetails
+        "AudioLibrary.SetAlbumDetails" ->
+            AudioLibrary_SetAlbumDetails
+        "AudioLibrary.SetSongDetails" ->
+            AudioLibrary_SetSongDetails
+        "AudioLibrary.Scan" ->
+            AudioLibrary_Scan
+        "AudioLibrary.Export" ->
+            AudioLibrary_Export
+        "AudioLibrary.Clean" ->
+            AudioLibrary_Clean
+        "VideoLibrary.GetMovies" ->
+            VideoLibrary_GetMovies
+        "VideoLibrary.GetMovieDetails" ->
+            VideoLibrary_GetMovieDetails
+        "VideoLibrary.GetMovieSets" ->
+            VideoLibrary_GetMovieSets
+        "VideoLibrary.GetMovieSetDetails" ->
+            VideoLibrary_GetMovieSetDetails
+        "VideoLibrary.GetTVShows" ->
+            VideoLibrary_GetTVShows
+        "VideoLibrary.GetTVShowDetails" ->
+            VideoLibrary_GetTVShowDetails
+        "VideoLibrary.GetSeasons" ->
+            VideoLibrary_GetSeasons
+        "VideoLibrary.GetSeasonDetails" ->
+            VideoLibrary_GetSeasonDetails
+        "VideoLibrary.GetEpisodes" ->
+            VideoLibrary_GetEpisodes
+        "VideoLibrary.GetEpisodeDetails" ->
+            VideoLibrary_GetEpisodeDetails
+        "VideoLibrary.GetMusicVideos" ->
+            VideoLibrary_GetMusicVideos
+        "VideoLibrary.GetMusicVideoDetails" ->
+            VideoLibrary_GetMusicVideoDetails
+        "VideoLibrary.GetRecentlyAddedMovies" ->
+            VideoLibrary_GetRecentlyAddedMovies
+        "VideoLibrary.GetRecentlyAddedEpisodes" ->
+            VideoLibrary_GetRecentlyAddedEpisodes
+        "VideoLibrary.GetRecentlyAddedMusicVideos" ->
+            VideoLibrary_GetRecentlyAddedMusicVideos
+        "VideoLibrary.GetInProgressTVShows" ->
+            VideoLibrary_GetInProgressTVShows
+        "VideoLibrary.GetGenres" ->
+            VideoLibrary_GetGenres
+        "VideoLibrary.GetTags" ->
+            VideoLibrary_GetTags
+        "VideoLibrary.SetMovieDetails" ->
+            VideoLibrary_SetMovieDetails
+        "VideoLibrary.SetMovieSetDetails" ->
+            VideoLibrary_SetMovieSetDetails
+        "VideoLibrary.SetTVShowDetails" ->
+            VideoLibrary_SetTVShowDetails
+        "VideoLibrary.SetSeasonDetails" ->
+            VideoLibrary_SetSeasonDetails
+        "VideoLibrary.SetEpisodeDetails" ->
+            VideoLibrary_SetEpisodeDetails
+        "VideoLibrary.SetMusicVideoDetails" ->
+            VideoLibrary_SetMusicVideoDetails
+        "VideoLibrary.RefreshMovie" ->
+            VideoLibrary_RefreshMovie
+        "VideoLibrary.RefreshTVShow" ->
+            VideoLibrary_RefreshTVShow
+        "VideoLibrary.RefreshEpisode" ->
+            VideoLibrary_RefreshEpisode
+        "VideoLibrary.RefreshMusicVideo" ->
+            VideoLibrary_RefreshMusicVideo
+        "VideoLibrary.RemoveMovie" ->
+            VideoLibrary_RemoveMovie
+        "VideoLibrary.RemoveTVShow" ->
+            VideoLibrary_RemoveTVShow
+        "VideoLibrary.RemoveEpisode" ->
+            VideoLibrary_RemoveEpisode
+        "VideoLibrary.RemoveMusicVideo" ->
+            VideoLibrary_RemoveMusicVideo
+        "VideoLibrary.Scan" ->
+            VideoLibrary_Scan
+        "VideoLibrary.Export" ->
+            VideoLibrary_Export
+        "VideoLibrary.Clean" ->
+            VideoLibrary_Clean
+        "GUI.ActivateWindow" ->
+            GUI_ActivateWindow
+        "GUI.ShowNotification" ->
+            GUI_ShowNotification
+        "GUI.GetProperties" ->
+            GUI_GetProperties
+        "GUI.SetFullscreen" ->
+            GUI_SetFullscreen
+        "GUI.SetStereoscopicMode" ->
+            GUI_SetStereoscopicMode
+        "GUI.GetStereoscopicModes" ->
+            GUI_GetStereoscopicModes
+        "Addons.GetAddons" ->
+            Addons_GetAddons
+        "Addons.GetAddonDetails" ->
+            Addons_GetAddonDetails
+        "Addons.SetAddonEnabled" ->
+            Addons_SetAddonEnabled
+        "Addons.ExecuteAddon" ->
+            Addons_ExecuteAddon
+        "PVR.GetProperties" ->
+            PVR_GetProperties
+        "PVR.GetChannelGroups" ->
+            PVR_GetChannelGroups
+        "PVR.GetChannelGroupDetails" ->
+            PVR_GetChannelGroupDetails
+        "PVR.GetChannels" ->
+            PVR_GetChannels
+        "PVR.GetChannelDetails" ->
+            PVR_GetChannelDetails
+        "PVR.GetBroadcasts" ->
+            PVR_GetBroadcasts
+        "PVR.GetBroadcastDetails" ->
+            PVR_GetBroadcastDetails
+        "PVR.GetTimers" ->
+            PVR_GetTimers
+        "PVR.GetTimerDetails" ->
+            PVR_GetTimerDetails
+        "PVR.AddTimer" ->
+            PVR_AddTimer
+        "PVR.DeleteTimer" ->
+            PVR_DeleteTimer
+        "PVR.ToggleTimer" ->
+            PVR_ToggleTimer
+        "PVR.GetRecordings" ->
+            PVR_GetRecordings
+        "PVR.GetRecordingDetails" ->
+            PVR_GetRecordingDetails
+        "PVR.Record" ->
+            PVR_Record
+        "PVR.Scan" ->
+            PVR_Scan
+        "Textures.GetTextures" ->
+            Textures_GetTextures
+        "Textures.RemoveTexture" ->
+            Textures_RemoveTexture
+        "Profiles.GetProfiles" ->
+            Profiles_GetProfiles
+        "Profiles.GetCurrentProfile" ->
+            Profiles_GetCurrentProfile
+        "Profiles.LoadProfile" ->
+            Profiles_LoadProfile
+        "System.GetProperties" ->
+            System_GetProperties
+        "System.EjectOpticalDrive" ->
+            System_EjectOpticalDrive
+        "System.Shutdown" ->
+            System_Shutdown
+        "System.Suspend" ->
+            System_Suspend
+        "System.Hibernate" ->
+            System_Hibernate
+        "System.Reboot" ->
+            System_Reboot
+        "Input.SendText" ->
+            Input_SendText
+        "Input.ExecuteAction" ->
+            Input_ExecuteAction
+        "Input.ButtonEvent" ->
+            Input_ButtonEvent
+        "Input.Left" ->
+            Input_Left
+        "Input.Right" ->
+            Input_Right
+        "Input.Down" ->
+            Input_Down
+        "Input.Up" ->
+            Input_Up
+        "Input.Select" ->
+            Input_Select
+        "Input.Back" ->
+            Input_Back
+        "Input.ContextMenu" ->
+            Input_ContextMenu
+        "Input.Info" ->
+            Input_Info
+        "Input.Home" ->
+            Input_Home
+        "Input.ShowCodec" ->
+            Input_ShowCodec
+        "Input.ShowOSD" ->
+            Input_ShowOSD
+        "Input.ShowPlayerProcessInfo" ->
+            Input_ShowPlayerProcessInfo
+        "Application.GetProperties" ->
+            Application_GetProperties
+        "Application.SetVolume" ->
+            Application_SetVolume
+        "Application.SetMute" ->
+            Application_SetMute
+        "Application.Quit" ->
+            Application_Quit
+        "XBMC.GetInfoLabels" ->
+            XBMC_GetInfoLabels
+        "XBMC.GetInfoBooleans" ->
+            XBMC_GetInfoBooleans
+        "Favourites.GetFavourites" ->
+            Favourites_GetFavourites
+        "Favourites.AddFavourite" ->
+            Favourites_AddFavourite
+        "Settings.GetSections" ->
+            Settings_GetSections
+        "Settings.GetCategories" ->
+            Settings_GetCategories
+        "Settings.GetSettings" ->
+            Settings_GetSettings
+        "Settings.GetSettingValue" ->
+            Settings_GetSettingValue
+        "Settings.SetSettingValue" ->
+            Settings_SetSettingValue
+        "Settings.ResetSettingValue" ->
+            Settings_ResetSettingValue
+        _ ->
+            JSONRPC_Introspect

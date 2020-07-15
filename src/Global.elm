@@ -9,17 +9,17 @@ port module Global exposing
     , view
     )
 
-import Action exposing (Method(..), methodToStr)
 import Browser.Navigation as Nav
 import Components
 import Document exposing (Document)
 import Generated.Route as Route exposing (Route)
 import Task
 import Url exposing (Url)
-import Json.Encode as Encode exposing (list, string)
-import Json.Decode.Exploration exposing (..)
-
-
+import Json.Decode as D
+--modules
+import Method exposing (Method(..), methodToStr)
+import WSDecoder exposing (PlayerObj(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
+import Request exposing (Params, propertyToStr, paramsToObj, request)
 
 -- INIT
 
@@ -31,8 +31,7 @@ type alias Model =
     , url : Url
     , key : Nav.Key
     , rightMenu : Bool
-    {-, players : List PlayerObj-}
-    , responses : List String
+    , players : List PlayerObj
     }
 
 
@@ -44,122 +43,8 @@ init flags url key =
         key
         False
         []
-        []
     , Cmd.none
     )
-
-type Property
-    = Title
-    | Album
-    | Artist
-    | Season
-    | Episode
-    | Duration
-    | Showtitle
-    | TVshowid
-    | Thumbnail
-    | File
-    | Fanart
-    | Streamdetails
-    | Percentage
-    | Time
-    | Totaltime
-    | Speed
-
--- convert property type to string
-propertyToStr : Property -> String
-propertyToStr prop =
-    case prop of
-        Title ->
-            "title"
-        Album -> 
-            "album"
-        Artist ->
-            "artist"
-        Season ->
-            "season"
-        Episode ->
-            "episode"
-        Duration ->
-            "duration"
-        Showtitle ->
-            "showtitle"
-        TVshowid ->
-            "tvshowid"
-        Thumbnail ->
-            "thumbnail"
-        File ->
-            "file"
-        Fanart ->
-            "fanart"
-        Streamdetails ->
-            "streamdetails"
-        --Player getPosition
-        Percentage->
-            "percentage"
-        Time ->
-            "time"
-        Totaltime ->
-            "totaltime"
-        Speed ->
-            "speed"
-
-type alias Limit =
-    { start : Int 
-    , end : Int
-    }
-
-type alias Params =
-    { playerid : Maybe Int
-    , properties : Maybe (List Property)
-    , limits : Maybe Limit
-    }
-
--- convert params record to Json object
-paramsToObj : Maybe { playerid: Maybe Int, properties : Maybe (List Property) } -> Encode.Value
-paramsToObj params =
-    case params of
-        Nothing ->
-            Encode.string "Nothing"
-        Just param ->
-            case param.playerid of
-                Nothing ->
-                    case param.properties of
-                        Nothing ->
-                            Encode.object
-                                []
-                        Just properties ->
-                            Encode.object
-                                [ ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
-                                ]
-                Just playerid ->
-                    case param.properties of
-                        Nothing ->
-                            Encode.object
-                                [("playerid", Encode.int (Maybe.withDefault 0 param.playerid))]
-                        Just properties ->
-                            Encode.object
-                                [ ("playerid", Encode.int (Maybe.withDefault 0 param.playerid))
-                                , ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
-                                ]
--- send jsonrpc request with custom record
-request : Method -> Maybe { playerid : Maybe Int, properties : Maybe (List Property) } -> String
-request method params =
-    Encode.encode 0
-        <| case params of
-                Nothing -> -- No params provided
-                    Encode.object
-                        [ ( "jsonrpc", Encode.string "2.0" )
-                        , ( "method", Encode.string (methodToStr method)) 
-                        , ( "id", Encode.int 1)
-                        ]
-                Just param -> -- params
-                    Encode.object
-                        [ ( "jsonrpc", Encode.string "2.0" )
-                        , ( "method", Encode.string (methodToStr method)) 
-                        , ( "params", paramsToObj (Just {playerid = param.playerid, properties = param.properties})) -- encode records to json
-                        , ( "id", Encode.int 1)
-                        ]
 
 -- PORTS
 
@@ -175,6 +60,8 @@ type Msg
     = Navigate Route
     | Request Method (Maybe Params)
     | Recv String
+    | ReceiveParamsResponse String
+    | ReceiveResultResponse ResultResponse
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -195,27 +82,43 @@ update msg model =
                     , sendAction (request method (Just {playerid = param.playerid, properties = param.properties}))
                     )
 
-        Recv response ->
-            {-
-            let response 
-                = resultsDecoder response
-            in 
-            case (reponse.result)
-                -}
-            ( { model | responses = model.responses ++ [response] }
+        Recv message ->
+            ( model
             , Cmd.none
             )
 
+        ReceiveParamsResponse params ->
+            ( model
+            , Cmd.none
+            )
+
+        ReceiveResultResponse result ->
+            case result of 
+                ResultA str ->  
+                    ( model
+                    , Cmd.none
+                    )
+                ResultB playerObjects ->
+                    ( { model | players = playerObjects }
+                    , Cmd.none
+                    )
+
 -- SUBSCRIPTIONS
-{-methodDecoder : Decoder Response
-methodDecoder =
-    map2 Response
-        (field "method" string)
-        (field "params" )-}
+
+decodeWS message = 
+    case D.decodeString resultResponseDecoder message of 
+      Ok resultMessage ->
+          ReceiveResultResponse resultMessage
+      Err err ->
+          case D.decodeString paramsResponseDecoder message of 
+            Ok paramsMessage ->
+              ReceiveParamsResponse message
+            Err err2 ->
+              Recv message
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    responseReceiver Recv
+subscriptions _ =
+    responseReceiver decodeWS
 
 -- VIEW
 
