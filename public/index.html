@@ -1,34 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://not-much-css.netlify.com/not-much.css"
-    />
-    <title>elm-spa</title>
-  </head>
-
-  <body>
-    <script src="/dist/elm.js"></script>
-    <script>
-      var app = Elm.Main.init({ node: document.querySelector("main") });
-      // you can use ports and stuff here
-      // Create your WebSocket.
-      var socket = new WebSocket("ws://localhost:9090");
-
-      // When a command goes to the `sendMessage` port, we pass the message
-      // along to the WebSocket.
-      app.ports.sendAction.subscribe(function (action) {
-        socket.send(action);
-      });
-
-      // When a message comes into our WebSocket, we pass the message along
-      // to the `messageReceiver` port.
-      socket.addEventListener("response", function (event) {
-        app.ports.responseReceiver.send(event.data);
-      });
-    </script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- CSS goes here -->
+</head>
+<body>
+  <!-- JavaScript goes here -->
+  <script src="/dist/elm.compiled.js"></script>
+  <script src="/main.js"></script>
+</body>
 </html>

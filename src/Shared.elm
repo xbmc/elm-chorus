@@ -1,21 +1,21 @@
-port module Global exposing
+port module Shared exposing
     ( Flags
     , Model
     , Msg
     , init
-    , navigate
     , subscriptions
     , update
     , view
     )
 
-import Browser.Navigation as Nav
-import Components
-import Document exposing (Document)
-import Generated.Route as Route exposing (Route)
-import Task
+import Browser.Navigation exposing (Key, pushUrl)
+import Element exposing (..)
+import Element.Font as Font
+import Spa.Document exposing (Document)
+import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (Url)
 import Json.Decode as D
+import Components
 --modules
 import Method exposing (Method(..), methodToStr)
 import WSDecoder exposing (PlayerObj(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
@@ -29,13 +29,13 @@ type alias Flags =
 type alias Model =
     { flags : Flags
     , url : Url
-    , key : Nav.Key
+    , key : Key
     , rightMenu : Bool
     , players : List PlayerObj
     }
 
 
-init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
     ( Model
         flags
@@ -68,7 +68,7 @@ update msg model =
     case msg of
         Navigate route ->
             ( model
-            , Nav.pushUrl model.key (Route.toHref route)
+            , pushUrl model.key (Route.toString route)
             )
 
         Request method params ->
@@ -120,15 +120,15 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     responseReceiver decodeWS
 
+
 -- VIEW
 
+
 view :
-    { page : Document msg
-    , global : Model
-    , toMsg : Msg -> msg
-    }
+    { page : Document msg, toMsg : Msg -> msg }
+    -> Model
     -> Document msg
-view { page, global, toMsg } =
+view { page, toMsg } model =
     Components.layout
         { page = page
         , playPauseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
@@ -138,14 +138,3 @@ view { page, global, toMsg } =
         , repeatMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
         , shuffleMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
         }
-
--- COMMANDS
-
-send : msg -> Cmd msg
-send =
-    Task.succeed >> Task.perform identity
-
-
-navigate : Route -> Cmd Msg
-navigate route =
-    send (Navigate route)

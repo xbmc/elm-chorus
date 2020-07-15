@@ -1,4 +1,4 @@
-module Pages.TVShows exposing (Params, Model, Msg, page)
+module Pages.Playlists exposing (Params, Model, Msg, page)
 
 import Shared
 import Spa.Document exposing (Document)
@@ -71,6 +71,6 @@ subscriptions model =
 
 view : Model -> Document Msg
 view model =
-    { title = "TVShows"
+    { title = "Playlists"
     , body = []
     }

@@ -7,7 +7,7 @@ import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 import FeatherIcons
-import Generated.Route as Route exposing (Route)
+import Spa.Generated.Route as Route exposing (Route)
 import Html exposing (Html)
 import Html.Attributes
 import Svg.Attributes
@@ -53,7 +53,7 @@ header =
                     { description = ""
                     , src = "https://kodi.wiki/images/8/8e/Thumbnail-symbol-transparent.png"
                     }
-            , url = Route.Top |> Route.toHref
+            , url = Route.Top |> Route.toString
             }
         , el [ Font.color (Element.rgb 1 1 1) ] (text "Kodi")
         ]
@@ -82,7 +82,7 @@ featherLink ( icon, route ) =
         ]
     ] <|
         Element.link []
-            { url = Route.toHref route
+            { url = Route.toString route
             , label = Element.html (icon |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
             }
 
@@ -94,7 +94,7 @@ movieButton =
     featherLink (FeatherIcons.video, Route.Movies)
 
 tvshowButton = 
-    featherLink (FeatherIcons.tv, Route.TVshows)
+    featherLink (FeatherIcons.tv, Route.TVShows)
 
 browserButton = 
     featherLink (FeatherIcons.menu, Route.Browser)
@@ -103,7 +103,7 @@ addonsButton =
     featherLink (FeatherIcons.package, Route.Addons)
 
 likesButton = 
-    featherLink (FeatherIcons.thumbsUp, Route.Thumbups)
+    featherLink (FeatherIcons.thumbsUp, Route.Top)
 
 playlistButton = 
     featherLink (FeatherIcons.clipboard, Route.Top)
@@ -209,7 +209,7 @@ link : ( String, Route ) -> Element msg
 link ( label, route ) =
     Element.link styles.link
         { label = text label
-        , url = Route.toHref route
+        , url = Route.toString route
         }
 
 
