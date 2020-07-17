@@ -1,4 +1,4 @@
-module WSDecoder exposing (PlayerObj(..), paramsResponseDecoder, resultResponseDecoder, Params, ResultResponse(..))
+module WSDecoder exposing (ItemDetails, ParamsResponse, Item, PlayerObj(..), PType(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
 
 import Json.Decode as Decode exposing (Decoder, int, string, at, maybe, list)
 import Json.Decode.Pipeline exposing (custom, required, optional)
@@ -90,27 +90,27 @@ playerDecoder =
 
 -- Params Response
 
-type alias Params =
+type alias ParamsResponse =
     { item : Item
     , player : PlayerObj
     }
 
-paramsDecoder : Decoder Params
-paramsDecoder =
-    Decode.succeed Params
-        |> custom (at [ "data", "item" ] itemDecoder)
-        |> custom (at [ "data", "player" ] playerDecoder)
+paramsResponseDecoder : Decoder ParamsResponse
+paramsResponseDecoder =
+    Decode.succeed ParamsResponse
+        |> custom (at [ "params", "data", "item" ] itemDecoder)
+        |> custom (at [ "params", "data", "player" ] playerDecoder)
 
 -- end "params"
 
 -----------------------
 -- "result" response --
 -----------------------
-type ResultResponse = ResultA String | ResultB (List PlayerObj) --| ResultC IntrospectObj
+type ResultResponse = ResultA String | ResultB (List PlayerObj) | ResultC ItemDetails--| ResultD IntrospectObj
 
 resultResponseDecoder : Decoder ResultResponse
 resultResponseDecoder =
-    Decode.oneOf [stringDecoder, listDecoder]
+    Decode.oneOf [stringDecoder, listDecoder, detailDecoder]
 
 stringDecoder : Decoder ResultResponse
 stringDecoder =
@@ -121,6 +121,25 @@ listDecoder : Decoder ResultResponse
 listDecoder =
         Decode.succeed ResultB
             |> required "result" (list playerDecoder)
+
+-- Song/Video GetItem decoder
+detailDecoder : Decoder ResultResponse
+detailDecoder =
+        Decode.succeed ResultC 
+            |> required "result" itemDetailDecoder
+
+itemDetailDecoder : Decoder ItemDetails
+itemDetailDecoder =
+    Decode.succeed ItemDetails
+        |> custom (at ["item", "title"] string)
+        |> custom (at ["item", "duration"] int)
+        |> custom (at ["item", "thumbnail"] string)
+
+type alias ItemDetails =
+    { title : String
+    , duration : Int
+    , thumbnail : String
+    }
 
 {-introspectDecoder : Decoder ResultResponse
 introspectDecoder =
@@ -159,12 +178,9 @@ firstFieldAs decoder =
 
 -- end "result"
 
--- Response
-
-type alias Response =
-    { params : Params }
-
-paramsResponseDecoder : Decoder Response
-paramsResponseDecoder =
-    Decode.succeed Response
-        |> required "params" paramsDecoder
+{-resultsDecoder : Decoder (List Result)
+resultsDecoder =
+  Decode.oneOf
+    [ Decode.list resultDecoder
+    , Decode.map (\result -> [result]) resultDecoder
+    ]-}

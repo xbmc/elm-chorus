@@ -11,9 +11,11 @@ import Spa.Generated.Route as Route exposing (Route)
 import Html exposing (Html)
 import Html.Attributes
 import Svg.Attributes
+import WSDecoder exposing (ItemDetails)
 
 layout : 
     { page : Document msg
+    , currentlyPlaying : ItemDetails
     , playPauseMsg : msg
     , skipMsg : msg 
     , reverseMsg : msg
@@ -22,7 +24,7 @@ layout :
     , shuffleMsg : msg
     } 
     -> Document msg
-layout { page, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
+layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
     { title = page.title
     , body =
         [ column [ width fill, height fill ]
@@ -32,7 +34,8 @@ layout { page, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg
                 , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] page.body
                 ]
             , player 
-                    { playPauseMsg = playPauseMsg
+                    { currentlyPlaying = currentlyPlaying
+                    , playPauseMsg = playPauseMsg
                     , skipMsg = skipMsg
                     , reverseMsg = reverseMsg
                     , muteMsg = muteMsg
@@ -117,7 +120,8 @@ helpButton =
 -- Player
 
 player : 
-    { playPauseMsg : msg
+    { currentlyPlaying : ItemDetails
+    , playPauseMsg : msg
     , skipMsg : msg 
     , reverseMsg : msg
     , muteMsg : msg
@@ -125,7 +129,7 @@ player :
     , shuffleMsg : msg 
     } 
     -> Element msg
-player { playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
+player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
     row [ height (px 70), width fill, alignBottom ]
         [ row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
             [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
@@ -138,8 +142,8 @@ player { playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
                     { src = "https://via.placeholder.com/70"
                     , description = "Hero Image"
                     }
-                , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text "Nothing playing")
-                , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text "0")
+                , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
+                , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text (String.fromInt(currentlyPlaying.duration)))
                 ]
             ]
         , column [ height fill, width (fillPortion 1) ]

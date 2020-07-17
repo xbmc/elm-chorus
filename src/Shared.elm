@@ -18,8 +18,8 @@ import Json.Decode as D
 import Components
 --modules
 import Method exposing (Method(..), methodToStr)
-import WSDecoder exposing (PlayerObj(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
-import Request exposing (Params, propertyToStr, paramsToObj, request)
+import WSDecoder exposing (ItemDetails, ParamsResponse, Item, PlayerObj(..), PType(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
+import Request exposing (Params, Property(..), propertyToStr, paramsToObj, request)
 
 -- INIT
 
@@ -32,17 +32,13 @@ type alias Model =
     , key : Key
     , rightMenu : Bool
     , players : List PlayerObj
+    , currentlyPlaying : ItemDetails
     }
 
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model
-        flags
-        url
-        key
-        False
-        []
+    ( { flags = flags, url = url, key = key, rightMenu = False, players = [], currentlyPlaying = ItemDetails "" 0 ""}
     , Cmd.none
     )
 
@@ -60,7 +56,8 @@ type Msg
     = Navigate Route
     | Request Method (Maybe Params)
     | Recv String
-    | ReceiveParamsResponse String
+    | PlayPause
+    | ReceiveParamsResponse ParamsResponse
     | ReceiveResultResponse ResultResponse
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -79,7 +76,7 @@ update msg model =
                     )
                 Just param ->
                     ( model
-                    , sendAction (request method (Just {playerid = param.playerid, properties = param.properties}))
+                    , sendAction (request method (Just {playerid = param.playerid, songid = Nothing, properties = param.properties}))
                     )
 
         Recv message ->
@@ -87,9 +84,14 @@ update msg model =
             , Cmd.none
             )
 
+        PlayPause ->
+            ( model
+            , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
+            )
+
         ReceiveParamsResponse params ->
             ( model
-            , Cmd.none
+            , sendAction """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
             )
 
         ReceiveResultResponse result ->
@@ -98,21 +100,34 @@ update msg model =
                     ( model
                     , Cmd.none
                     )
-                ResultB playerObjects ->
+                ResultB playerObjects ->  
                     ( { model | players = playerObjects }
-                    , Cmd.none
+                    --chain messages, once we get players we gotta see what's playing
+                    --{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": "AudioGetItem"}
+                    , sendAction 
+                        (request Player_GetItem 
+                            ( Just 
+                                { playerid = (Just 0)
+                                , songid = Nothing
+                                , properties = (Just [Title, Album, Artist, Duration, Thumbnail])
+                                }
+                            )
+                        )
                     )
+                ResultC item ->
+                    ( { model | currentlyPlaying = item}
+                    , sendAction """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}""")
 
 -- SUBSCRIPTIONS
 
 decodeWS message = 
-    case D.decodeString resultResponseDecoder message of 
-      Ok resultMessage ->
-          ReceiveResultResponse resultMessage
+    case D.decodeString paramsResponseDecoder message of 
+      Ok paramsMessage ->
+          ReceiveParamsResponse paramsMessage
       Err err ->
-          case D.decodeString paramsResponseDecoder message of 
-            Ok paramsMessage ->
-              ReceiveParamsResponse message
+          case D.decodeString resultResponseDecoder message of 
+            Ok resultMessage ->
+              ReceiveResultResponse resultMessage
             Err err2 ->
               Recv message
 
@@ -131,7 +146,8 @@ view :
 view { page, toMsg } model =
     Components.layout
         { page = page
-        , playPauseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
+        , currentlyPlaying = model.currentlyPlaying
+        , playPauseMsg = toMsg PlayPause
         , skipMsg = toMsg (Request Input_Home (Nothing))
         , reverseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
         , muteMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))

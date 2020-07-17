@@ -1,4 +1,4 @@
-module Request exposing (Params, propertyToStr, paramsToObj, request)
+module Request exposing (Params, Property(..), propertyToStr, paramsToObj, request)
 
 import Json.Encode as Encode exposing (list, string)
 import Method exposing (Method(..), methodToStr)
@@ -73,7 +73,7 @@ type alias Params =
     }
 
 -- convert params record to Json object
-paramsToObj : Maybe { playerid: Maybe Int, properties : Maybe (List Property) } -> Encode.Value
+paramsToObj : Maybe { playerid: Maybe Int, songid: Maybe Int, properties : Maybe (List Property) } -> Encode.Value
 paramsToObj params =
     case params of
         Nothing ->
@@ -86,9 +86,17 @@ paramsToObj params =
                             Encode.object
                                 []
                         Just properties ->
-                            Encode.object
-                                [ ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
-                                ]
+                            --process songid for getting song details
+                            case param.songid of
+                                Nothing ->
+                                    Encode.object
+                                        [ ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
+                                        ]
+                                Just songid ->
+                                    Encode.object
+                                        [ ("songid", Encode.int (Maybe.withDefault 0 param.songid))
+                                        , ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
+                                        ]
                 Just playerid ->
                     case param.properties of
                         Nothing ->
@@ -101,7 +109,7 @@ paramsToObj params =
                                 ]
 
 -- send jsonrpc request with custom record
-request : Method -> Maybe { playerid : Maybe Int, properties : Maybe (List Property) } -> String
+request : Method -> Maybe { playerid : Maybe Int, songid: Maybe Int, properties : Maybe (List Property) } -> String
 request method params =
     Encode.encode 0
         <| case params of
@@ -115,6 +123,6 @@ request method params =
                     Encode.object
                         [ ( "jsonrpc", Encode.string "2.0" )
                         , ( "method", Encode.string (methodToStr method)) 
-                        , ( "params", paramsToObj (Just {playerid = param.playerid, properties = param.properties})) -- encode records to json
+                        , ( "params", paramsToObj (Just {playerid = param.playerid, songid = param.songid, properties = param.properties})) -- encode records to json
                         , ( "id", Encode.int 1)
                         ]

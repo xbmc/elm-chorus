@@ -4,6 +4,7 @@ import Shared
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
+import Request
 
 
 page : Page Params Model Msg
@@ -52,7 +53,7 @@ update msg model =
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
-    shared
+    shared--{shared | field = model.field}
 
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
