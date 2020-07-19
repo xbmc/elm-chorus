@@ -7,24 +7,30 @@ import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 import FeatherIcons
-import Spa.Generated.Route as Route exposing (Route)
 import Html exposing (Html)
 import Html.Attributes
+import Spa.Generated.Route as Route exposing (Route)
 import Svg.Attributes
 import WSDecoder exposing (ItemDetails)
 
-layout : 
+
+layout :
     { page : Document msg
     , currentlyPlaying : ItemDetails
     , playPauseMsg : msg
-    , skipMsg : msg 
+    , skipMsg : msg
     , reverseMsg : msg
     , muteMsg : msg
     , repeatMsg : msg
     , shuffleMsg : msg
-    } 
+    , rightMenu : Bool
+    , rightMenuMsg : msg
+    , sendTextToKodiMsg : msg
+    , scanVideoLibraryMsg : msg
+    , scanMusicLibraryMsg : msg
+    }
     -> Document msg
-layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
+layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, rightMenu, rightMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     { title = page.title
     , body =
         [ column [ width fill, height fill ]
@@ -33,15 +39,20 @@ layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, rep
                 [ el [ width (fillPortion 1), height fill ] leftSidebar
                 , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] page.body
                 ]
-            , player 
-                    { currentlyPlaying = currentlyPlaying
-                    , playPauseMsg = playPauseMsg
-                    , skipMsg = skipMsg
-                    , reverseMsg = reverseMsg
-                    , muteMsg = muteMsg
-                    , repeatMsg = repeatMsg
-                    , shuffleMsg = shuffleMsg
-                    }
+            , player
+                { currentlyPlaying = currentlyPlaying
+                , playPauseMsg = playPauseMsg
+                , skipMsg = skipMsg
+                , reverseMsg = reverseMsg
+                , muteMsg = muteMsg
+                , repeatMsg = repeatMsg
+                , shuffleMsg = shuffleMsg
+                , rightMenu = rightMenu
+                , rightMenuMsg = rightMenuMsg
+                , sendTextToKodiMsg = sendTextToKodiMsg
+                , scanVideoLibraryMsg = scanVideoLibraryMsg
+                , scanMusicLibraryMsg = scanMusicLibraryMsg
+                }
             ]
         ]
     }
@@ -61,7 +72,10 @@ header =
         , el [ Font.color (Element.rgb 1 1 1) ] (text "Kodi")
         ]
 
+
+
 -- left sidebar stuff
+
 
 leftSidebar : Element msg
 leftSidebar =
@@ -77,59 +91,82 @@ leftSidebar =
         , helpButton
         ]
 
+
 featherLink : ( FeatherIcons.Icon, Route ) -> Element msg
 featherLink ( icon, route ) =
-    el [ Element.mouseOver [
-            scale 1.1
-            , Background.color(rgb255 25 180 228)
+    el
+        [ Element.mouseOver
+            [ scale 1.1
+            , Background.color (rgb255 25 180 228)
+            ]
         ]
-    ] <|
+    <|
         Element.link []
             { url = Route.toString route
             , label = Element.html (icon |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
             }
 
+
+
 -- buttons
-musicButton = 
-    featherLink (FeatherIcons.music, Route.Music)
 
-movieButton = 
-    featherLink (FeatherIcons.video, Route.Movies)
 
-tvshowButton = 
-    featherLink (FeatherIcons.tv, Route.TVShows)
+musicButton =
+    featherLink ( FeatherIcons.music, Route.Music )
 
-browserButton = 
-    featherLink (FeatherIcons.menu, Route.Browser)
 
-addonsButton = 
-    featherLink (FeatherIcons.package, Route.Addons)
+movieButton =
+    featherLink ( FeatherIcons.video, Route.Movies )
 
-likesButton = 
-    featherLink (FeatherIcons.thumbsUp, Route.Top)
 
-playlistButton = 
-    featherLink (FeatherIcons.clipboard, Route.Top)
+tvshowButton =
+    featherLink ( FeatherIcons.tv, Route.TVShows )
 
-settingsButton = 
-    featherLink (FeatherIcons.settings, Route.Top)
 
-helpButton = 
-    featherLink (FeatherIcons.helpCircle, Route.Top)
+browserButton =
+    featherLink ( FeatherIcons.menu, Route.Browser )
+
+
+addonsButton =
+    featherLink ( FeatherIcons.package, Route.Addons )
+
+
+likesButton =
+    featherLink ( FeatherIcons.thumbsUp, Route.Top )
+
+
+playlistButton =
+    featherLink ( FeatherIcons.clipboard, Route.Top )
+
+
+settingsButton =
+    featherLink ( FeatherIcons.settings, Route.Top )
+
+
+helpButton =
+    featherLink ( FeatherIcons.helpCircle, Route.Top )
+
+
 
 -- Player
 
-player : 
+
+player :
     { currentlyPlaying : ItemDetails
     , playPauseMsg : msg
-    , skipMsg : msg 
+    , skipMsg : msg
     , reverseMsg : msg
     , muteMsg : msg
     , repeatMsg : msg
-    , shuffleMsg : msg 
-    } 
+    , shuffleMsg : msg
+    , rightMenu : Bool
+    , rightMenuMsg : msg
+    , sendTextToKodiMsg : msg
+    , scanVideoLibraryMsg : msg
+    , scanMusicLibraryMsg : msg
+    }
     -> Element msg
-player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg } =
+player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, rightMenu, rightMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     row [ height (px 70), width fill, alignBottom ]
         [ row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
             [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
@@ -143,22 +180,38 @@ player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg
                     , description = "Hero Image"
                     }
                 , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
-                , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text (String.fromInt(currentlyPlaying.duration)))
+                , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text (String.fromInt currentlyPlaying.duration))
                 ]
             ]
         , column [ height fill, width (fillPortion 1) ]
-            [ el [] (text "Volume")
+            [ el (dropUp rightMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg) (text "Volume")
             , row [ width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, paddingXY 10 0, spacing 30 ]
                 [ el [ centerX ] (volumeButton { muteMsg = muteMsg })
                 , el [ centerX ] (repeatButton { repeatMsg = repeatMsg })
                 , el [ centerX ] (shuffleButton { shuffleMsg = shuffleMsg })
-                , el [ centerX ] controlButton
+                , el [ centerX ] (controlButton { rightMenuMsg = rightMenuMsg })
                 ]
             ]
         ]
 
 
--- Player controls
+dropUp : Bool -> msg -> msg -> msg -> List (Attribute msg)
+dropUp rightMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg =
+    if rightMenu then
+        [ Element.above
+            (Element.column []
+                [ Input.button [] { onPress = Just sendTextToKodiMsg, label = Element.text "Scan video library" }
+                , Input.button [] { onPress = Just scanVideoLibraryMsg, label = Element.text "Scan audio library" }
+                , Input.button [] { onPress = Just scanMusicLibraryMsg, label = Element.text "Send text to Kodi" }
+                , Element.link [] { url = "lab", label = Element.text "The lab" }
+                , Element.link [] { url = "help", label = Element.text "About Chorus" }
+                ]
+            )
+        ]
+
+    else
+        []
+
 
 featherButton : ( FeatherIcons.Icon, msg ) -> Element msg
 featherButton ( icon, action ) =
@@ -166,19 +219,22 @@ featherButton ( icon, action ) =
         { onPress = Just action
         , label = Element.html (icon |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
         }
-        
+
+
 reverseButton : { reverseMsg : msg } -> Element msg
 reverseButton { reverseMsg } =
-    featherButton(FeatherIcons.skipBack, reverseMsg)
+    featherButton ( FeatherIcons.skipBack, reverseMsg )
 
 
 playButton : { playPauseMsg : msg } -> Element msg
 playButton { playPauseMsg } =
-    featherButton(FeatherIcons.play, playPauseMsg)
+    featherButton ( FeatherIcons.play, playPauseMsg )
+
 
 skipButton : { skipMsg : msg } -> Element msg
 skipButton { skipMsg } =
-    featherButton(FeatherIcons.skipForward, skipMsg)
+    featherButton ( FeatherIcons.skipForward, skipMsg )
+
 
 
 {- Secondary controls
@@ -189,25 +245,30 @@ skipButton { skipMsg } =
    | controls
 -}
 
+
 volumeButton : { muteMsg : msg } -> Element msg
 volumeButton { muteMsg } =
-    featherButton(FeatherIcons.volume2, muteMsg)
+    featherButton ( FeatherIcons.volume2, muteMsg )
+
 
 repeatButton : { repeatMsg : msg } -> Element msg
 repeatButton { repeatMsg } =
-    featherButton(FeatherIcons.repeat, repeatMsg)
+    featherButton ( FeatherIcons.repeat, repeatMsg )
+
 
 shuffleButton : { shuffleMsg : msg } -> Element msg
 shuffleButton { shuffleMsg } =
-    featherButton(FeatherIcons.shuffle, shuffleMsg)
+    featherButton ( FeatherIcons.shuffle, shuffleMsg )
 
-controlButton =
-    Input.button []
-        { onPress = Nothing
-        , label = Element.html (FeatherIcons.moreVertical |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
-        }
+
+controlButton : { rightMenuMsg : msg } -> Element msg
+controlButton { rightMenuMsg } =
+    featherButton ( FeatherIcons.moreVertical, rightMenuMsg )
+
+
 
 --
+
 
 link : ( String, Route ) -> Element msg
 link ( label, route ) =
@@ -223,6 +284,7 @@ externalButtonLink ( label, url ) =
         { label = text label
         , url = url
         }
+
 
 
 -- STYLES
