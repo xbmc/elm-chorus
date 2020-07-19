@@ -134,9 +134,9 @@ update msg model =
 
                 ResultC item ->
                     ( { model | currentlyPlaying = item }
-                    , sendAction """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
+                    , Cmd.none
                     )
-
+                    
         ToggleRightMenu ->
             ( { model | rightMenu = not model.rightMenu }
             , Cmd.none
