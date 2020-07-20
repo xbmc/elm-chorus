@@ -1,5 +1,6 @@
 module Components exposing (layout)
 
+import Colors
 import Document exposing (Document)
 import Element exposing (..)
 import Element.Background as Background
@@ -8,8 +9,6 @@ import Element.Font as Font
 import Element.Input as Input
 import FeatherIcons
 import Html exposing (Html)
-import Html.Attributes
-import SingleSlider exposing (SingleSlider)
 import Spa.Generated.Route as Route exposing (Route)
 import Svg.Attributes
 import WSDecoder exposing (ItemDetails)
@@ -31,9 +30,10 @@ layout :
     , sendTextToKodiMsg : msg
     , scanVideoLibraryMsg : msg
     , scanMusicLibraryMsg : msg
+    , volumeSlider : Element msg
     }
     -> Document msg
-layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, rightMenu, rightMenuMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
+layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, rightMenu, rightMenuMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg, volumeSlider } =
     { title = page.title
     , body =
         [ column [ width fill, height fill ]
@@ -56,6 +56,7 @@ layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, rep
                 , sendTextToKodiMsg = sendTextToKodiMsg
                 , scanVideoLibraryMsg = scanVideoLibraryMsg
                 , scanMusicLibraryMsg = scanMusicLibraryMsg
+                , volumeSlider = volumeSlider
                 }
             ]
         ]
@@ -168,44 +169,50 @@ player :
     , sendTextToKodiMsg : msg
     , scanVideoLibraryMsg : msg
     , scanMusicLibraryMsg : msg
+    , volumeSlider : Element msg
     }
     -> Element msg
-player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
+player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg, volumeSlider } =
     row [ height (px 70), width fill, alignBottom ]
         [ playControlRow reverseMsg playPauseMsg skipMsg
-        , currentlyPlayingColumn currentlyPlaying
-        , volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg muteMsg repeatMsg shuffleMsg controlMenuMsg
+        , column [ width (px 70) ]
+            [ image [ alignLeft ]
+                { src = "https://via.placeholder.com/70"
+                , description = "Hero Image"
+                }
+            ]
+        , currentlyPlayingColumn currentlyPlaying volumeSlider
+        , volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg muteMsg repeatMsg shuffleMsg controlMenuMsg volumeSlider
         ]
 
 
 playControlRow : msg -> msg -> msg -> Element msg
 playControlRow reverseMsg playPauseMsg skipMsg =
-    row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
+    row [ height fill, width (px 300), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
         [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
         , el [ centerX ] (playButton { playPauseMsg = playPauseMsg })
         , el [ centerX ] (skipButton { skipMsg = skipMsg })
         ]
 
 
-currentlyPlayingColumn : ItemDetails -> Element msg
-currentlyPlayingColumn currentlyPlaying =
-    column [ height fill, width (fillPortion 2) ]
-        [ row [ height (px 70), width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
-            [ image [ alignLeft ]
-                { src = "https://via.placeholder.com/70"
-                , description = "Hero Image"
-                }
-            , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
+currentlyPlayingColumn : ItemDetails -> Element msg -> Element msg
+currentlyPlayingColumn currentlyPlaying currentTrackProgress =
+    column [ height fill, width fill ]
+        [ row [ width fill, height (px 20) ]
+            [ currentTrackProgress ]
+        , row
+            [ height fill, width fill, Background.color Colors.black, alignBottom ]
+            [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
             , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text (String.fromInt currentlyPlaying.duration))
             ]
         ]
 
 
-volumesAndControlsColumn : Bool -> msg -> msg -> msg -> msg -> msg -> msg -> msg -> Element msg
-volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg muteMsg repeatMsg shuffleMsg controlMenuMsg =
-    column [ height fill, width (fillPortion 1) ]
-        [ el (dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg) (text "Volume")
-        , row [ width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, paddingXY 10 0, spacing 30 ]
+volumesAndControlsColumn : Bool -> msg -> msg -> msg -> msg -> msg -> msg -> msg -> Element msg -> Element msg
+volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg muteMsg repeatMsg shuffleMsg controlMenuMsg volumeSlider =
+    column [ height fill, width (px 300) ]
+        [ row (dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg ++ [ width fill, height (px 20) ]) [ volumeSlider ]
+        , row [ width fill, height fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, paddingXY 10 0, spacing 30 ]
             [ el [ centerX ] (volumeButton { muteMsg = muteMsg })
             , el [ centerX ] (repeatButton { repeatMsg = repeatMsg })
             , el [ centerX ] (shuffleButton { shuffleMsg = shuffleMsg })
