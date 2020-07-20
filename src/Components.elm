@@ -9,6 +9,7 @@ import Element.Input as Input
 import FeatherIcons
 import Html exposing (Html)
 import Html.Attributes
+import SingleSlider exposing (SingleSlider)
 import Spa.Generated.Route as Route exposing (Route)
 import Svg.Attributes
 import WSDecoder exposing (ItemDetails)
@@ -171,29 +172,44 @@ player :
     -> Element msg
 player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     row [ height (px 70), width fill, alignBottom ]
-        [ row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
-            [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
-            , el [ centerX ] (playButton { playPauseMsg = playPauseMsg })
-            , el [ centerX ] (skipButton { skipMsg = skipMsg })
+        [ playControlRow reverseMsg playPauseMsg skipMsg
+        , currentlyPlayingColumn currentlyPlaying
+        , volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg muteMsg repeatMsg shuffleMsg controlMenuMsg
+        ]
+
+
+playControlRow : msg -> msg -> msg -> Element msg
+playControlRow reverseMsg playPauseMsg skipMsg =
+    row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
+        [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
+        , el [ centerX ] (playButton { playPauseMsg = playPauseMsg })
+        , el [ centerX ] (skipButton { skipMsg = skipMsg })
+        ]
+
+
+currentlyPlayingColumn : ItemDetails -> Element msg
+currentlyPlayingColumn currentlyPlaying =
+    column [ height fill, width (fillPortion 2) ]
+        [ row [ height (px 70), width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
+            [ image [ alignLeft ]
+                { src = "https://via.placeholder.com/70"
+                , description = "Hero Image"
+                }
+            , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
+            , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text (String.fromInt currentlyPlaying.duration))
             ]
-        , column [ height fill, width (fillPortion 2) ]
-            [ row [ height (px 70), width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
-                [ image [ alignLeft ]
-                    { src = "https://via.placeholder.com/70"
-                    , description = "Hero Image"
-                    }
-                , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
-                , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text (String.fromInt currentlyPlaying.duration))
-                ]
-            ]
-        , column [ height fill, width (fillPortion 1) ]
-            [ el (dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg) (text "Volume")
-            , row [ width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, paddingXY 10 0, spacing 30 ]
-                [ el [ centerX ] (volumeButton { muteMsg = muteMsg })
-                , el [ centerX ] (repeatButton { repeatMsg = repeatMsg })
-                , el [ centerX ] (shuffleButton { shuffleMsg = shuffleMsg })
-                , el [ centerX ] (controlButton { controlMenuMsg = controlMenuMsg })
-                ]
+        ]
+
+
+volumesAndControlsColumn : Bool -> msg -> msg -> msg -> msg -> msg -> msg -> msg -> Element msg
+volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg muteMsg repeatMsg shuffleMsg controlMenuMsg =
+    column [ height fill, width (fillPortion 1) ]
+        [ el (dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg) (text "Volume")
+        , row [ width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, paddingXY 10 0, spacing 30 ]
+            [ el [ centerX ] (volumeButton { muteMsg = muteMsg })
+            , el [ centerX ] (repeatButton { repeatMsg = repeatMsg })
+            , el [ centerX ] (shuffleButton { shuffleMsg = shuffleMsg })
+            , el [ centerX ] (controlButton { controlMenuMsg = controlMenuMsg })
             ]
         ]
 
@@ -211,22 +227,24 @@ dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg =
                 ]
             )
         ]
+
     else
         []
+
 
 rightSidebar : Bool -> msg -> Element msg
 rightSidebar rightMenu rightMenuMsg =
     if rightMenu then
-        column 
-            [ height fill, Background.color (rgb 0.3 0.3 0.3), spacing 30, paddingXY 10 20, alignRight ] 
-                [ Input.button [centerX] { onPress = Just rightMenuMsg, label = Element.text ">" }
-                ]
-        
+        column
+            [ height fill, Background.color (rgb 0.3 0.3 0.3), spacing 30, paddingXY 10 20, alignRight ]
+            [ Input.button [ centerX ] { onPress = Just rightMenuMsg, label = Element.text ">" }
+            ]
+
     else
-        column 
-            [ height fill, Background.color (rgb 0.3 0.3 0.3), spacing 30, paddingXY 10 20, alignRight ] 
-                [ Input.button [centerX] { onPress = Just rightMenuMsg, label = Element.text "<" }
-                ]
+        column
+            [ height fill, Background.color (rgb 0.3 0.3 0.3), spacing 30, paddingXY 10 20, alignRight ]
+            [ Input.button [ centerX ] { onPress = Just rightMenuMsg, label = Element.text "<" }
+            ]
 
 
 featherButton : ( FeatherIcons.Icon, msg ) -> Element msg
