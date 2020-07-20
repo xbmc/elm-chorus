@@ -36,6 +36,7 @@ type alias Model =
     , url : Url
     , key : Key
     , rightMenu : Bool
+    , controlMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : ItemDetails
     }
@@ -43,7 +44,7 @@ type alias Model =
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( { flags = flags, url = url, key = key, rightMenu = False, players = [], currentlyPlaying = ItemDetails "" 0 "" }
+    ( { flags = flags, url = url, key = key, rightMenu = False, controlMenu = False, players = [], currentlyPlaying = ItemDetails "" 0 "" }
     , Cmd.none
     )
 
@@ -70,6 +71,7 @@ type Msg
     | ReceiveParamsResponse ParamsResponse
     | ReceiveResultResponse ResultResponse
     | ToggleRightMenu
+    | ToggleControlMenu
     | SendTextToKodi
     | ScanVideoLibrary
     | ScanMusicLibrary
@@ -129,16 +131,21 @@ update msg model =
                                 , properties = Just [ Title, Album, Artist, Duration, Thumbnail ]
                                 }
                             )
-                        )
+                        ) -- Player.getproperties percentage
                     )
 
                 ResultC item ->
                     ( { model | currentlyPlaying = item }
                     , Cmd.none
                     )
-                    
+
         ToggleRightMenu ->
             ( { model | rightMenu = not model.rightMenu }
+            , Cmd.none
+            )
+
+        ToggleControlMenu ->
+            ( { model | controlMenu = not model.controlMenu }
             , Cmd.none
             )
 
@@ -195,6 +202,8 @@ view { page, toMsg } model =
         , muteMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
         , repeatMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
         , shuffleMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
+        , controlMenu = model.controlMenu
+        , controlMenuMsg = toMsg ToggleControlMenu
         , rightMenu = model.rightMenu
         , rightMenuMsg = toMsg ToggleRightMenu
         , sendTextToKodiMsg = toMsg SendTextToKodi

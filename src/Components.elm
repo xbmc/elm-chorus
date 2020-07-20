@@ -25,12 +25,14 @@ layout :
     , shuffleMsg : msg
     , rightMenu : Bool
     , rightMenuMsg : msg
+    , controlMenu : Bool
+    , controlMenuMsg : msg
     , sendTextToKodiMsg : msg
     , scanVideoLibraryMsg : msg
     , scanMusicLibraryMsg : msg
     }
     -> Document msg
-layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, rightMenu, rightMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
+layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, rightMenu, rightMenuMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     { title = page.title
     , body =
         [ column [ width fill, height fill ]
@@ -38,6 +40,7 @@ layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, rep
             , row [ width fill, height fill ]
                 [ el [ width (fillPortion 1), height fill ] leftSidebar
                 , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] page.body
+                , el [ width (fillPortion 1), height fill ] (rightSidebar rightMenu rightMenuMsg)
                 ]
             , player
                 { currentlyPlaying = currentlyPlaying
@@ -47,8 +50,8 @@ layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, rep
                 , muteMsg = muteMsg
                 , repeatMsg = repeatMsg
                 , shuffleMsg = shuffleMsg
-                , rightMenu = rightMenu
-                , rightMenuMsg = rightMenuMsg
+                , controlMenu = controlMenu
+                , controlMenuMsg = controlMenuMsg
                 , sendTextToKodiMsg = sendTextToKodiMsg
                 , scanVideoLibraryMsg = scanVideoLibraryMsg
                 , scanMusicLibraryMsg = scanMusicLibraryMsg
@@ -159,14 +162,14 @@ player :
     , muteMsg : msg
     , repeatMsg : msg
     , shuffleMsg : msg
-    , rightMenu : Bool
-    , rightMenuMsg : msg
+    , controlMenu : Bool
+    , controlMenuMsg : msg
     , sendTextToKodiMsg : msg
     , scanVideoLibraryMsg : msg
     , scanMusicLibraryMsg : msg
     }
     -> Element msg
-player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, rightMenu, rightMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
+player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     row [ height (px 70), width fill, alignBottom ]
         [ row [ height fill, width (fillPortion 1), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
             [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
@@ -184,20 +187,20 @@ player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg
                 ]
             ]
         , column [ height fill, width (fillPortion 1) ]
-            [ el (dropUp rightMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg) (text "Volume")
+            [ el (dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg) (text "Volume")
             , row [ width fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, paddingXY 10 0, spacing 30 ]
                 [ el [ centerX ] (volumeButton { muteMsg = muteMsg })
                 , el [ centerX ] (repeatButton { repeatMsg = repeatMsg })
                 , el [ centerX ] (shuffleButton { shuffleMsg = shuffleMsg })
-                , el [ centerX ] (controlButton { rightMenuMsg = rightMenuMsg })
+                , el [ centerX ] (controlButton { controlMenuMsg = controlMenuMsg })
                 ]
             ]
         ]
 
 
 dropUp : Bool -> msg -> msg -> msg -> List (Attribute msg)
-dropUp rightMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg =
-    if rightMenu then
+dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg =
+    if controlMenu then
         [ Element.above
             (Element.column []
                 [ Input.button [] { onPress = Just sendTextToKodiMsg, label = Element.text "Scan video library" }
@@ -208,9 +211,22 @@ dropUp rightMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg =
                 ]
             )
         ]
-
     else
         []
+
+rightSidebar : Bool -> msg -> Element msg
+rightSidebar rightMenu rightMenuMsg =
+    if rightMenu then
+        column 
+            [ height fill, Background.color (rgb 0.3 0.3 0.3), spacing 30, paddingXY 10 20, alignRight ] 
+                [ Input.button [centerX] { onPress = Just rightMenuMsg, label = Element.text ">" }
+                ]
+        
+    else
+        column 
+            [ height fill, Background.color (rgb 0.3 0.3 0.3), spacing 30, paddingXY 10 20, alignRight ] 
+                [ Input.button [centerX] { onPress = Just rightMenuMsg, label = Element.text "<" }
+                ]
 
 
 featherButton : ( FeatherIcons.Icon, msg ) -> Element msg
@@ -261,9 +277,9 @@ shuffleButton { shuffleMsg } =
     featherButton ( FeatherIcons.shuffle, shuffleMsg )
 
 
-controlButton : { rightMenuMsg : msg } -> Element msg
-controlButton { rightMenuMsg } =
-    featherButton ( FeatherIcons.moreVertical, rightMenuMsg )
+controlButton : { controlMenuMsg : msg } -> Element msg
+controlButton { controlMenuMsg } =
+    featherButton ( FeatherIcons.moreVertical, controlMenuMsg )
 
 
 
