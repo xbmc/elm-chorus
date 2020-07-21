@@ -3,10 +3,10 @@ port module Shared exposing
     , Model
     , Msg
     , init
+    , sendAction
     , subscriptions
     , update
     , view
-    , sendAction
     )
 
 --modules
@@ -14,14 +14,14 @@ port module Shared exposing
 import Browser.Navigation exposing (Key, pushUrl)
 import Components
 import Element exposing (..)
-import Element.Font as Font
 import Json.Decode as D
-import Method exposing (Method(..), methodToStr)
-import Request exposing (Params, Property(..), paramsToObj, propertyToStr, request)
+import Method exposing (Method(..))
+import Request exposing (Params, Property(..), request)
+import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (Url)
-import WSDecoder exposing (Song, Item, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (Item, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), Song, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -41,12 +41,29 @@ type alias Model =
     , players : List PlayerObj
     , currentlyPlaying : ItemDetails
     , song_list : List Song
+    , volumeSlider : SingleSlider Msg
     }
 
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( { flags = flags, url = url, key = key, rightMenu = False, controlMenu = False, players = [], currentlyPlaying = ItemDetails "" 0 "", song_list = [] }
+    ( { flags = flags
+      , url = url
+      , key = key
+      , rightMenu = False
+      , controlMenu = False
+      , players = []
+      , currentlyPlaying = ItemDetails "" 0 ""
+      , song_list = []
+      , volumeSlider =
+            SingleSlider.init
+                { min = 0
+                , max = 100
+                , value = 50
+                , step = 1
+                , onChange = VolumeSliderChange
+                }
+      }
     , Cmd.none
     )
 
@@ -77,10 +94,13 @@ type Msg
     | SendTextToKodi
     | ScanVideoLibrary
     | ScanMusicLibrary
+    | VolumeSliderChange Float
+
 
 songname : Song -> String
 songname song =
-  song.label
+    song.label
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -102,7 +122,7 @@ update msg model =
                     , sendAction (request method (Just { playerid = param.playerid, songid = Nothing, properties = param.properties }))
                     )
 
-        Recv message ->
+        Recv _ ->
             ( model
             , Cmd.none
             )
@@ -112,14 +132,14 @@ update msg model =
             , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
             )
 
-        ReceiveParamsResponse params ->
+        ReceiveParamsResponse _ ->
             ( model
             , sendAction """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
             )
 
         ReceiveResultResponse result ->
             case result of
-                ResultA str ->
+                ResultA _ ->
                     ( model
                     , Cmd.none
                     )
@@ -136,7 +156,8 @@ update msg model =
                                 , properties = Just [ Title, Album, Artist, Duration, Thumbnail ]
                                 }
                             )
-                        ) -- Player.getproperties percentage
+                        )
+                      -- Player.getproperties percentage
                     )
 
                 ResultC item ->
@@ -145,7 +166,7 @@ update msg model =
                     )
 
                 ResultD songlist ->
-                    ({ model | song_list = songlist}, Cmd.none)
+                    ( { model | song_list = songlist }, Cmd.none )
 
         ToggleRightMenu ->
             ( { model | rightMenu = not model.rightMenu }
@@ -168,6 +189,14 @@ update msg model =
             -- todo
             ( model, sendAction """""" )
 
+        VolumeSliderChange newValue ->
+            -- todo
+            let
+                newSlider =
+                    SingleSlider.update newValue model.volumeSlider
+            in
+            ( { model | volumeSlider = newSlider }, Cmd.none )
+
 
 
 -- SUBSCRIPTIONS
@@ -178,12 +207,12 @@ decodeWS message =
         Ok paramsMessage ->
             ReceiveParamsResponse paramsMessage
 
-        Err err ->
+        Err _ ->
             case D.decodeString resultResponseDecoder message of
                 Ok resultMessage ->
                     ReceiveResultResponse resultMessage
 
-                Err err2 ->
+                Err _ ->
                     Recv message
 
 
@@ -205,11 +234,11 @@ view { page, toMsg } model =
         { page = page
         , currentlyPlaying = model.currentlyPlaying
         , playPauseMsg = toMsg PlayPause
-        , skipMsg = toMsg (Request Input_Home Nothing)
-        , reverseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
-        , muteMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
-        , repeatMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
-        , shuffleMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing)))
+        , skipMsg = toMsg (Request Player_PlayPause Nothing) -- todo
+        , reverseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing))) -- todo
+        , muteMsg = toMsg (Request Application_SetMute (Just (Params (Just 0) Nothing Nothing)))
+        , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
+        , shuffleMsg = toMsg (Request Player_SetShuffle (Just (Params (Just 0) Nothing Nothing)))
         , controlMenu = model.controlMenu
         , controlMenuMsg = toMsg ToggleControlMenu
         , rightMenu = model.rightMenu
@@ -217,4 +246,10 @@ view { page, toMsg } model =
         , sendTextToKodiMsg = toMsg SendTextToKodi
         , scanVideoLibraryMsg = toMsg ScanMusicLibrary
         , scanMusicLibraryMsg = toMsg ScanMusicLibrary
+        , volumeSlider = Element.map toMsg (slider model.volumeSlider)
         }
+
+
+slider : SingleSlider msg -> Element msg
+slider singleSliderMsg =
+    SingleSlider.view singleSliderMsg |> Element.html
