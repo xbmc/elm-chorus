@@ -1,4 +1,4 @@
-module WSDecoder exposing (ItemDetails, ParamsResponse, Item, PlayerObj(..), PType(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
+module WSDecoder exposing (Song, ItemDetails, ParamsResponse, Item, PlayerObj(..), PType(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
 
 import Json.Decode as Decode exposing (Decoder, int, string, at, maybe, list)
 import Json.Decode.Pipeline exposing (custom, required, optional)
@@ -9,9 +9,6 @@ import Method exposing (Method(..), methodToStr, strToMethod)
 -----------------------
 
 -- Item
-
-type ItemType
-    = Song
 
 type alias Item = 
     { id : Int 
@@ -106,11 +103,14 @@ paramsResponseDecoder =
 -----------------------
 -- "result" response --
 -----------------------
-type ResultResponse = ResultA String | ResultB (List PlayerObj) | ResultC ItemDetails--| ResultD IntrospectObj
+type ResultResponse = ResultA String 
+                    | ResultB (List PlayerObj)
+                    | ResultC ItemDetails 
+                    | ResultD (List Song) --| ResultD IntrospectObj
 
 resultResponseDecoder : Decoder ResultResponse
 resultResponseDecoder =
-    Decode.oneOf [stringDecoder, listDecoder, detailDecoder]
+    Decode.oneOf [stringDecoder, listDecoder, detailDecoder, songQueryDecoder]
 
 stringDecoder : Decoder ResultResponse
 stringDecoder =
@@ -139,6 +139,22 @@ type alias ItemDetails =
     { title : String
     , duration : Int
     , thumbnail : String
+    }
+
+songQueryDecoder : Decoder ResultResponse
+songQueryDecoder =
+    Decode.succeed ResultD
+        |> custom (at ["result", "songs"] (list songDecoder))
+
+songDecoder : Decoder Song
+songDecoder =
+    Decode.succeed Song
+        |> required "label" string
+        |> required "duration" int
+
+type alias Song =
+    { label : String 
+    , duration : Int 
     }
 
 {-introspectDecoder : Decoder ResultResponse

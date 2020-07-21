@@ -6,6 +6,7 @@ port module Shared exposing
     , subscriptions
     , update
     , view
+    , sendAction
     )
 
 --modules
@@ -20,7 +21,7 @@ import Request exposing (Params, Property(..), paramsToObj, propertyToStr, reque
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (Url)
-import WSDecoder exposing (Item, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (Song, Item, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -39,12 +40,13 @@ type alias Model =
     , controlMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : ItemDetails
+    , song_list : List Song
     }
 
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( { flags = flags, url = url, key = key, rightMenu = False, controlMenu = False, players = [], currentlyPlaying = ItemDetails "" 0 "" }
+    ( { flags = flags, url = url, key = key, rightMenu = False, controlMenu = False, players = [], currentlyPlaying = ItemDetails "" 0 "", song_list = [] }
     , Cmd.none
     )
 
@@ -76,6 +78,9 @@ type Msg
     | ScanVideoLibrary
     | ScanMusicLibrary
 
+songname : Song -> String
+songname song =
+  song.label
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -138,6 +143,9 @@ update msg model =
                     ( { model | currentlyPlaying = item }
                     , Cmd.none
                     )
+
+                ResultD songlist ->
+                    ({ model | song_list = songlist}, Cmd.none)
 
         ToggleRightMenu ->
             ( { model | rightMenu = not model.rightMenu }
