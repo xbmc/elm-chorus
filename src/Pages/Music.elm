@@ -2,6 +2,8 @@ module Pages.Music exposing (Params, Model, Msg, page)
 
 import Shared exposing (sendAction)
 import Element exposing (..)
+import Element.Border as Border
+import Element.Background as Background
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
@@ -39,7 +41,7 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( {currentlyPlaying = ItemDetails "" 0 "", song_list = []}
+    ( {currentlyPlaying = shared.currentlyPlaying, song_list = shared.song_list}
     , sendAction """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "limits": { "start" : 0, "end": 25 }, "properties": [ "artist", "duration", "album", "track" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": true } }, "id": "libSongs"}"""
     )
 
@@ -49,19 +51,19 @@ init shared { params } =
 
 
 type Msg
-    = ReplaceMe
+    = PlayPause
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ReplaceMe ->
+        PlayPause ->
             ( model, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
-    shared--{shared | field = model.field}
+    shared
 
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
@@ -81,10 +83,10 @@ view model =
     { title = "Music"
     , body = 
         [ Element.text "Songs:"
-        , column [Element.width fill]
+        , column [Element.height fill, Element.width fill, scrollbars, clipY, spacingXY 5 7]
             (List.map 
                 (\song -> 
-                    row [Element.width fill] 
+                    row [Element.width fill, paddingXY 5 5, Border.width 2, Border.rounded 4, mouseOver [ Background.color <| rgb255 86 182 139 ]]--Element.Events.onClick PlayPause] 
                         [ el [] (Element.text song.label)
                         , el [alignRight] (Element.text (String.fromInt(song.duration)))
                         ]

@@ -39,7 +39,7 @@ layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, rep
             [ header
             , row [ width fill, height fill ]
                 [ el [ width (fillPortion 1), height fill ] leftSidebar
-                , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] page.body
+                , column [ width (fillPortion 20), height fill, paddingXY 0 25, scrollbars] page.body
                 , el [ width (fillPortion 1), height fill ] (rightSidebar rightMenu rightMenuMsg)
                 ]
             , player
