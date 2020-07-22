@@ -3,6 +3,7 @@ module Pages.Music exposing (Params, Model, Msg, page)
 import Shared exposing (sendAction)
 import Element exposing (..)
 import Element.Border as Border
+import Element.Events
 import Element.Background as Background
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
@@ -10,7 +11,7 @@ import Spa.Url as Url exposing (Url)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Request
-import WSDecoder exposing (Song, ItemDetails)
+import WSDecoder exposing (SongObj, ItemDetails)
 
 
 page : Page Params Model Msg
@@ -35,7 +36,7 @@ type alias Params =
 
 type alias Model =
     { currentlyPlaying : ItemDetails
-    , song_list : List Song
+    , song_list : List SongObj
     }
 
 
@@ -52,6 +53,7 @@ init shared { params } =
 
 type Msg
     = PlayPause
+    | SetCurrentlyPlaying SongObj
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -59,11 +61,17 @@ update msg model =
     case msg of
         PlayPause ->
             ( model, Cmd.none )
+        SetCurrentlyPlaying song ->
+            ( model
+            , sendAction 
+                ("""{"jsonrpc":"2.0","method":"Playlist.OnAdd","params":{"data":{"item":{"id":""" ++ String.fromInt(song.songid) ++ ""","type":"song"},"playlistid":0,"position":0},"sender":"xbmc"}}""")
+            )
+
 
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
-    shared
+    { shared | currentlyPlaying = model.currentlyPlaying, song_list = model.song_list }
 
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
@@ -86,7 +94,7 @@ view model =
         , column [Element.height fill, Element.width fill, scrollbars, clipY, spacingXY 5 7]
             (List.map 
                 (\song -> 
-                    row [Element.width fill, paddingXY 5 5, Border.width 2, Border.rounded 4, mouseOver [ Background.color <| rgb255 86 182 139 ]]--Element.Events.onClick PlayPause] 
+                    row [Element.width fill, paddingXY 5 5, Border.width 2, Border.rounded 4, mouseOver [ Background.color <| rgb255 86 182 139 ], Element.Events.onClick (SetCurrentlyPlaying song)] 
                         [ el [] (Element.text song.label)
                         , el [alignRight] (Element.text (String.fromInt(song.duration)))
                         ]

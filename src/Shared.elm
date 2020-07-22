@@ -7,6 +7,8 @@ port module Shared exposing
     , subscriptions
     , update
     , view
+    , decodeWS
+    , responseReceiver
     )
 
 --modules
@@ -21,7 +23,7 @@ import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (Url)
-import WSDecoder exposing (Item, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), Song, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (Item, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -40,7 +42,7 @@ type alias Model =
     , controlMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : ItemDetails
-    , song_list : List Song
+    , song_list : List SongObj
     , volumeSlider : SingleSlider Msg
     }
 
@@ -97,7 +99,7 @@ type Msg
     | VolumeSliderChange Float
 
 
-songname : Song -> String
+songname : SongObj -> String
 songname song =
     song.label
 
@@ -134,7 +136,7 @@ update msg model =
 
         ReceiveParamsResponse _ ->
             ( model
-            , sendAction """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
+            , Cmd.none
             )
 
         ReceiveResultResponse result ->
@@ -167,6 +169,19 @@ update msg model =
 
                 ResultD songlist ->
                     ( { model | song_list = songlist }, Cmd.none )
+
+                ResultE artistlist ->
+                  ( model
+                  , Cmd.none
+                  )
+                ResultF albumlist ->
+                  ( model
+                  , Cmd.none
+                  )
+                ResultG movielist ->
+                  ( model
+                  , Cmd.none
+                  )
 
         ToggleRightMenu ->
             ( { model | rightMenu = not model.rightMenu }
