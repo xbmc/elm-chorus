@@ -38,12 +38,13 @@ type alias Model =
     { flags : Flags
     , url : Url
     , key : Key
-    , rightMenu : Bool
+    , rightSidebarExtended : Bool
     , controlMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : ItemDetails
     , song_list : List SongObj
     , volumeSlider : SingleSlider Msg
+    , progressSlider : SingleSlider Msg
     }
 
 
@@ -52,7 +53,7 @@ init flags url key =
     ( { flags = flags
       , url = url
       , key = key
-      , rightMenu = False
+      , rightSidebarExtended = False
       , controlMenu = False
       , players = []
       , currentlyPlaying = ItemDetails "" 0 ""
@@ -64,6 +65,14 @@ init flags url key =
                 , value = 50
                 , step = 1
                 , onChange = VolumeSliderChange
+                }
+      , progressSlider =
+            SingleSlider.init
+                { min = 0
+                , max = 100
+                , value = 50
+                , step = 1
+                , onChange = ProgressSliderChange
                 }
       }
     , Cmd.none
@@ -91,12 +100,13 @@ type Msg
     | PlayPause
     | ReceiveParamsResponse ParamsResponse
     | ReceiveResultResponse ResultResponse
-    | ToggleRightMenu
+    | ToggleRightSidebar
     | ToggleControlMenu
     | SendTextToKodi
     | ScanVideoLibrary
     | ScanMusicLibrary
     | VolumeSliderChange Float
+    | ProgressSliderChange Float
 
 
 songname : SongObj -> String
@@ -169,7 +179,7 @@ update msg model =
 
                 ResultD songlist ->
                     ( { model | song_list = songlist }, Cmd.none )
-
+                    
                 ResultE artistlist ->
                   ( model
                   , Cmd.none
@@ -183,8 +193,8 @@ update msg model =
                   , Cmd.none
                   )
 
-        ToggleRightMenu ->
-            ( { model | rightMenu = not model.rightMenu }
+        ToggleRightSidebar ->
+            ( { model | rightSidebarExtended = not model.rightSidebarExtended }
             , Cmd.none
             )
 
@@ -205,12 +215,18 @@ update msg model =
             ( model, sendAction """""" )
 
         VolumeSliderChange newValue ->
-            -- todo
             let
                 newSlider =
                     SingleSlider.update newValue model.volumeSlider
             in
             ( { model | volumeSlider = newSlider }, Cmd.none )
+
+        ProgressSliderChange newValue ->
+            let
+                newSlider =
+                    SingleSlider.update newValue model.progressSlider
+            in
+            ( { model | progressSlider = newSlider }, Cmd.none )
 
 
 
@@ -247,21 +263,30 @@ view :
 view { page, toMsg } model =
     Components.layout
         { page = page
-        , currentlyPlaying = model.currentlyPlaying
-        , playPauseMsg = toMsg PlayPause
-        , skipMsg = toMsg (Request Player_PlayPause Nothing) -- todo
-        , reverseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing))) -- todo
-        , muteMsg = toMsg (Request Application_SetMute (Just (Params (Just 0) Nothing Nothing)))
-        , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
-        , shuffleMsg = toMsg (Request Player_SetShuffle (Just (Params (Just 0) Nothing Nothing)))
-        , controlMenu = model.controlMenu
-        , controlMenuMsg = toMsg ToggleControlMenu
-        , rightMenu = model.rightMenu
-        , rightMenuMsg = toMsg ToggleRightMenu
-        , sendTextToKodiMsg = toMsg SendTextToKodi
-        , scanVideoLibraryMsg = toMsg ScanMusicLibrary
-        , scanMusicLibraryMsg = toMsg ScanMusicLibrary
-        , volumeSlider = Element.map toMsg (slider model.volumeSlider)
+        , controlMenu =
+            { controlMenu = model.controlMenu
+            , controlMenuMsg = toMsg ToggleControlMenu
+            , sendTextToKodiMsg = toMsg SendTextToKodi
+            , scanMusicLibraryMsg = toMsg ScanMusicLibrary
+            , scanVideoLibraryMsg = toMsg ScanMusicLibrary
+            }
+        , playerControl =
+            { playPauseMsg = toMsg PlayPause
+            , skipMsg = toMsg (Request Player_PlayPause Nothing) -- todo
+            , reverseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing))) -- todo
+            }
+        , currentlyPlaying =
+            { currentlyPlaying = model.currentlyPlaying
+            , progressSlider = Element.map toMsg (slider model.progressSlider)
+            }
+        , volumeAndControls =
+            { muteMsg = toMsg (Request Application_SetMute (Just (Params (Just 0) Nothing Nothing)))
+            , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
+            , shuffleMsg = toMsg (Request Player_SetShuffle (Just (Params (Just 0) Nothing Nothing)))
+            , volumeSlider = Element.map toMsg (slider model.volumeSlider)
+            }
+        , rightSidebarExtended = model.rightSidebarExtended
+        , rightSidebarMsg = toMsg ToggleRightSidebar
         }
 
 
