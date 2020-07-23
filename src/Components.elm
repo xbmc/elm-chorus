@@ -8,56 +8,66 @@ import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 import FeatherIcons
-import Html exposing (Html)
 import Spa.Generated.Route as Route exposing (Route)
 import Svg.Attributes
+import Url exposing (percentEncode)
+import Url.Builder exposing (absolute, crossOrigin)
 import WSDecoder exposing (ItemDetails)
 
 
-layout :
+type alias LayoutType msg =
     { page : Document msg
-    , currentlyPlaying : ItemDetails
-    , playPauseMsg : msg
+    , controlMenu : ControlMenu msg
+    , playerControl : PlayerControl msg
+    , currentlyPlaying : CurrentlyPlaying msg
+    , volumeAndControls : VolumeAndControls msg
+    , rightSidebarExtended : Bool
+    , rightSidebarMsg : msg
+    }
+
+
+type alias PlayerControl msg =
+    { playPauseMsg : msg
     , skipMsg : msg
     , reverseMsg : msg
-    , muteMsg : msg
+    }
+
+
+type alias CurrentlyPlaying msg =
+    { currentlyPlaying : ItemDetails
+    , progressSlider : Element msg
+    }
+
+
+type alias VolumeAndControls msg =
+    { muteMsg : msg
     , repeatMsg : msg
     , shuffleMsg : msg
-    , rightMenu : Bool
-    , rightMenuMsg : msg
-    , controlMenu : Bool
+    , volumeSlider : Element msg
+    }
+
+
+type alias ControlMenu msg =
+    { controlMenu : Bool
     , controlMenuMsg : msg
     , sendTextToKodiMsg : msg
     , scanVideoLibraryMsg : msg
     , scanMusicLibraryMsg : msg
-    , volumeSlider : Element msg
     }
-    -> Document msg
-layout { page, currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, rightMenu, rightMenuMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg, volumeSlider } =
-    { title = page.title
+
+
+layout : LayoutType msg -> Document msg
+layout layoutType =
+    { title = layoutType.page.title
     , body =
         [ column [ width fill, height fill ]
             [ header
             , row [ width fill, height fill ]
                 [ el [ width (fillPortion 1), height fill ] leftSidebar
-                , column [ width (fillPortion 20), height fill, paddingXY 0 25, scrollbars] page.body
-                , el [ width (fillPortion 1), height fill ] (rightSidebar rightMenu rightMenuMsg)
+                , column [ width (fillPortion 20), height fill, paddingXY 0 25, scrollbars ] layoutType.page.body
+                , el [ width (fillPortion 1), height fill ] (rightSidebar layoutType.rightSidebarExtended layoutType.rightSidebarMsg)
                 ]
-            , player
-                { currentlyPlaying = currentlyPlaying
-                , playPauseMsg = playPauseMsg
-                , skipMsg = skipMsg
-                , reverseMsg = reverseMsg
-                , muteMsg = muteMsg
-                , repeatMsg = repeatMsg
-                , shuffleMsg = shuffleMsg
-                , controlMenu = controlMenu
-                , controlMenuMsg = controlMenuMsg
-                , sendTextToKodiMsg = sendTextToKodiMsg
-                , scanVideoLibraryMsg = scanVideoLibraryMsg
-                , scanMusicLibraryMsg = scanMusicLibraryMsg
-                , volumeSlider = volumeSlider
-                }
+            , player layoutType
             ]
         ]
     }
@@ -156,38 +166,30 @@ helpButton =
 -- Player
 
 
-player :
-    { currentlyPlaying : ItemDetails
-    , playPauseMsg : msg
-    , skipMsg : msg
-    , reverseMsg : msg
-    , muteMsg : msg
-    , repeatMsg : msg
-    , shuffleMsg : msg
-    , controlMenu : Bool
-    , controlMenuMsg : msg
-    , sendTextToKodiMsg : msg
-    , scanVideoLibraryMsg : msg
-    , scanMusicLibraryMsg : msg
-    , volumeSlider : Element msg
-    }
-    -> Element msg
-player { currentlyPlaying, playPauseMsg, skipMsg, reverseMsg, muteMsg, repeatMsg, shuffleMsg, controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg, volumeSlider } =
+player : LayoutType msg -> Element msg
+player layoutType =
     row [ height (px 70), width fill, alignBottom ]
-        [ playControlRow reverseMsg playPauseMsg skipMsg
+        [ playControlRow layoutType.playerControl
         , column [ width (px 70) ]
-            [ image [ alignLeft ]
-                { src = "https://via.placeholder.com/70"
-                , description = "Hero Image"
-                }
+            [ image [ alignLeft, width fill, height fill ]
+                (if String.isEmpty layoutType.currentlyPlaying.currentlyPlaying.thumbnail then
+                    { src = "https://via.placeholder.com/70"
+                    , description = "Hero Image"
+                    }
+
+                 else
+                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode layoutType.currentlyPlaying.currentlyPlaying.thumbnail ] []
+                    , description = "Hero Image"
+                    }
+                )
             ]
-        , currentlyPlayingColumn currentlyPlaying volumeSlider
-        , volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg muteMsg repeatMsg shuffleMsg controlMenuMsg volumeSlider
+        , currentlyPlayingColumn layoutType.currentlyPlaying
+        , volumesAndControlsColumn layoutType.volumeAndControls layoutType.controlMenu
         ]
 
 
-playControlRow : msg -> msg -> msg -> Element msg
-playControlRow reverseMsg playPauseMsg skipMsg =
+playControlRow : PlayerControl msg -> Element msg
+playControlRow { reverseMsg, playPauseMsg, skipMsg } =
     row [ height fill, width (px 300), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
         [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
         , el [ centerX ] (playButton { playPauseMsg = playPauseMsg })
@@ -195,11 +197,11 @@ playControlRow reverseMsg playPauseMsg skipMsg =
         ]
 
 
-currentlyPlayingColumn : ItemDetails -> Element msg -> Element msg
-currentlyPlayingColumn currentlyPlaying currentTrackProgress =
+currentlyPlayingColumn : CurrentlyPlaying msg -> Element msg
+currentlyPlayingColumn { currentlyPlaying, progressSlider } =
     column [ height fill, width fill ]
         [ row [ width fill, height (px 20) ]
-            [ currentTrackProgress ]
+            [ progressSlider ]
         , row
             [ height fill, width fill, Background.color Colors.black, alignBottom ]
             [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
@@ -208,10 +210,10 @@ currentlyPlayingColumn currentlyPlaying currentTrackProgress =
         ]
 
 
-volumesAndControlsColumn : Bool -> msg -> msg -> msg -> msg -> msg -> msg -> msg -> Element msg -> Element msg
-volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg muteMsg repeatMsg shuffleMsg controlMenuMsg volumeSlider =
+volumesAndControlsColumn : VolumeAndControls msg -> ControlMenu msg -> Element msg
+volumesAndControlsColumn { muteMsg, repeatMsg, shuffleMsg, volumeSlider } { controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     column [ height fill, width (px 300) ]
-        [ row (dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg ++ [ width fill, height (px 20) ]) [ volumeSlider ]
+        [ row (controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg ++ [ width fill, height (px 20) ]) [ volumeSlider ]
         , row [ width fill, height fill, Background.color (rgb 0.2 0.2 0.2), alignBottom, paddingXY 10 0, spacing 30 ]
             [ el [ centerX ] (volumeButton { muteMsg = muteMsg })
             , el [ centerX ] (repeatButton { repeatMsg = repeatMsg })
@@ -221,8 +223,8 @@ volumesAndControlsColumn controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanM
         ]
 
 
-dropUp : Bool -> msg -> msg -> msg -> List (Attribute msg)
-dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg =
+controlMenuDropUp : Bool -> msg -> msg -> msg -> List (Attribute msg)
+controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg =
     if controlMenu then
         [ Element.above
             (Element.column []
@@ -240,17 +242,17 @@ dropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg =
 
 
 rightSidebar : Bool -> msg -> Element msg
-rightSidebar rightMenu rightMenuMsg =
-    if rightMenu then
+rightSidebar rightSidebarExtended rightSidebarMsg =
+    if rightSidebarExtended then
         column
             [ height fill, Background.color (rgb 0.3 0.3 0.3), spacing 30, paddingXY 10 20, alignRight ]
-            [ Input.button [ centerX ] { onPress = Just rightMenuMsg, label = Element.text ">" }
+            [ Input.button [ centerX ] { onPress = Just rightSidebarMsg, label = Element.text ">" }
             ]
 
     else
         column
             [ height fill, Background.color (rgb 0.3 0.3 0.3), spacing 30, paddingXY 10 20, alignRight ]
-            [ Input.button [ centerX ] { onPress = Just rightMenuMsg, label = Element.text "<" }
+            [ Input.button [ centerX ] { onPress = Just rightSidebarMsg, label = Element.text "<" }
             ]
 
 
