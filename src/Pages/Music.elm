@@ -12,6 +12,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Request
 import WSDecoder exposing (SongObj, ItemDetails)
+--import Components exposing ()
 
 
 page : Page Params Model Msg
@@ -52,20 +53,19 @@ init shared { params } =
 
 
 type Msg
-    = PlayPause
-    | SetCurrentlyPlaying SongObj
+    = SetCurrentlyPlaying SongObj
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        PlayPause ->
-            ( model, Cmd.none )
         SetCurrentlyPlaying song ->
             ( model
-            , sendAction 
-                ("""{"jsonrpc":"2.0","method":"Playlist.OnAdd","params":{"data":{"item":{"id":""" ++ String.fromInt(song.songid) ++ ""","type":"song"},"playlistid":0,"position":0},"sender":"xbmc"}}""")
-            )
+            , Cmd.batch 
+                [ {-clear the queue-} (sendAction """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""")
+                , {-add the next song-} (sendAction ("""{"jsonrpc":"2.0","method":"Playlist.OnAdd","params":{"data":{"item":{"id":""" ++ String.fromInt(song.songid) ++ ""","type":"song"},"playlistid":0,"position":0},"sender":"xbmc"}}"""))
+                , {-play-} (sendAction """{"jsonrpc": "2.0", "id": 2, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""")
+            ])
 
 
 
@@ -76,7 +76,7 @@ save model shared =
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( {model | currentlyPlaying = shared.currentlyPlaying, song_list = shared.song_list} , Cmd.none )
+    ( {model | song_list = shared.song_list} , Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
