@@ -1,6 +1,6 @@
 module Pages.Music exposing (Params, Model, Msg, page)
 
-import Shared exposing (sendAction)
+import Shared exposing (sendAction, sendActions)
 import Element exposing (..)
 import Element.Border as Border
 import Element.Events
@@ -61,12 +61,11 @@ update msg model =
     case msg of
         SetCurrentlyPlaying song ->
             ( model
-            , Cmd.batch 
-                [ {-clear the queue-} (sendAction """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""")
-                , {-add the next song-} (sendAction ("""{"jsonrpc":"2.0","method":"Playlist.OnAdd","params":{"data":{"item":{"id":""" ++ String.fromInt(song.songid) ++ ""","type":"song"},"playlistid":0,"position":0},"sender":"xbmc"}}"""))
-                , {-play-} (sendAction """{"jsonrpc": "2.0", "id": 2, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""")
+            , sendActions 
+                [ {-clear the queue-} """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}"""
+                , {-add the next song-}("""{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"songid": """ ++ String.fromInt(song.songid) ++ """}}}""")
+                , {-play-} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
             ])
-
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -94,7 +93,7 @@ view model =
         , column [Element.height fill, Element.width fill, scrollbars, clipY, spacingXY 5 7]
             (List.map 
                 (\song -> 
-                    row [Element.width fill, paddingXY 5 5, Border.width 2, Border.rounded 4, mouseOver [ Background.color <| rgb255 86 182 139 ], Element.Events.onClick (SetCurrentlyPlaying song)] 
+                    row [Element.width fill, paddingXY 5 5, Border.width 2, Border.rounded 4, mouseOver [ Background.color <| rgb255 86 182 139 ], Element.Events.onDoubleClick (SetCurrentlyPlaying song)] 
                         [ el [] (Element.text song.label)
                         , el [alignRight] (Element.text (String.fromInt(song.duration)))
                         ]

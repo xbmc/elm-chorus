@@ -4,6 +4,7 @@ port module Shared exposing
     , Msg
     , init
     , sendAction
+    , sendActions
     , subscriptions
     , update
     , view
@@ -83,8 +84,11 @@ init flags url key =
 -- PORTS
 
 
-port sendAction : String -> Cmd msg
+port sendActions : List String -> Cmd msg
 
+--single cmd
+sendAction json =
+    sendActions [json]
 
 port responseReceiver : (String -> msg) -> Sub msg
 

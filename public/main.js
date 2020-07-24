@@ -9,8 +9,12 @@ var socket = new WebSocket("ws://localhost:9090");
 
 // When a command goes to the `sendMessage` port, we pass the message
 // along to the WebSocket.
-app.ports.sendAction.subscribe(function (action) {
-	socket.send(action);
+app.ports.sendActions.subscribe(function (action) {
+	var actionListLength = action.length;
+	for (var i = 0; i < actionListLength; i++) {
+    	socket.send(action[i]);
+    	console.log(action[i]);
+	}
 });
 
 // When a message comes into our WebSocket, we pass the message along
