@@ -146,7 +146,7 @@ update msg model =
 
         ReceiveParamsResponse _ ->
             ( model
-            , Cmd.none
+            , sendAction """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
             )
 
         ReceiveResultResponse result ->
