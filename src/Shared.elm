@@ -71,7 +71,7 @@ init flags url key =
             SingleSlider.init
                 { min = 0
                 , max = 100
-                , value = 50
+                , value = 1
                 , step = 1
                 , onChange = ProgressSliderChange
                 }
@@ -150,7 +150,10 @@ update msg model =
 
         ReceiveParamsResponse _ ->
             ( model
-            , sendAction """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
+            , sendActions 
+                [ """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
+                , """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":1,"properties":["percentage"]},"id":"0"}"""
+                ]
             )
 
         ReceiveResultResponse result ->
@@ -196,6 +199,13 @@ update msg model =
                   ( model
                   , Cmd.none
                   )
+                ResultH percent ->
+                    --TODO slider
+                    let
+                        newSlider =
+                            SingleSlider.update percent model.progressSlider
+                    in
+                    ( { model | progressSlider = newSlider }, Cmd.none )
 
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }

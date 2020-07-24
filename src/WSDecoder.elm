@@ -1,6 +1,6 @@
 module WSDecoder exposing (ArtistObj, SongObj, ItemDetails, ParamsResponse, Item, PlayerObj(..), PType(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
 
-import Json.Decode as Decode exposing (Decoder, int, string, at, maybe, list)
+import Json.Decode as Decode exposing (Decoder, int, string, at, maybe, list, float)
 import Json.Decode.Pipeline exposing (custom, required, optional)
 import Method exposing (Method(..), methodToStr, strToMethod)
 
@@ -110,6 +110,7 @@ type ResultResponse = ResultA String
                     | ResultE (List ArtistObj)
                     | ResultF (List AlbumObj)
                     | ResultG (List MovieObj)
+                    | ResultH Float
 
 --main decoder which tries everyone else
 resultResponseDecoder : Decoder ResultResponse
@@ -148,7 +149,7 @@ type alias ItemDetails =
 --queries decoder
 queryDecoder : Decoder ResultResponse
 queryDecoder = 
-    Decode.oneOf [songQueryDecoder, artistQueryDecoder, albumQueryDecoder, movieQueryDecoder]
+    Decode.oneOf [percentDecoder, songQueryDecoder, artistQueryDecoder, albumQueryDecoder, movieQueryDecoder]
 
 songQueryDecoder : Decoder ResultResponse
 songQueryDecoder =
@@ -223,6 +224,11 @@ type alias MovieObj =
     , movieid : Int
     , thumbnail : String
     }
+
+percentDecoder : Decoder ResultResponse
+percentDecoder =
+    Decode.succeed ResultH
+        |> custom (at ["result", "percentage"] float)
 
 {-introspectDecoder : Decoder ResultResponse
 introspectDecoder =
