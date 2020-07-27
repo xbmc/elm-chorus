@@ -1,13 +1,14 @@
 module Components exposing (layout)
 
-import Colors
+import Colors exposing (greyIcon, lightBlack)
 import Document exposing (Document)
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
-import Element.Font as Font
+import Element.Font as Font exposing (center)
 import Element.Input as Input
-import FeatherIcons
+import Material.Icons as Filled
+import Material.Icons.Types as MITypes exposing (Coloring(..), Icon)
 import Spa.Generated.Route as Route exposing (Route)
 import Svg.Attributes
 import Url exposing (percentEncode)
@@ -60,11 +61,11 @@ layout : LayoutType msg -> Document msg
 layout layoutType =
     { title = layoutType.page.title
     , body =
-        [ column [ width fill, height fill ]
+        [ column [ width fill, height fill, clip ]
             [ header
             , row [ width fill, height fill ]
                 [ el [ width (fillPortion 1), height fill ] leftSidebar
-                , column [ width (fillPortion 20), height fill, paddingXY 0 25, scrollbars ] layoutType.page.body
+                , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] layoutType.page.body
                 , el [ width (fillPortion 1), height fill ] (rightSidebar layoutType.rightSidebarExtended layoutType.rightSidebarMsg)
                 ]
             , player layoutType
@@ -107,8 +108,8 @@ leftSidebar =
         ]
 
 
-featherLink : ( FeatherIcons.Icon, Route ) -> Element msg
-featherLink ( icon, route ) =
+materialLink : ( Icon msg, Route ) -> Element msg
+materialLink ( icon, route ) =
     el
         [ Element.mouseOver
             [ scale 1.1
@@ -118,7 +119,7 @@ featherLink ( icon, route ) =
     <|
         Element.link []
             { url = Route.toString route
-            , label = Element.html (icon |> FeatherIcons.withSize 24 |> FeatherIcons.toHtml [])
+            , label = Element.html (icon 24 Inherit)
             }
 
 
@@ -127,39 +128,39 @@ featherLink ( icon, route ) =
 
 
 musicButton =
-    featherLink ( FeatherIcons.music, Route.Music )
+    materialLink ( Filled.library_music, Route.Music )
 
 
 movieButton =
-    featherLink ( FeatherIcons.video, Route.Movies )
+    materialLink ( Filled.movie, Route.Movies )
 
 
 tvshowButton =
-    featherLink ( FeatherIcons.tv, Route.Tvshows )
+    materialLink ( Filled.tv, Route.Tvshows )
 
 
 browserButton =
-    featherLink ( FeatherIcons.menu, Route.Browser )
+    materialLink ( Filled.menu, Route.Browser )
 
 
 addonsButton =
-    featherLink ( FeatherIcons.package, Route.Addons )
+    materialLink ( Filled.extension, Route.Addons )
 
 
 thumbsupButton =
-    featherLink ( FeatherIcons.thumbsUp, Route.Thumbsup )
+    materialLink ( Filled.thumb_up, Route.Top )
 
 
 playlistButton =
-    featherLink ( FeatherIcons.clipboard, Route.Playlists )
+    materialLink ( Filled.assignment, Route.Top )
 
 
 settingsButton =
-    featherLink ( FeatherIcons.settings, Route.Settings__Web )
+    materialLink ( Filled.settings, Route.Top )
 
 
 helpButton =
-    featherLink ( FeatherIcons.helpCircle, Route.Help )
+    materialLink ( Filled.help, Route.Top )
 
 
 
@@ -190,10 +191,10 @@ player layoutType =
 
 playControlRow : PlayerControl msg -> Element msg
 playControlRow { reverseMsg, playPauseMsg, skipMsg } =
-    row [ height fill, width (px 300), Background.color (rgb 0.2 0.2 0.2), alignBottom, padding 10, spacing 30 ]
-        [ el [ centerX ] (reverseButton { reverseMsg = reverseMsg })
-        , el [ centerX ] (playButton { playPauseMsg = playPauseMsg })
-        , el [ centerX ] (skipButton { skipMsg = skipMsg })
+    row [ height fill, width (px 300), Background.color (rgb 0.2 0.2 0.2), alignBottom, center, spaceEvenly ]
+        [ el [ padding 10 ] (reverseButton { reverseMsg = reverseMsg })
+        , el [] (playButton { playPauseMsg = playPauseMsg })
+        , el [ padding 10 ] (skipButton { skipMsg = skipMsg })
         ]
 
 
@@ -256,27 +257,37 @@ rightSidebar rightSidebarExtended rightSidebarMsg =
             ]
 
 
-featherButton : ( FeatherIcons.Icon, msg ) -> Element msg
-featherButton ( icon, action ) =
+materialButtonBig : ( Icon msg, msg ) -> Element msg
+materialButtonBig ( icon, action ) =
     Input.button []
         { onPress = Just action
-        , label = Element.html (icon |> FeatherIcons.withSize 36 |> FeatherIcons.toHtml [ Svg.Attributes.color "lightgrey" ])
+        , label = Element.html (icon 62 (MITypes.Color <| greyIcon))
+        }
+
+
+materialButton : ( Icon msg, msg ) -> Element msg
+materialButton ( icon, action ) =
+    Input.button []
+        { onPress = Just action
+        , label =
+            Element.html
+                (icon 32 (MITypes.Color <| greyIcon))
         }
 
 
 reverseButton : { reverseMsg : msg } -> Element msg
 reverseButton { reverseMsg } =
-    featherButton ( FeatherIcons.skipBack, reverseMsg )
+    materialButtonBig ( Filled.skip_previous, reverseMsg )
 
 
 playButton : { playPauseMsg : msg } -> Element msg
 playButton { playPauseMsg } =
-    featherButton ( FeatherIcons.play, playPauseMsg )
+    materialButtonBig ( Filled.play_arrow, playPauseMsg )
 
 
 skipButton : { skipMsg : msg } -> Element msg
 skipButton { skipMsg } =
-    featherButton ( FeatherIcons.skipForward, skipMsg )
+    materialButtonBig ( Filled.skip_next, skipMsg )
 
 
 
@@ -291,22 +302,22 @@ skipButton { skipMsg } =
 
 volumeButton : { muteMsg : msg } -> Element msg
 volumeButton { muteMsg } =
-    featherButton ( FeatherIcons.volume2, muteMsg )
+    materialButton ( Filled.volume_up, muteMsg )
 
 
 repeatButton : { repeatMsg : msg } -> Element msg
 repeatButton { repeatMsg } =
-    featherButton ( FeatherIcons.repeat, repeatMsg )
+    materialButton ( Filled.repeat, repeatMsg )
 
 
 shuffleButton : { shuffleMsg : msg } -> Element msg
 shuffleButton { shuffleMsg } =
-    featherButton ( FeatherIcons.shuffle, shuffleMsg )
+    materialButton ( Filled.shuffle, shuffleMsg )
 
 
 controlButton : { controlMenuMsg : msg } -> Element msg
 controlButton { controlMenuMsg } =
-    featherButton ( FeatherIcons.moreVertical, controlMenuMsg )
+    materialButton ( Filled.more_vert, controlMenuMsg )
 
 
 
