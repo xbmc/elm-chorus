@@ -2,14 +2,14 @@ port module Shared exposing
     ( Flags
     , Model
     , Msg
+    , decodeWS
     , init
+    , responseReceiver
     , sendAction
     , sendActions
     , subscriptions
     , update
     , view
-    , decodeWS
-    , responseReceiver
     )
 
 --modules
@@ -32,7 +32,9 @@ import WSDecoder exposing (Item, ItemDetails, PType(..), ParamsResponse, PlayerO
 
 
 type alias Flags =
-    ()
+    { innerWidth : Int
+    , innerHeight : Int
+    }
 
 
 type alias Model =
@@ -46,6 +48,8 @@ type alias Model =
     , song_list : List SongObj
     , volumeSlider : SingleSlider Msg
     , progressSlider : SingleSlider Msg
+    , windowWidth : Int
+    , windowHeight : Int
     }
 
 
@@ -75,6 +79,8 @@ init flags url key =
                 , step = 1
                 , onChange = ProgressSliderChange
                 }
+      , windowWidth = flags.innerWidth
+      , windowHeight = flags.innerHeight
       }
     , Cmd.none
     )
@@ -86,9 +92,14 @@ init flags url key =
 
 port sendActions : List String -> Cmd msg
 
+
+
 --single cmd
+
+
 sendAction json =
-    sendActions [json]
+    sendActions [ json ]
+
 
 port responseReceiver : (String -> msg) -> Sub msg
 
@@ -150,7 +161,7 @@ update msg model =
 
         ReceiveParamsResponse _ ->
             ( model
-            , sendActions 
+            , sendActions
                 [ """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
                 , """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":1,"properties":["percentage"]},"id":"0"}"""
                 ]
@@ -186,19 +197,22 @@ update msg model =
 
                 ResultD songlist ->
                     ( { model | song_list = songlist }, Cmd.none )
-                    
+
                 ResultE artistlist ->
-                  ( model
-                  , Cmd.none
-                  )
+                    ( model
+                    , Cmd.none
+                    )
+
                 ResultF albumlist ->
-                  ( model
-                  , Cmd.none
-                  )
+                    ( model
+                    , Cmd.none
+                    )
+
                 ResultG movielist ->
-                  ( model
-                  , Cmd.none
-                  )
+                    ( model
+                    , Cmd.none
+                    )
+
                 ResultH percent ->
                     --TODO slider
                     let
@@ -301,6 +315,7 @@ view { page, toMsg } model =
             }
         , rightSidebarExtended = model.rightSidebarExtended
         , rightSidebarMsg = toMsg ToggleRightSidebar
+        , windowHeight = model.windowHeight
         }
 
 

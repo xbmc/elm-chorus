@@ -24,6 +24,7 @@ type alias LayoutType msg =
     , volumeAndControls : VolumeAndControls msg
     , rightSidebarExtended : Bool
     , rightSidebarMsg : msg
+    , windowHeight : Int
     }
 
 
@@ -65,7 +66,7 @@ layout layoutType =
             [ header
             , row [ width fill, height fill ]
                 [ el [ width (fillPortion 1), height fill ] leftSidebar
-                , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] layoutType.page.body
+                , column [ width (fillPortion 20), height (px (calculateBodyHeight layoutType.windowHeight)), scrollbars, paddingXY 0 25 ] layoutType.page.body
                 , el [ width (fillPortion 1), height fill ] (rightSidebar layoutType.rightSidebarExtended layoutType.rightSidebarMsg)
                 ]
             , player layoutType
@@ -74,9 +75,17 @@ layout layoutType =
     }
 
 
+calculateBodyHeight windowHeight =
+    windowHeight - playerHeight - headerHeight
+
+
+headerHeight =
+    30
+
+
 header : Element msg
 header =
-    row [ width fill, Background.color (rgb 0.1 0.1 0.1), spacing 10, padding 0 ]
+    row [ width fill, height (px headerHeight), Background.color (rgb 0.1 0.1 0.1) ]
         [ Element.link []
             { label =
                 image [ width (px 50) ]
@@ -167,11 +176,15 @@ helpButton =
 -- Player
 
 
+playerHeight =
+    70
+
+
 player : LayoutType msg -> Element msg
 player layoutType =
-    row [ height (px 70), width fill, alignBottom ]
+    row [ height (px playerHeight), width fill, alignBottom ]
         [ playControlRow layoutType.playerControl
-        , column [ width (px 70) ]
+        , column [ width (px playerHeight) ]
             [ image [ alignLeft, width fill, height fill ]
                 (if String.isEmpty layoutType.currentlyPlaying.currentlyPlaying.thumbnail then
                     { src = "https://via.placeholder.com/70"
