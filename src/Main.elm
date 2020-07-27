@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Browser
+import Browser.Events exposing (onResize)
 import Browser.Navigation as Nav
 import Shared exposing (Flags)
 import Spa.Document as Document exposing (Document)
@@ -57,6 +58,7 @@ type Msg
     | UrlChanged Url
     | Shared Shared.Msg
     | Pages Pages.Msg
+    | GotNewSize Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -114,6 +116,15 @@ update msg model =
             , Cmd.map Pages pageCmd
             )
 
+        GotNewSize width height ->
+            let
+                shared =
+                    model.shared
+            in
+            ( { model | shared = { shared | windowWidth = width, windowHeight = height } }
+            , Cmd.none
+            )
+
 
 view : Model -> Document Msg
 view model =
@@ -133,6 +144,7 @@ subscriptions model =
             |> Sub.map Shared
         , Pages.subscriptions model.page
             |> Sub.map Pages
+        , onResize (\w h -> GotNewSize w h)
         ]
 
 
