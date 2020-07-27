@@ -21,11 +21,11 @@ map fn doc =
     }
 
 
-toBrowserDocument : Document msg -> Browser.Document msg
-toBrowserDocument doc =
-    { title = doc.title
+toBrowserDocument : { body : Document msg, header : Element msg, playerBar : Element msg } -> Browser.Document msg
+toBrowserDocument { body, header, playerBar } =
+    { title = body.title
     , body =
-        [ Element.layout [ width fill, height fill ]
-            (column [ width fill, height fill ] doc.body)
+        [ Element.layout [ width fill, height fill, inFront header, inFront playerBar ]
+            (column [ width fill, height fill ] body.body)
         ]
     }
