@@ -100,7 +100,7 @@ leftSidebar =
         , tvshowButton
         , browserButton
         , addonsButton
-        , likesButton
+        , thumbsupButton
         , playlistButton
         , settingsButton
         , helpButton
@@ -135,7 +135,7 @@ movieButton =
 
 
 tvshowButton =
-    featherLink ( FeatherIcons.tv, Route.TVShows )
+    featherLink ( FeatherIcons.tv, Route.Tvshows )
 
 
 browserButton =
@@ -146,20 +146,20 @@ addonsButton =
     featherLink ( FeatherIcons.package, Route.Addons )
 
 
-likesButton =
-    featherLink ( FeatherIcons.thumbsUp, Route.Top )
+thumbsupButton =
+    featherLink ( FeatherIcons.thumbsUp, Route.Thumbsup )
 
 
 playlistButton =
-    featherLink ( FeatherIcons.clipboard, Route.Top )
+    featherLink ( FeatherIcons.clipboard, Route.Playlists )
 
 
 settingsButton =
-    featherLink ( FeatherIcons.settings, Route.Top )
+    featherLink ( FeatherIcons.settings, Route.Settings__Web )
 
 
 helpButton =
-    featherLink ( FeatherIcons.helpCircle, Route.Top )
+    featherLink ( FeatherIcons.helpCircle, Route.Help )
 
 
 
@@ -231,8 +231,8 @@ controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLib
                 [ Input.button [] { onPress = Just sendTextToKodiMsg, label = Element.text "Scan video library" }
                 , Input.button [] { onPress = Just scanVideoLibraryMsg, label = Element.text "Scan audio library" }
                 , Input.button [] { onPress = Just scanMusicLibraryMsg, label = Element.text "Send text to Kodi" }
-                , Element.link [] { url = "lab", label = Element.text "The lab" }
-                , Element.link [] { url = "help", label = Element.text "About Chorus" }
+                , link ( "The lab", Route.Lab )
+                , link ( "About Chorus", Route.Help )
                 ]
             )
         ]
