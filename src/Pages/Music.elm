@@ -14,6 +14,7 @@ import Material.Icons.Types as MITypes exposing (Icon)
 import Request
 import Shared exposing (sendAction, sendActions)
 import Spa.Document exposing (Document)
+import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Svg.Attributes
@@ -101,6 +102,33 @@ materialButton ( icon, action ) =
         }
 
 
+menuBar =
+    column [ Element.height fill, Element.width (fillPortion 1)]
+        [ Element.link []
+            { url = Route.toString Route.Music
+            , label = Element.text "Music"
+            }
+        , Element.link []
+            { url = Route.toString Route.Music__Genres
+            , label = Element.text "Genres"
+            }
+        , Element.link []
+            { url = Route.toString Route.Music__Genres
+            , label = Element.text "Top Music"
+            }
+        , Element.link []
+            { url = Route.toString Route.Music__Artists
+            , label = Element.text "Artists"
+            }
+        , Element.link []
+            { url = Route.toString Route.Music__Albums
+            , label = Element.text "Albums"
+            }
+        , Element.link []
+            { url = Route.toString Route.Music__Videos
+            , label = Element.text "Videos"
+            }
+        ]
 
 -- VIEW
 
@@ -109,26 +137,28 @@ view : Model -> Document Msg
 view model =
     { title = "Music"
     , body =
-        [ Element.text "Songs:"
-        , column [ Element.height fill, Element.width fill, spacingXY 5 7 ]
-            (List.map
-                (\song ->
-                    row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
-                        [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
-                        , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
-                        , el [ Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text song.label)
-                        , row [ alignRight ]
-                            (List.map
-                                (\artist ->
-                                    el [ Font.color (Element.rgb 0.8 0.8 0.8), paddingXY 5 0 ] (Element.text artist)
+        [ row [ Element.height fill, Element.width fill] 
+            [ menuBar
+            , column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7 ]
+                (List.map
+                    (\song ->
+                        row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
+                            [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
+                            , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
+                            , el [ Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text song.label)
+                            , row [ alignRight ]
+                                (List.map
+                                    (\artist ->
+                                        el [ Font.color (Element.rgb 0.8 0.8 0.8), paddingXY 5 0 ] (Element.text artist)
+                                    )
+                                    song.artist
                                 )
-                                song.artist
-                            )
-                        , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text (String.fromInt song.duration))
-                        , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
-                        ]
+                            , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text (String.fromInt song.duration))
+                            , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
+                            ]
+                    )
+                    model.song_list
                 )
-                model.song_list
-            )
+            ]
         ]
     }
