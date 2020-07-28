@@ -1,4 +1,4 @@
-module Components.PlayerRow exposing (view)
+module Components.PlayerRow exposing (playerHeight, view)
 
 import Colors exposing (greyIcon)
 import Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)

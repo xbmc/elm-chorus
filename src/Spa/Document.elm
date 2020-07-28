@@ -25,12 +25,7 @@ toBrowserDocument : { body : Document msg, header : Element msg, playerBar : Ele
 toBrowserDocument { body, header, playerBar, rightSidebar } =
     { title = body.title
     , body =
-        [ Element.layout [ width fill, height fill, inFront (headerAndSidebar header rightSidebar), inFront playerBar ]
+        [ Element.layout [ width fill, height fill, inFront header, inFront playerBar, inFront rightSidebar ]
             (column [ width fill, height fill ] body.body)
         ]
     }
-
-
-headerAndSidebar : Element msg -> Element msg -> Element msg
-headerAndSidebar header rightSidebar =
-    Element.row [ width fill, height fill ] [ header, rightSidebar ]
