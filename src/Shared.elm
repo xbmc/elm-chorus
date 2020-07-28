@@ -15,7 +15,7 @@ port module Shared exposing
 --modules
 
 import Browser.Navigation exposing (Key, pushUrl)
-import Components
+import Components.Frame
 import Element exposing (..)
 import Json.Decode as D
 import Method exposing (Method(..))
@@ -24,7 +24,7 @@ import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (Url)
-import WSDecoder exposing (Item, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -50,6 +50,7 @@ type alias Model =
     , progressSlider : SingleSlider Msg
     , windowWidth : Int
     , windowHeight : Int
+    , searchString : String
     }
 
 
@@ -81,6 +82,7 @@ init flags url key =
                 }
       , windowWidth = flags.innerWidth
       , windowHeight = flags.innerHeight
+      , searchString = ""
       }
     , Cmd.none
     )
@@ -122,6 +124,7 @@ type Msg
     | ScanMusicLibrary
     | VolumeSliderChange Float
     | ProgressSliderChange Float
+    | SearchChanged String
 
 
 songname : SongObj -> String
@@ -198,17 +201,17 @@ update msg model =
                 ResultD songlist ->
                     ( { model | song_list = songlist }, Cmd.none )
 
-                ResultE artistlist ->
+                ResultE _ ->
                     ( model
                     , Cmd.none
                     )
 
-                ResultF albumlist ->
+                ResultF _ ->
                     ( model
                     , Cmd.none
                     )
 
-                ResultG movielist ->
+                ResultG _ ->
                     ( model
                     , Cmd.none
                     )
@@ -256,6 +259,9 @@ update msg model =
             in
             ( { model | progressSlider = newSlider }, Cmd.none )
 
+        SearchChanged searchString ->
+            ( { model | searchString = searchString }, Cmd.none )
+
 
 
 -- SUBSCRIPTIONS
@@ -289,7 +295,7 @@ view :
     -> Model
     -> { body : Document msg, header : Element msg, playerBar : Element msg }
 view { page, toMsg } model =
-    Components.layout
+    Components.Frame.layout
         { page = page
         , controlMenu =
             { controlMenu = model.controlMenu
@@ -316,6 +322,7 @@ view { page, toMsg } model =
         , rightSidebarExtended = model.rightSidebarExtended
         , rightSidebarMsg = toMsg ToggleRightSidebar
         , windowHeight = model.windowHeight
+        , searchChanged = toMsg (SearchChanged "")
         }
 
 

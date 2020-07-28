@@ -4,9 +4,19 @@ import Color
 import Element
 
 
+white : Element.Color
+white =
+    Element.rgb255 255 255 255
+
+
 lightBlack : Element.Color
 lightBlack =
     Element.rgb255 51 51 51
+
+
+grey : Element.Color
+grey =
+    Element.rgb255 200 200 200
 
 
 greyIcon : Color.Color
