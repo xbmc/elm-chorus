@@ -10,7 +10,7 @@ import Material.Icons.Types exposing (Coloring(..))
 import Spa.Document exposing (Document)
 
 
-layout : LayoutType msg -> { body : Document msg, header : Element msg, playerBar : Element msg }
+layout : LayoutType msg -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg }
 layout layoutType =
     { body =
         { title = layoutType.page.title
@@ -21,11 +21,11 @@ layout layoutType =
                     [ width fill, height fill ]
                     [ el [ width (fillPortion 1), height fill ] LeftSidebar.view
                     , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] layoutType.page.body
-                    , el [ width (fillPortion 1), height fill ] (RightSidebar.view layoutType.rightSidebarExtended layoutType.rightSidebarMsg)
                     ]
                 ]
             ]
         }
     , header = Header.view layoutType.searchChanged
     , playerBar = PlayerRow.view layoutType
+    , rightSidebar = RightSidebar.view layoutType.rightSidebarExtended layoutType.rightSidebarMsg
     }

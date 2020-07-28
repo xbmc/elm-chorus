@@ -293,7 +293,7 @@ subscriptions _ =
 view :
     { page : Document msg, toMsg : Msg -> msg }
     -> Model
-    -> { body : Document msg, header : Element msg, playerBar : Element msg }
+    -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg }
 view { page, toMsg } model =
     Components.Frame.layout
         { page = page

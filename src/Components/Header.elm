@@ -1,9 +1,9 @@
 module Components.Header exposing (headerHeight, view)
 
 import Colors
-import Element exposing (Element, el, fill, height, image, px, row, text, width)
+import Element exposing (Element, alignTop, el, fill, height, image, px, row, text, width)
 import Element.Background as Background
-import Element.Font as Font
+import Element.Font as Font exposing (alignRight)
 import Spa.Generated.Route as Route
 
 
@@ -14,7 +14,7 @@ headerHeight =
 
 view : msg -> Element msg
 view searchChanged =
-    row [ width fill, height (px headerHeight), Background.color Colors.black ]
+    row [ width fill, alignTop, height (px headerHeight), Background.color Colors.black ]
         [ Element.link []
             { label =
                 image [ width (px 50) ]
