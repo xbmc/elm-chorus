@@ -1,7 +1,6 @@
 module Components exposing (layout)
 
 import Colors exposing (greyIcon, lightBlack)
-import Document exposing (Document)
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -9,6 +8,7 @@ import Element.Font as Font exposing (center)
 import Element.Input as Input
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Coloring(..), Icon)
+import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Svg.Attributes
 import Url exposing (percentEncode)
@@ -58,20 +58,24 @@ type alias ControlMenu msg =
     }
 
 
-layout : LayoutType msg -> Document msg
+layout : LayoutType msg -> { body : Document msg, header : Element msg, playerBar : Element msg }
 layout layoutType =
-    { title = layoutType.page.title
-    , body =
-        [ column [ width fill, height fill, clip ]
-            [ header
-            , row [ width fill, height fill ]
-                [ el [ width (fillPortion 1), height fill ] leftSidebar
-                , column [ width (fillPortion 20), height (px (calculateBodyHeight layoutType.windowHeight)), scrollbars, paddingXY 0 25 ] layoutType.page.body
-                , el [ width (fillPortion 1), height fill ] (rightSidebar layoutType.rightSidebarExtended layoutType.rightSidebarMsg)
+    { body =
+        { title = layoutType.page.title
+        , body =
+            [ column [ width fill, height fill ]
+                [ el [ height (px headerHeight) ] Element.none
+                , row
+                    [ width fill, height fill ]
+                    [ el [ width (fillPortion 1), height fill ] leftSidebar
+                    , column [ width (fillPortion 20), height fill, paddingXY 0 25 ] layoutType.page.body
+                    , el [ width (fillPortion 1), height fill ] (rightSidebar layoutType.rightSidebarExtended layoutType.rightSidebarMsg)
+                    ]
                 ]
-            , player layoutType
             ]
-        ]
+        }
+    , header = header
+    , playerBar = player layoutType
     }
 
 

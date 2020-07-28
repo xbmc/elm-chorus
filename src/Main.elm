@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser
 import Browser.Events exposing (onResize)
 import Browser.Navigation as Nav
+import Element exposing (Element)
 import Shared exposing (Flags)
 import Spa.Document as Document exposing (Document)
 import Spa.Generated.Pages as Pages
@@ -126,7 +127,7 @@ update msg model =
             )
 
 
-view : Model -> Document Msg
+view : Model -> { body : Document Msg, header : Element Msg, playerBar : Element Msg }
 view model =
     Shared.view
         { page =

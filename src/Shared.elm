@@ -287,7 +287,7 @@ subscriptions _ =
 view :
     { page : Document msg, toMsg : Msg -> msg }
     -> Model
-    -> Document msg
+    -> { body : Document msg, header : Element msg, playerBar : Element msg }
 view { page, toMsg } model =
     Components.layout
         { page = page
