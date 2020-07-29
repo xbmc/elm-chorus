@@ -18,12 +18,13 @@ import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Svg.Attributes
-import WSDecoder exposing (MovieObj, ItemDetails)
 import Url exposing (percentEncode)
 import Url.Builder exposing (crossOrigin)
+import WSDecoder exposing (ItemDetails, MovieObj)
+
+
+
 --import MovieItem exposing ()
-
-
 --import Components exposing ()
 
 
@@ -66,7 +67,7 @@ init shared { params } =
 
 type Msg
     = SetCurrentlyPlaying MovieObj
-    | Derp
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -80,8 +81,9 @@ update msg model =
                 , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
                 ]
             )
-        Derp ->
-            (model, Cmd.none)
+
+        NoOp ->
+            ( model, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -106,32 +108,39 @@ materialButton ( icon, action ) =
         , label = Element.html (icon 24 (MITypes.Color <| greyIcon))
         }
 
+
 constructMovieItem : MovieObj -> Element Msg
 constructMovieItem movie =
-        column [ paddingXY 5 5] 
-            [ (image  [Element.width (fill |> minimum 150 |> maximum 150)
-                , Element.height (fill |> minimum 200 |> maximum 200)
-                , inFront (row []
-                            [ materialButton ( Filled.play_arrow, Derp )]
-                            )
-                {-, Element.Events.onMouseEnter ShowMenu
-                , Element.Events.onMouseLeave CloseMenu-}
-                ]
-                (if String.isEmpty movie.thumbnail then
-                    { src = "https://via.placeholder.com/70"
-                    , description = "Hero Image"
-                    }
-                else
-                    { description = movie.label
-                    , src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
-                    }
-                ))
-            , column [ paddingXY 5 5, Background.color (rgb 1 1 1), Element.width fill] (
-                [ el [ Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text movie.label)
-                , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text "2020")
-                ]
+    column [ paddingXY 5 5 ]
+        [ image
+            [ Element.width (fill |> minimum 150 |> maximum 150)
+            , Element.height (fill |> minimum 200 |> maximum 200)
+            , inFront
+                (row []
+                    [ materialButton ( Filled.play_arrow, NoOp ) ]
+                )
+
+            {- , Element.Events.onMouseEnter ShowMenu
+               , Element.Events.onMouseLeave CloseMenu
+            -}
+            ]
+            (if String.isEmpty movie.thumbnail then
+                { src = "https://via.placeholder.com/70"
+                , description = "Hero Image"
+                }
+
+             else
+                { description = movie.label
+                , src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
+                }
             )
+        , column [ paddingXY 5 5, Background.color (rgb 1 1 1), Element.width (fill |> minimum 150 |> maximum 150), clip ]
+            [ el [ Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text movie.label)
+            , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text "2020")
+            ]
         ]
+
+
 
 -- VIEW
 
@@ -140,7 +149,7 @@ view : Model -> Document Msg
 view model =
     { title = "Movies"
     , body =
-        [ wrappedRow [ Element.height fill, Element.width fill, Background.color (rgb 0.8 0.8 0.8)]
+        [ wrappedRow [ Element.height fill, Element.width fill, Background.color (rgb 0.8 0.8 0.8) ]
             (List.map
                 (\movie ->
                     constructMovieItem movie
