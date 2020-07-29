@@ -32,7 +32,7 @@ itemDecoder =
 
 type PType
     = Audio
-    | Picture
+    | Video
 
 
 parsePType : String -> Result String PType
@@ -41,8 +41,8 @@ parsePType string =
         "audio" ->
             Ok Audio
 
-        "picture" ->
-            Ok Picture
+        "video" ->
+            Ok Video
 
         _ ->
             Err ("Invalid direction: " ++ string)

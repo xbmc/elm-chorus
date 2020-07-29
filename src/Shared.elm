@@ -25,7 +25,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (Url)
 import WSDecoder exposing (ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
-
+import Time
 
 
 -- INIT
@@ -105,7 +105,7 @@ sendAction json =
 
 port responseReceiver : (String -> msg) -> Sub msg
 
-port websocketConnected : (String -> msg) -> Sub msg
+port connection : (String -> msg) -> Sub msg
 
 
 
@@ -117,6 +117,7 @@ type Msg
     | Request Method (Maybe Params)
     | Recv String
     | PlayPause
+    | QueryPlayers Time.Posix
     | ReceiveParamsResponse ParamsResponse
     | ReceiveResultResponse ResultResponse
     | ToggleRightSidebar
@@ -164,6 +165,11 @@ update msg model =
             , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
             )
 
+        QueryPlayers _->
+            (model
+            , sendAction """{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}"""
+            )
+
         ReceiveParamsResponse _ ->
             ( model
             , sendActions
@@ -192,23 +198,27 @@ update msg model =
 
                 ResultB playerObjects ->
                     ( { model | players = playerObjects }
-                      --chain messages, once we get players we gotta see what's playing
-                      --{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": 0 }, "id": "AudioGetItem"}
-                    , sendAction
-                        (request Player_GetItem
-                            (Just
-                                { playerid = Just 0
-                                , songid = Nothing
-                                , properties = Just [ Title, Album, Artist, Duration, Thumbnail ]
-                                }
+                      --chain messages, once we get players, see what's playing
+                    , sendActions
+                        (List.map 
+                            (\player -> 
+                                case player of 
+                                    PlayerA playerid speed ->
+                                        ""
+                                    PlayerB playerid playertype ptype -> 
+                                        case ptype of
+                                            Video ->
+                                                ("""{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt(playerid) ++ """ }, "id": "VideoGetItem"}""")
+                                            Audio ->
+                                                ("""{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt(playerid) ++ """ }, "id": "AudioGetItem"}""")
                             )
+                            model.players
                         )
-                      -- Player.getproperties percentage
                     )
 
                 ResultC item ->
                     ( { model | currentlyPlaying = item }
-                    , Cmd.none
+                    , sendAction """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage"]},"id":"0"}"""
                     )
 
                 ResultD songlist ->
@@ -298,7 +308,8 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
     [ responseReceiver decodeWS
-    , websocketConnected decodeWS
+    , connection decodeWS
+    , Time.every 1000 QueryPlayers
     ]
 
 
