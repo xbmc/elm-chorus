@@ -1,4 +1,4 @@
-module Pages.Thumbsup exposing (Params, Model, Msg, page)
+module Pages.Thumbsup exposing (Model, Msg, Params, page)
 
 import Shared
 import Spa.Document exposing (Document)

@@ -81,7 +81,7 @@ update msg model =
                 , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
                 ]
             )
-
+            
         NoOp ->
             ( model, Cmd.none )
 

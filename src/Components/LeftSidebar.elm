@@ -1,15 +1,16 @@
 module Components.LeftSidebar exposing (view)
 
+import Colors
 import Element exposing (..)
 import Element.Background as Background
 import Material.Icons as Filled
-import Material.Icons.Types exposing (Coloring(..), Icon)
+import Material.Icons.Types as MITypes exposing (Coloring(..), Icon)
 import Spa.Generated.Route as Route exposing (Route)
 
 
 view : Element msg
 view =
-    column [ height fill, Background.color (rgb 0.9 0.9 0.9), spacing 30, paddingXY 10 20, alignLeft ]
+    column [ height fill, centerX, spacing 20, padding 15, alignLeft ]
         [ musicButton
         , movieButton
         , tvshowButton
@@ -27,13 +28,13 @@ materialIconLink ( icon, route ) =
     el
         [ Element.mouseOver
             [ scale 1.1
-            , Background.color (rgb255 25 180 228)
+            , Background.color Colors.brandPrimary
             ]
         ]
     <|
         Element.link []
             { url = Route.toString route
-            , label = Element.html (icon 24 Inherit)
+            , label = Element.html (icon 20 (MITypes.Color <| (Colors.fromElementColorToColor <| Colors.greyscaleOuterSpace)))
             }
 
 
@@ -58,7 +59,7 @@ tvshowButton =
 
 browserButton : Element msg
 browserButton =
-    materialIconLink ( Filled.menu, Route.Browser )
+    materialIconLink ( Filled.list, Route.Browser )
 
 
 addonsButton : Element msg

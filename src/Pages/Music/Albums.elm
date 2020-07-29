@@ -1,4 +1,4 @@
-module Pages.Music.Albums exposing (Params, Model, Msg, page)
+module Pages.Music.Albums exposing (Model, Msg, Params, page)
 
 import Shared
 import Spa.Document exposing (Document)
