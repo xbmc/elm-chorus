@@ -27,5 +27,5 @@ layout layoutType =
         }
     , header = Header.view layoutType.searchChanged
     , playerBar = PlayerRow.view layoutType
-    , rightSidebar = RightSidebar.view layoutType.rightSidebarExtended layoutType.rightSidebarMsg
+    , rightSidebar = RightSidebar.view layoutType.rightSidebarExtended layoutType.rightSidebarMsg (layoutType.windowHeight - PlayerRow.playerHeight)
     }
