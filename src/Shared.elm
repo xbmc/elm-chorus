@@ -96,8 +96,6 @@ init flags url key =
 
 port sendActions : List String -> Cmd msg
 
-
-
 --single cmd
 
 
@@ -106,6 +104,8 @@ sendAction json =
 
 
 port responseReceiver : (String -> msg) -> Sub msg
+
+port websocketConnected : (String -> msg) -> Sub msg
 
 
 
@@ -174,10 +174,21 @@ update msg model =
 
         ReceiveResultResponse result ->
             case result of
-                ResultA _ ->
-                    ( model
-                    , Cmd.none
-                    )
+                --connected or disconnected
+                ResultA state ->
+                    case state of
+                        "Connected" ->
+                            ( model
+                            , Cmd.none
+                            )
+                        "Disconnected" ->
+                            ( model
+                            , Cmd.none
+                            )
+                        _ ->
+                            ( model
+                            , Cmd.none
+                            )
 
                 ResultB playerObjects ->
                     ( { model | players = playerObjects }
@@ -286,6 +297,10 @@ decodeWS message =
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     responseReceiver decodeWS
+
+connectionSubscription : Model -> Sub Msg
+connectionSubscription _ =
+    websocketConnected decodeWS
 
 
 
