@@ -67,7 +67,7 @@ init shared { params } =
 
 type Msg
     = SetCurrentlyPlaying MovieObj
-    | Derp
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -81,8 +81,8 @@ update msg model =
                 , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
                 ]
             )
-
-        Derp ->
+            
+        NoOp ->
             ( model, Cmd.none )
 
 
@@ -117,7 +117,7 @@ constructMovieItem movie =
             , Element.height (fill |> minimum 200 |> maximum 200)
             , inFront
                 (row []
-                    [ materialButton ( Filled.play_arrow, Derp ) ]
+                    [ materialButton ( Filled.play_arrow, NoOp ) ]
                 )
 
             {- , Element.Events.onMouseEnter ShowMenu
@@ -134,7 +134,7 @@ constructMovieItem movie =
                 , src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
                 }
             )
-        , column [ paddingXY 5 5, Background.color (rgb 1 1 1), Element.width fill ]
+        , column [ paddingXY 5 5, Background.color (rgb 1 1 1), Element.width (fill |> minimum 150 |> maximum 150), clip ]
             [ el [ Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text movie.label)
             , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text "2020")
             ]
