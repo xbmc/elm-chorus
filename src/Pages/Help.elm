@@ -1,4 +1,4 @@
-module Pages.Help exposing (Params, Model, Msg, page)
+module Pages.Help exposing (Model, Msg, Params, page)
 
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)

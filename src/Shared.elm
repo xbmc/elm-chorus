@@ -24,7 +24,7 @@ import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (Url)
-import WSDecoder exposing (MovieObj, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 

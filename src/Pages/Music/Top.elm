@@ -103,7 +103,7 @@ materialButton ( icon, action ) =
 
 
 menuBar =
-    column [ Element.height fill, Element.width (fillPortion 1)]
+    column [ Element.height fill, Element.width (fillPortion 1) ]
         [ Element.link []
             { url = Route.toString Route.Music
             , label = Element.text "Music"
@@ -130,6 +130,8 @@ menuBar =
             }
         ]
 
+
+
 -- VIEW
 
 
@@ -137,7 +139,7 @@ view : Model -> Document Msg
 view model =
     { title = "Music"
     , body =
-        [ row [ Element.height fill, Element.width fill] 
+        [ row [ Element.height fill, Element.width fill ]
             [ column [ Element.height fill, Element.width fill, spacingXY 5 7 ]
                 (List.map
                     (\song ->

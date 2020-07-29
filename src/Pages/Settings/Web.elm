@@ -1,4 +1,4 @@
-module Pages.Settings.Web exposing (Params, Model, Msg, page)
+module Pages.Settings.Web exposing (Model, Msg, Params, page)
 
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)

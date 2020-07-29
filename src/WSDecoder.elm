@@ -1,19 +1,22 @@
-module WSDecoder exposing (MovieObj, ArtistObj, SongObj, ItemDetails, ParamsResponse, Item, PlayerObj(..), PType(..), paramsResponseDecoder, resultResponseDecoder, ResultResponse(..))
+module WSDecoder exposing (ArtistObj, Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
-import Json.Decode as Decode exposing (Decoder, int, string, at, maybe, list, float)
-import Json.Decode.Pipeline exposing (custom, required, optional)
+import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string)
+import Json.Decode.Pipeline exposing (custom, optional, required)
 import Method exposing (Method(..), methodToStr, strToMethod)
+
+
 
 -----------------------
 -- "params" response --
 -----------------------
-
 -- Item
 
-type alias Item = 
-    { id : Int 
+
+type alias Item =
+    { id : Int
     , itype : String
     }
+
 
 itemDecoder : Decoder Item
 itemDecoder =
@@ -21,76 +24,117 @@ itemDecoder =
         |> required "id" int
         |> required "type" string
 
+
+
 -- Player
 -- PType
-type PType = Audio | Picture
+
+
+type PType
+    = Audio
+    | Picture
+
 
 parsePType : String -> Result String PType
 parsePType string =
-  case string of
-    "audio" -> Ok Audio
-    "picture" -> Ok Picture
-    _ -> Err ("Invalid direction: " ++ string)
+    case string of
+        "audio" ->
+            Ok Audio
+
+        "picture" ->
+            Ok Picture
+
+        _ ->
+            Err ("Invalid direction: " ++ string)
+
 
 fromResult : Result String a -> Decoder a
 fromResult result =
-  case result of
-    Ok a -> Decode.succeed a
-    Err errorMessage -> Decode.fail errorMessage
+    case result of
+        Ok a ->
+            Decode.succeed a
+
+        Err errorMessage ->
+            Decode.fail errorMessage
+
 
 pTypeDecoder : Decoder PType
 pTypeDecoder =
-  Decode.string |> Decode.andThen (fromResult << parsePType)
+    Decode.string |> Decode.andThen (fromResult << parsePType)
 
--- Player Type 
+
+
+-- Player Type
+
+
 type PlayerType
-    = Internal 
+    = Internal
     | External
+
 
 parsePlayerType : String -> Result String PlayerType
 parsePlayerType string =
-  case string of
-    "internal" -> Ok Internal
-    "external" -> Ok External
-    _ -> Err ("Invalid direction: " ++ string)
+    case string of
+        "internal" ->
+            Ok Internal
+
+        "external" ->
+            Ok External
+
+        _ ->
+            Err ("Invalid direction: " ++ string)
+
 
 playerTypeDecoder : Decoder PlayerType
 playerTypeDecoder =
-  Decode.string |> Decode.andThen (fromResult << parsePlayerType)
+    Decode.string |> Decode.andThen (fromResult << parsePlayerType)
+
+
 
 {-
-PlayerObj =
-    playerid : Int
-    speed : Int
-    playertype : Maybe PlayerType 
-    ptype : Maybe PType
+   PlayerObj =
+       playerid : Int
+       speed : Int
+       playertype : Maybe PlayerType
+       ptype : Maybe PType
 -}
 --variants A and B have different shape
-type PlayerObj = PlayerA Int Int | PlayerB Int PlayerType PType 
+
+
+type PlayerObj
+    = PlayerA Int Int
+    | PlayerB Int PlayerType PType
+
 
 playerSpdDecoder : Decoder PlayerObj
 playerSpdDecoder =
-    Decode.succeed PlayerA 
+    Decode.succeed PlayerA
         |> required "playerid" int
         |> required "speed" int
+
 
 playerwoSpdDecoder : Decoder PlayerObj
 playerwoSpdDecoder =
     Decode.succeed PlayerB
         |> required "playerid" int
         |> required "playertype" playerTypeDecoder
-        |> required "type" pTypeDecoder 
+        |> required "type" pTypeDecoder
+
 
 playerDecoder : Decoder PlayerObj
-playerDecoder = 
-    Decode.oneOf [playerSpdDecoder, playerwoSpdDecoder]
+playerDecoder =
+    Decode.oneOf [ playerSpdDecoder, playerwoSpdDecoder ]
+
+
 
 -- Params Response
+
 
 type alias ParamsResponse =
     { item : Item
     , player : PlayerObj
     }
+
 
 paramsResponseDecoder : Decoder ParamsResponse
 paramsResponseDecoder =
@@ -98,47 +142,63 @@ paramsResponseDecoder =
         |> custom (at [ "params", "data", "item" ] itemDecoder)
         |> custom (at [ "params", "data", "player" ] playerDecoder)
 
--- end "params"
 
+
+-- end "params"
 -----------------------
 -- "result" response --
 -----------------------
-type ResultResponse = ResultA String 
-                    | ResultB (List PlayerObj)
-                    | ResultC ItemDetails 
-                    | ResultD (List SongObj) --| ResultD IntrospectObj
-                    | ResultE (List ArtistObj)
-                    | ResultF (List AlbumObj)
-                    | ResultG (List MovieObj)
-                    | ResultH Float
+
+
+type ResultResponse
+    = ResultA String
+    | ResultB (List PlayerObj)
+    | ResultC ItemDetails
+    | ResultD (List SongObj) --| ResultD IntrospectObj
+    | ResultE (List ArtistObj)
+    | ResultF (List AlbumObj)
+    | ResultG (List MovieObj)
+    | ResultH Float
+
+
 
 --main decoder which tries everyone else
+
+
 resultResponseDecoder : Decoder ResultResponse
 resultResponseDecoder =
-    Decode.oneOf [stringDecoder, listDecoder, detailDecoder, queryDecoder]
+    Decode.oneOf [ stringDecoder, listDecoder, detailDecoder, queryDecoder ]
+
 
 stringDecoder : Decoder ResultResponse
 stringDecoder =
-        Decode.succeed ResultA
-            |> required "result" string
+    Decode.succeed ResultA
+        |> required "result" string
+
 
 listDecoder : Decoder ResultResponse
 listDecoder =
-        Decode.succeed ResultB
-            |> required "result" (list playerDecoder)
+    Decode.succeed ResultB
+        |> required "result" (list playerDecoder)
+
+
 
 -- Song/Video GetItem decoder
+
+
 detailDecoder : Decoder ResultResponse
 detailDecoder =
-        Decode.succeed ResultC 
-            |> required "result" itemDetailDecoder
+    Decode.succeed ResultC
+        |> required "result" itemDetailDecoder
+
 
 itemDetailDecoder : Decoder ItemDetails
 itemDetailDecoder =
     Decode.succeed ItemDetails
-        |> custom (at ["item", "title"] string)
-        |> custom (at ["item", "duration"] int)
-        |> custom (at ["item", "thumbnail"] string)
+        |> custom (at [ "item", "title" ] string)
+        |> custom (at [ "item", "duration" ] int)
+        |> custom (at [ "item", "thumbnail" ] string)
+
 
 type alias ItemDetails =
     { title : String
@@ -146,15 +206,21 @@ type alias ItemDetails =
     , thumbnail : String
     }
 
+
+
 --queries decoder
+
+
 queryDecoder : Decoder ResultResponse
-queryDecoder = 
-    Decode.oneOf [percentDecoder, songQueryDecoder, artistQueryDecoder, albumQueryDecoder, movieQueryDecoder]
+queryDecoder =
+    Decode.oneOf [ percentDecoder, songQueryDecoder, artistQueryDecoder, albumQueryDecoder, movieQueryDecoder ]
+
 
 songQueryDecoder : Decoder ResultResponse
 songQueryDecoder =
     Decode.succeed ResultD
-        |> custom (at ["result", "songs"] (list songDecoder))
+        |> custom (at [ "result", "songs" ] (list songDecoder))
+
 
 songDecoder : Decoder SongObj
 songDecoder =
@@ -164,17 +230,20 @@ songDecoder =
         |> required "duration" int
         |> required "songid" int
 
+
 type alias SongObj =
-    { label : String 
+    { label : String
     , artist : List String
-    , duration : Int 
+    , duration : Int
     , songid : Int
     }
+
 
 artistQueryDecoder : Decoder ResultResponse
 artistQueryDecoder =
     Decode.succeed ResultE
-        |> custom (at ["result", "artists"] (list artistDecoder))
+        |> custom (at [ "result", "artists" ] (list artistDecoder))
+
 
 artistDecoder : Decoder ArtistObj
 artistDecoder =
@@ -183,16 +252,19 @@ artistDecoder =
         |> required "artistid" int
         |> required "thumbnail" string
 
+
 type alias ArtistObj =
-    { label : String 
+    { label : String
     , albumid : Int
     , thumbnail : String
     }
 
+
 albumQueryDecoder : Decoder ResultResponse
 albumQueryDecoder =
     Decode.succeed ResultF
-        |> custom (at ["result", "albums"] (list albumDecoder))
+        |> custom (at [ "result", "albums" ] (list albumDecoder))
+
 
 albumDecoder : Decoder AlbumObj
 albumDecoder =
@@ -201,16 +273,19 @@ albumDecoder =
         |> required "albumid" int
         |> required "thumbnail" string
 
+
 type alias AlbumObj =
-    { label : String 
+    { label : String
     , albumid : Int
     , thumbnail : String
     }
 
+
 movieQueryDecoder : Decoder ResultResponse
 movieQueryDecoder =
     Decode.succeed ResultG
-        |> custom (at ["result", "movies"] (list movieDecoder))
+        |> custom (at [ "result", "movies" ] (list movieDecoder))
+
 
 movieDecoder : Decoder MovieObj
 movieDecoder =
@@ -219,57 +294,60 @@ movieDecoder =
         |> required "movieid" int
         |> required "thumbnail" string
 
+
 type alias MovieObj =
-    { label : String 
+    { label : String
     , movieid : Int
     , thumbnail : String
     }
 
+
 percentDecoder : Decoder ResultResponse
 percentDecoder =
     Decode.succeed ResultH
-        |> custom (at ["result", "percentage"] float)
+        |> custom (at [ "result", "percentage" ] float)
 
-{-introspectDecoder : Decoder ResultResponse
-introspectDecoder =
-        Decode.succeed ResultC
-            |> required "methods" (firstFieldAs introspectObjDecoder)
 
-introspectObjDecoder : Decoder IntrospectObj
-introspectObjDecoder =
-    Decode.succeed IntrospectObj
-        |> required "params" (list paramsIntrospectDecoder)
-        --|> required "returns" returnsIntrospectDecoder
 
-paramsIntrospectDecoder : Decoder ParamsItem
-paramsIntrospectDecoder =
-    Decode.succeed ParamsItem
-        |> required "name" string
+{- introspectDecoder : Decoder ResultResponse
+   introspectDecoder =
+           Decode.succeed ResultC
+               |> required "methods" (firstFieldAs introspectObjDecoder)
 
-type alias ParamsItem =
-    { name : String }
+   introspectObjDecoder : Decoder IntrospectObj
+   introspectObjDecoder =
+       Decode.succeed IntrospectObj
+           |> required "params" (list paramsIntrospectDecoder)
+           --|> required "returns" returnsIntrospectDecoder
 
-type alias IntrospectObj =
-    { description : String
-    , params : List String
-    , returns : String 
-    }
+   paramsIntrospectDecoder : Decoder ParamsItem
+   paramsIntrospectDecoder =
+       Decode.succeed ParamsItem
+           |> required "name" string
 
-firstFieldAs : Decoder a -> Decoder a
-firstFieldAs decoder =
-  Decode.keyValuePairs decoder
-    |> Decode.andThen (\pairs ->
-      case pairs of
-        [] -> Decode.fail "Empty Object"
-        (_, value) :: _ ->  Decode.succeed value
-    )
+   type alias ParamsItem =
+       { name : String }
+
+   type alias IntrospectObj =
+       { description : String
+       , params : List String
+       , returns : String
+       }
+
+   firstFieldAs : Decoder a -> Decoder a
+   firstFieldAs decoder =
+     Decode.keyValuePairs decoder
+       |> Decode.andThen (\pairs ->
+         case pairs of
+           [] -> Decode.fail "Empty Object"
+           (_, value) :: _ ->  Decode.succeed value
+       )
 -}
-
 -- end "result"
-
-{-resultsDecoder : Decoder (List Result)
-resultsDecoder =
-  Decode.oneOf
-    [ Decode.list resultDecoder
-    , Decode.map (\result -> [result]) resultDecoder
-    ]-}
+{- resultsDecoder : Decoder (List Result)
+   resultsDecoder =
+     Decode.oneOf
+       [ Decode.list resultDecoder
+       , Decode.map (\result -> [result]) resultDecoder
+       ]
+-}

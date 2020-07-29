@@ -1,4 +1,4 @@
-module Pages.Addons exposing (Params, Model, Msg, page)
+module Pages.Addons exposing (Model, Msg, Params, page)
 
 import Shared
 import Spa.Document exposing (Document)

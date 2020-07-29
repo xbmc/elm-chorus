@@ -1,4 +1,4 @@
-module Pages.Movies.Recent exposing (Params, Model, Msg, page)
+module Pages.Movies.Recent exposing (Model, Msg, Params, page)
 
 import Shared
 import Spa.Document exposing (Document)

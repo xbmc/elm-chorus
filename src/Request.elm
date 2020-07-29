@@ -1,9 +1,12 @@
-module Request exposing (Params, Property(..), propertyToStr, paramsToObj, request)
+module Request exposing (Params, Property(..), paramsToObj, propertyToStr, request)
 
 import Json.Encode as Encode exposing (list, string)
 import Method exposing (Method(..), methodToStr)
 
--- SEND REQUEST 
+
+
+-- SEND REQUEST
+
 
 type Property
     = Title
@@ -23,48 +26,69 @@ type Property
     | Totaltime
     | Speed
 
+
+
 -- convert property type to string
+
+
 propertyToStr : Property -> String
 propertyToStr prop =
     case prop of
         Title ->
             "title"
-        Album -> 
+
+        Album ->
             "album"
+
         Artist ->
             "artist"
+
         Season ->
             "season"
+
         Episode ->
             "episode"
+
         Duration ->
             "duration"
+
         Showtitle ->
             "showtitle"
+
         TVshowid ->
             "tvshowid"
+
         Thumbnail ->
             "thumbnail"
+
         File ->
             "file"
+
         Fanart ->
             "fanart"
+
         Streamdetails ->
             "streamdetails"
+
         --Player getPosition
-        Percentage->
+        Percentage ->
             "percentage"
+
         Time ->
             "time"
+
         Totaltime ->
             "totaltime"
+
         Speed ->
             "speed"
 
+
 type alias Limit =
-    { start : Int 
+    { start : Int
     , end : Int
     }
+
 
 type alias Params =
     { playerid : Maybe Int
@@ -72,12 +96,17 @@ type alias Params =
     , limits : Maybe Limit
     }
 
+
+
 -- convert params record to Json object
-paramsToObj : Maybe { playerid: Maybe Int, songid: Maybe Int, properties : Maybe (List Property) } -> Encode.Value
+
+
+paramsToObj : Maybe { playerid : Maybe Int, songid : Maybe Int, properties : Maybe (List Property) } -> Encode.Value
 paramsToObj params =
     case params of
         Nothing ->
             Encode.string "Nothing"
+
         Just param ->
             case param.playerid of
                 Nothing ->
@@ -85,44 +114,55 @@ paramsToObj params =
                         Nothing ->
                             Encode.object
                                 []
+
                         Just properties ->
                             --process songid for getting song details
                             case param.songid of
                                 Nothing ->
                                     Encode.object
-                                        [ ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
+                                        [ ( "properties", list string (List.map propertyToStr (Maybe.withDefault [] param.properties)) )
                                         ]
+
                                 Just songid ->
                                     Encode.object
-                                        [ ("songid", Encode.int (Maybe.withDefault 0 param.songid))
-                                        , ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
+                                        [ ( "songid", Encode.int (Maybe.withDefault 0 param.songid) )
+                                        , ( "properties", list string (List.map propertyToStr (Maybe.withDefault [] param.properties)) )
                                         ]
+
                 Just playerid ->
                     case param.properties of
                         Nothing ->
                             Encode.object
-                                [("playerid", Encode.int (Maybe.withDefault 0 param.playerid))]
+                                [ ( "playerid", Encode.int (Maybe.withDefault 0 param.playerid) ) ]
+
                         Just properties ->
                             Encode.object
-                                [ ("playerid", Encode.int (Maybe.withDefault 0 param.playerid))
-                                , ("properties", (list string (List.map propertyToStr (Maybe.withDefault [] param.properties))))
+                                [ ( "playerid", Encode.int (Maybe.withDefault 0 param.playerid) )
+                                , ( "properties", list string (List.map propertyToStr (Maybe.withDefault [] param.properties)) )
                                 ]
 
+
+
 -- send jsonrpc request with custom record
-request : Method -> Maybe { playerid : Maybe Int, songid: Maybe Int, properties : Maybe (List Property) } -> String
+
+
+request : Method -> Maybe { playerid : Maybe Int, songid : Maybe Int, properties : Maybe (List Property) } -> String
 request method params =
-    Encode.encode 0
-        <| case params of
-                Nothing -> -- No params provided
-                    Encode.object
-                        [ ( "jsonrpc", Encode.string "2.0" )
-                        , ( "method", Encode.string (methodToStr method)) 
-                        , ( "id", Encode.int 1)
-                        ]
-                Just param -> -- params
-                    Encode.object
-                        [ ( "jsonrpc", Encode.string "2.0" )
-                        , ( "method", Encode.string (methodToStr method)) 
-                        , ( "params", paramsToObj (Just {playerid = param.playerid, songid = param.songid, properties = param.properties})) -- encode records to json
-                        , ( "id", Encode.int 1)
-                        ]
+    Encode.encode 0 <|
+        case params of
+            Nothing ->
+                -- No params provided
+                Encode.object
+                    [ ( "jsonrpc", Encode.string "2.0" )
+                    , ( "method", Encode.string (methodToStr method) )
+                    , ( "id", Encode.int 1 )
+                    ]
+
+            Just param ->
+                -- params
+                Encode.object
+                    [ ( "jsonrpc", Encode.string "2.0" )
+                    , ( "method", Encode.string (methodToStr method) )
+                    , ( "params", paramsToObj (Just { playerid = param.playerid, songid = param.songid, properties = param.properties }) ) -- encode records to json
+                    , ( "id", Encode.int 1 )
+                    ]

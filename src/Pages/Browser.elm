@@ -1,4 +1,4 @@
-module Pages.Browser exposing (Params, Model, Msg, page)
+module Pages.Browser exposing (Model, Msg, Params, page)
 
 import Shared
 import Spa.Document exposing (Document)
