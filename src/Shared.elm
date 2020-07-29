@@ -24,7 +24,7 @@ import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (Url)
-import WSDecoder exposing (ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (MovieObj, ItemDetails, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -46,6 +46,7 @@ type alias Model =
     , players : List PlayerObj
     , currentlyPlaying : ItemDetails
     , song_list : List SongObj
+    , movie_list : List MovieObj
     , volumeSlider : SingleSlider Msg
     , progressSlider : SingleSlider Msg
     , windowWidth : Int
@@ -64,6 +65,7 @@ init flags url key =
       , players = []
       , currentlyPlaying = ItemDetails "" 0 ""
       , song_list = []
+      , movie_list = []
       , volumeSlider =
             SingleSlider.init
                 { min = 0
@@ -211,8 +213,8 @@ update msg model =
                     , Cmd.none
                     )
 
-                ResultG _ ->
-                    ( model
+                ResultG movielist ->
+                    ( { model | movie_list = movielist }
                     , Cmd.none
                     )
 
