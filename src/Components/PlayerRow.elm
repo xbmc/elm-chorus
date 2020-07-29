@@ -42,7 +42,7 @@ view layoutType =
 
 playControlRow : PlayerControl msg -> Element msg
 playControlRow { reverseMsg, playPauseMsg, skipMsg } =
-    row [ height fill, width (px 300), Background.color Colors.lightBlack, alignBottom, center, spaceEvenly ]
+    row [ height fill, width (px 300), Background.color Colors.greyscaleShark, alignBottom, center, spaceEvenly ]
         [ el [ padding 10 ] (reverseButton reverseMsg)
         , el [] (playButton playPauseMsg)
         , el [ padding 10 ] (skipButton skipMsg)
@@ -55,12 +55,12 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
         [ row [ width fill, height (px 20) ]
             [ progressSlider ]
         , row
-            [ height (px 25), width fill, Background.color Colors.black, alignBottom, padding 8 ]
+            [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
             [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
             , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text (String.fromInt currentlyPlaying.duration))
             ]
         , row
-            [ height (px 25), width fill, Background.color Colors.black, alignBottom, padding 8 ]
+            [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
             [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
             ]
         ]
@@ -70,7 +70,7 @@ volumesAndControlsColumn : VolumeAndControls msg -> ControlMenu msg -> Element m
 volumesAndControlsColumn { muteMsg, repeatMsg, shuffleMsg, volumeSlider } { controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     column [ height fill, width (px 300) ]
         [ row (controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg ++ [ width fill, height (px 20) ]) [ volumeSlider ]
-        , row [ width fill, height fill, Background.color Colors.lightBlack ]
+        , row [ width fill, height fill, Background.color Colors.greyscaleShark ]
             [ el [ centerX ] (volumeButton muteMsg)
             , el [ centerX ] (repeatButton repeatMsg)
             , el [ centerX ] (shuffleButton shuffleMsg)
@@ -105,7 +105,7 @@ controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLib
 
 controlMenuRow : Maybe msg -> String -> Element msg
 controlMenuRow onPress label =
-    Input.button [ width fill, Element.mouseOver [ Background.color Colors.grey ], Element.padding 7 ] { onPress = onPress, label = Element.text label }
+    Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] { onPress = onPress, label = Element.text label }
 
 
 materialButtonBig : ( Icon msg, msg ) -> Element msg

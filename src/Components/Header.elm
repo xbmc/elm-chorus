@@ -14,7 +14,7 @@ headerHeight =
 
 view : msg -> Element msg
 view searchChanged =
-    row [ width fill, alignTop, height (px headerHeight), Background.color Colors.black ]
+    row [ width fill, alignTop, height (px headerHeight), Background.color Colors.headerBackground ]
         [ Element.link []
             { label =
                 image [ width (px 50) ]
