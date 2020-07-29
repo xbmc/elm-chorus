@@ -12,23 +12,23 @@ view : Bool -> msg -> Int -> Element msg
 view rightSidebarExtended rightSidebarMsg panelHeight =
     if rightSidebarExtended then
         column
-            [ height (px panelHeight), width (px 400), Background.color Colors.grey, alignRight ]
+            [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight ]
             [ row [ width fill ]
-                [ Input.button [ Background.color Colors.lightBlack, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Kodi" }
-                , Input.button [ Background.color Colors.grey, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Local" }
-                , Input.button [ Background.color Colors.grey, height (px 50), width (px 50), centerX, alignRight ]
+                [ Input.button [ Background.color Colors.backgroundKodi, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Kodi" }
+                , Input.button [ Background.color Colors.backgroundLocal, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Local" }
+                , Input.button [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight ]
                     { onPress = Just rightSidebarMsg
                     , label =
                         Element.html
                             (Filled.more_vert 32 (MITypes.Color <| greyIcon))
                     }
-                , Input.button [ Background.color Colors.grey, height (px 50), width (px 50), centerX, alignRight ] { onPress = Just rightSidebarMsg, label = Element.text ">" }
+                , Input.button [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight ] { onPress = Just rightSidebarMsg, label = Element.text ">" }
                 ]
-            , el [ width fill, height fill, Background.color Colors.lightBlack, padding 8 ] (text "Test")
+            , el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Test")
             ]
 
     else
         column
-            [ height (px panelHeight), width (px 50), Background.color Colors.black, alignRight ]
+            [ height (px panelHeight), width (px 50), Background.color Colors.playlistBackground, alignRight ]
             [ Input.button [ centerX, height (px 50) ] { onPress = Just rightSidebarMsg, label = Element.text "<" }
             ]
