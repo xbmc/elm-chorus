@@ -296,11 +296,11 @@ decodeWS message =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    responseReceiver decodeWS
+    Sub.batch
+    [ responseReceiver decodeWS
+    , websocketConnected decodeWS
+    ]
 
-connectionSubscription : Model -> Sub Msg
-connectionSubscription _ =
-    websocketConnected decodeWS
 
 
 
