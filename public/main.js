@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var ws = new WebSocket("ws://localhost:9090");
 
   ws.onopen = () => {
+    app.ports.websocketConnected.send(true);
+
     // When a command goes to the `sendMessage` port, we pass the message
     // along to the WebSocket.
     app.ports.sendActions.subscribe(function (action) {
@@ -38,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   window.onbeforeunload = function () {
+    app.ports.websocketConnected.send(false);
     ws.close();
   };
 });
