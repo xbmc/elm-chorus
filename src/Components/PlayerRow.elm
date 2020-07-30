@@ -24,17 +24,18 @@ view layoutType =
     row [ height (px playerHeight), width fill, alignBottom ]
         [ playControlRow layoutType.playerControl
         , column [ width (px playerHeight) ]
-            [ image [ alignLeft, width fill, height fill ]
-                (if String.isEmpty layoutType.currentlyPlaying.currentlyPlaying.thumbnail then
-                    { src = "https://via.placeholder.com/70"
-                    , description = "Hero Image"
-                    }
+            [ case layoutType.currentlyPlaying.currentlyPlaying of
+                Nothing ->
+                    image [ alignLeft, width fill, height fill ]
+                        { src = "https://via.placeholder.com/70"
+                        , description = "Hero Image"
+                        }
 
-                 else
-                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode layoutType.currentlyPlaying.currentlyPlaying.thumbnail ] []
-                    , description = "Hero Image"
-                    }
-                )
+                Just item ->
+                    image [ alignLeft, width fill, height fill ]
+                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode item.thumbnail ] []
+                        , description = "Thumbnail"
+                        }
             ]
         , currentlyPlayingColumn layoutType.currentlyPlaying
         , volumesAndControlsColumn layoutType.volumeAndControls layoutType.controlMenu
@@ -57,13 +58,28 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
             [ progressSlider ]
         , row
             [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
-            [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
-            , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (currentlyPlaying.duration |> durationToString |> text)
-            ]
+            (case currentlyPlaying of
+                Nothing ->
+                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text "Nothing playing")
+                    , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text "0")
+                    ]
+
+                Just item ->
+                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text item.title)
+                    , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (item.duration |> durationToString |> text)
+                    ]
+            )
         , row
             [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
-            [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
-            ]
+            (case currentlyPlaying of
+                Nothing ->
+                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text "Nothing playing")
+                    ]
+
+                Just item ->
+                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text item.title)
+                    ]
+            )
         ]
 
 

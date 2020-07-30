@@ -48,7 +48,7 @@ type alias Params =
 
 
 type alias Model =
-    { currentlyPlaying : ItemDetails
+    { currentlyPlaying : Maybe ItemDetails
     , song_list : List SongObj
     }
 

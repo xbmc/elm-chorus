@@ -1,6 +1,7 @@
 module Pages.Music.Top exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
+import Components.VerticalNav
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -47,7 +48,7 @@ type alias Params =
 
 
 type alias Model =
-    { currentlyPlaying : ItemDetails
+    { currentlyPlaying : Maybe ItemDetails
     , song_list : List SongObj
     }
 
@@ -103,6 +104,30 @@ materialButton ( icon, action ) =
         }
 
 
+menuBar : Element msg
+menuBar =
+    Components.VerticalNav.view
+        [ { route = Route.Music
+          , label = "Music"
+          }
+        , { route = Route.Music__Genres
+          , label = "Genres"
+          }
+        , { route = Route.Music__Genres
+          , label = "Top Music"
+          }
+        , { route = Route.Music__Artists
+          , label = "Artists"
+          }
+        , { route = Route.Music__Albums
+          , label = "Albums"
+          }
+        , { route = Route.Music__Videos
+          , label = "Videos"
+          }
+        ]
+
+
 
 -- VIEW
 
@@ -112,7 +137,8 @@ view model =
     { title = "Music"
     , body =
         [ row [ Element.height fill, Element.width fill ]
-            [ column [ Element.height fill, Element.width fill, spacingXY 5 7 ]
+            [ menuBar
+            , column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7 ]
                 (List.map
                     (\song ->
                         row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]

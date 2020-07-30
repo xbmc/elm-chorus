@@ -23,9 +23,10 @@ import Request exposing (Params, Property(..), request)
 import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
+import Time
 import Url exposing (Url)
 import WSDecoder exposing (ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
-import Time
+
 
 
 -- INIT
@@ -44,7 +45,7 @@ type alias Model =
     , rightSidebarExtended : Bool
     , controlMenu : Bool
     , players : List PlayerObj
-    , currentlyPlaying : ItemDetails
+    , currentlyPlaying : Maybe ItemDetails
     , song_list : List SongObj
     , movie_list : List MovieObj
     , volumeSlider : SingleSlider Msg
@@ -63,7 +64,7 @@ init flags url key =
       , rightSidebarExtended = False
       , controlMenu = False
       , players = []
-      , currentlyPlaying = ItemDetails "" 0 ""
+      , currentlyPlaying = Nothing
       , song_list = []
       , movie_list = []
       , volumeSlider =
@@ -96,6 +97,8 @@ init flags url key =
 
 port sendActions : List String -> Cmd msg
 
+
+
 --single cmd
 
 
@@ -104,6 +107,7 @@ sendAction json =
 
 
 port responseReceiver : (String -> msg) -> Sub msg
+
 
 port connection : (String -> msg) -> Sub msg
 
@@ -165,8 +169,8 @@ update msg model =
             , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
             )
 
-        QueryPlayers _->
-            (model
+        QueryPlayers _ ->
+            ( model
             , sendAction """{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}"""
             )
 
@@ -187,10 +191,12 @@ update msg model =
                             ( model
                             , Cmd.none
                             )
+
                         "Disconnected" ->
                             ( model
                             , Cmd.none
                             )
+
                         _ ->
                             ( model
                             , Cmd.none
@@ -200,24 +206,26 @@ update msg model =
                     ( { model | players = playerObjects }
                       --chain messages, once we get players, see what's playing
                     , sendActions
-                        (List.map 
-                            (\player -> 
-                                case player of 
+                        (List.map
+                            (\player ->
+                                case player of
                                     PlayerA playerid speed ->
                                         ""
-                                    PlayerB playerid playertype ptype -> 
+
+                                    PlayerB playerid playertype ptype ->
                                         case ptype of
                                             Video ->
-                                                ("""{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt(playerid) ++ """ }, "id": "VideoGetItem"}""")
+                                                """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt playerid ++ """ }, "id": "VideoGetItem"}"""
+
                                             Audio ->
-                                                ("""{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt(playerid) ++ """ }, "id": "AudioGetItem"}""")
+                                                """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt playerid ++ """ }, "id": "AudioGetItem"}"""
                             )
                             model.players
                         )
                     )
 
                 ResultC item ->
-                    ( { model | currentlyPlaying = item }
+                    ( { model | currentlyPlaying = Just item }
                     , sendAction """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage"]},"id":"0"}"""
                     )
 
@@ -307,11 +315,10 @@ decodeWS message =
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
-    [ responseReceiver decodeWS
-    , connection decodeWS
-    , Time.every 1000 QueryPlayers
-    ]
-
+        [ responseReceiver decodeWS
+        , connection decodeWS
+        , Time.every 1000 QueryPlayers
+        ]
 
 
 

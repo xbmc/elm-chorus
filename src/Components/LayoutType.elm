@@ -26,7 +26,7 @@ type alias PlayerControl msg =
 
 
 type alias CurrentlyPlaying msg =
-    { currentlyPlaying : ItemDetails
+    { currentlyPlaying : Maybe ItemDetails
     , progressSlider : Element msg
     }
 
