@@ -7,6 +7,7 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
+import Helper exposing (durationToString)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Material.Icons as Filled
@@ -154,7 +155,7 @@ view model =
                                     )
                                     song.artist
                                 )
-                            , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text (String.fromInt song.duration))
+                            , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (song.duration |> durationToString |> Element.text)
                             , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
                             ]
                     )

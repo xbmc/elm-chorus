@@ -6,6 +6,7 @@ import Element exposing (Attribute, Element, alignBottom, alignLeft, alignRight,
 import Element.Background as Background
 import Element.Font as Font exposing (center)
 import Element.Input as Input
+import Helper exposing (durationToString)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
 import Spa.Generated.Route as Route
@@ -57,7 +58,7 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
         , row
             [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
             [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text currentlyPlaying.title)
-            , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text (String.fromInt currentlyPlaying.duration))
+            , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (currentlyPlaying.duration |> durationToString |> text)
             ]
         , row
             [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
