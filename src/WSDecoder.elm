@@ -196,16 +196,17 @@ itemDetailDecoder : Decoder ItemDetails
 itemDetailDecoder =
     Decode.succeed ItemDetails
         |> custom (at [ "item", "title" ] string)
+        |> custom (at [ "item", "artist" ] (list string))
         |> custom (at [ "item", "duration" ] int)
         |> custom (at [ "item", "thumbnail" ] string)
 
 
 type alias ItemDetails =
     { title : String
+    , artist : List String
     , duration : Int
     , thumbnail : String
     }
-
 
 
 --queries decoder

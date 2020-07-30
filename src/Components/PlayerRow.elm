@@ -77,8 +77,12 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
                     ]
 
                 Just item ->
-                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text item.title)
-                    ]
+                    ( List.map 
+                        (\artist ->
+                            el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text artist)
+                        )
+                    item.artist
+                    )
             )
         ]
 

@@ -190,8 +190,8 @@ update msg model =
         ReceiveParamsResponse _ ->
             ( model
             , sendActions
-                [ """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
-                , """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":1,"properties":["percentage", "speed"]},"id":"0"}"""
+                [ """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "artist", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
+                , """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage", "speed"]},"id":"0"}"""
                 ]
             )
 
