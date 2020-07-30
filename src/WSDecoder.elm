@@ -1,4 +1,4 @@
-module WSDecoder exposing (ArtistObj, Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (Connection(..), ArtistObj, Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -158,7 +158,7 @@ type ResultResponse
     | ResultE (List ArtistObj)
     | ResultF (List AlbumObj)
     | ResultG (List MovieObj)
-    | ResultH Float
+    | ResultH Float --Int
 
 
 
@@ -306,8 +306,10 @@ percentDecoder : Decoder ResultResponse
 percentDecoder =
     Decode.succeed ResultH
         |> custom (at [ "result", "percentage" ] float)
+        --|> custom (at [ "result", "speed" ] int)
 
-
+--kodi ws connection
+type Connection = Connected | Disconnected | NotAsked
 
 {- introspectDecoder : Decoder ResultResponse
    introspectDecoder =

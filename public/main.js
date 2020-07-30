@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var actionListLength = action.length;
       for (var i = 0; i < actionListLength; i++) {
         ws.send(action[i]);
-        console.log(action[i]);
+        //console.log(action[i]);
       }
     });
 

@@ -25,7 +25,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -42,6 +42,7 @@ type alias Model =
     { flags : Flags
     , url : Url
     , key : Key
+    , connection : Connection
     , rightSidebarExtended : Bool
     , controlMenu : Bool
     , players : List PlayerObj
@@ -55,12 +56,12 @@ type alias Model =
     , searchString : String
     }
 
-
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
     ( { flags = flags
       , url = url
       , key = key
+      , connection = NotAsked
       , rightSidebarExtended = False
       , controlMenu = False
       , players = []
@@ -159,10 +160,22 @@ update msg model =
                     , sendAction (request method (Just { playerid = param.playerid, songid = Nothing, properties = param.properties }))
                     )
 
-        Recv _ ->
-            ( model
-            , Cmd.none
-            )
+        Recv state ->
+            case state of
+                "Connected" ->
+                    ( { model | connection = Connected }
+                    , Cmd.none
+                    )
+
+                "Disconnected" ->
+                    ( { model | connection = Disconnected }
+                    , Cmd.none
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
 
         PlayPause ->
             ( model
@@ -178,29 +191,17 @@ update msg model =
             ( model
             , sendActions
                 [ """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
-                , """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":1,"properties":["percentage"]},"id":"0"}"""
+                , """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":1,"properties":["percentage", "speed"]},"id":"0"}"""
                 ]
             )
 
         ReceiveResultResponse result ->
             case result of
                 --connected or disconnected
-                ResultA state ->
-                    case state of
-                        "Connected" ->
-                            ( model
-                            , Cmd.none
-                            )
-
-                        "Disconnected" ->
-                            ( model
-                            , Cmd.none
-                            )
-
-                        _ ->
-                            ( model
-                            , Cmd.none
-                            )
+                ResultA _ ->
+                    ( model
+                    , Cmd.none
+                    )
 
                 ResultB playerObjects ->
                     ( { model | players = playerObjects }
@@ -356,6 +357,7 @@ view { page, toMsg } model =
             }
         , rightSidebarExtended = model.rightSidebarExtended
         , rightSidebarMsg = toMsg ToggleRightSidebar
+        , connection = model.connection
         , windowHeight = model.windowHeight
         , searchChanged = toMsg (SearchChanged "")
         }

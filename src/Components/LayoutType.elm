@@ -2,7 +2,7 @@ module Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, LayoutType
 
 import Element exposing (Element)
 import Spa.Document exposing (Document)
-import WSDecoder exposing (ItemDetails)
+import WSDecoder exposing (Connection, ItemDetails)
 
 
 type alias LayoutType msg =
@@ -13,6 +13,7 @@ type alias LayoutType msg =
     , volumeAndControls : VolumeAndControls msg
     , rightSidebarExtended : Bool
     , rightSidebarMsg : msg
+    , connection : Connection
     , windowHeight : Int
     , searchChanged : msg
     }

@@ -6,16 +6,24 @@ import Element.Background as Background
 import Element.Input as Input
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes
+import WSDecoder exposing (Connection(..))
 
-
-view : Bool -> msg -> Int -> Element msg
-view rightSidebarExtended rightSidebarMsg panelHeight =
+view : Bool -> msg -> Int -> Connection -> Element msg
+view rightSidebarExtended rightSidebarMsg panelHeight connection =
     if rightSidebarExtended then
         column
             [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight ]
             [ row [ width fill ]
                 [ Input.button [ Background.color Colors.backgroundKodi, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Kodi" }
                 , Input.button [ Background.color Colors.backgroundLocal, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Local" }
+                , el [] ( case connection of
+                            Connected ->
+                                Element.text "Connected"
+                            Disconnected ->
+                                Element.text "Disconnected"
+                            NotAsked ->
+                                Element.text "Not asked"
+                        )
                 , Input.button [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight ]
                     { onPress = Just rightSidebarMsg
                     , label =
