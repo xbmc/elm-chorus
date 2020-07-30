@@ -306,7 +306,7 @@ update msg model =
                 newSlider =
                     SingleSlider.update newValue model.progressSlider
             in
-            ( { model | progressSlider = newSlider }, Cmd.none )
+            ( { model | progressSlider = newSlider }, sendAction ("""{"jsonrpc":"2.0", "method":"Player.Seek", "id":1, "params": { "playerid":0, "value":""" ++ String.fromFloat newValue ++ """}}""") )
 
         SearchChanged searchString ->
             ( { model | searchString = searchString }, Cmd.none )
