@@ -299,7 +299,7 @@ update msg model =
                 newSlider =
                     SingleSlider.update newValue model.volumeSlider
             in
-            ( { model | volumeSlider = newSlider }, Cmd.none )
+            ( { model | volumeSlider = newSlider }, sendAction ("""{"jsonrpc":"2.0","method":"Application.SetVolume","id":1,"params":{"volume":""" ++ String.fromFloat newValue ++ """}}""") )
 
         ProgressSliderChange newValue ->
             let
