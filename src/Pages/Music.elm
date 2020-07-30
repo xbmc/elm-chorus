@@ -1,6 +1,7 @@
 module Pages.Music exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
+import Components.VerticalNav
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -103,32 +104,27 @@ materialButton ( icon, action ) =
         }
 
 
+menuBar : Element msg
 menuBar =
-    column [ Element.height fill, Element.width (fillPortion 1) ]
-        [ Element.link []
-            { url = Route.toString Route.Music
-            , label = Element.text "Music"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Genres
-            , label = Element.text "Genres"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Genres
-            , label = Element.text "Top Music"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Artists
-            , label = Element.text "Artists"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Albums
-            , label = Element.text "Albums"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Videos
-            , label = Element.text "Videos"
-            }
+    Components.VerticalNav.view
+        [ { route = Route.Music
+          , label = "Music"
+          }
+        , { route = Route.Music__Genres
+          , label = "Genres"
+          }
+        , { route = Route.Music__Genres
+          , label = "Top Music"
+          }
+        , { route = Route.Music__Artists
+          , label = "Artists"
+          }
+        , { route = Route.Music__Albums
+          , label = "Albums"
+          }
+        , { route = Route.Music__Videos
+          , label = "Videos"
+          }
         ]
 
 

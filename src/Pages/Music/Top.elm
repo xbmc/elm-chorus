@@ -103,35 +103,6 @@ materialButton ( icon, action ) =
         }
 
 
-menuBar =
-    column [ Element.height fill, Element.width (fillPortion 1) ]
-        [ Element.link []
-            { url = Route.toString Route.Music
-            , label = Element.text "Music"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Genres
-            , label = Element.text "Genres"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Genres
-            , label = Element.text "Top Music"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Artists
-            , label = Element.text "Artists"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Albums
-            , label = Element.text "Albums"
-            }
-        , Element.link []
-            { url = Route.toString Route.Music__Videos
-            , label = Element.text "Videos"
-            }
-        ]
-
-
 
 -- VIEW
 

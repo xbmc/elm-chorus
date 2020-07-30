@@ -1,32 +1,23 @@
-module Components.VerticalNav exposing
-    ( VerticalNav
-    , view
-    )
+module Components.VerticalNav exposing (view)
 
-import Array
-import Html exposing (..)
-import Html.Events as Events
-import Html.Attributes exposing (class)
+import Element exposing (Element, column, fill, fillPortion)
+import Spa.Generated.Route as Route exposing (Route)
 
-type VerticalNav slide
-    = VerticalNav (Internals slide)
-
-
-type alias Internals slide =
-    { pages : List Pages
-    }
 
 view :
-    { verticalNav : VerticalNav nav
-    , currentPage : Page page
-    }
-view options =
-    let
-        (VerticalNav internals) =
-            options.verticalNav
-    in
-    [ row [ Element.height fill, Element.width fill ]
-            [ options.verticalNav
-            , page.view
-        ]
-    ]
+    List
+        { route : Route
+        , label : String
+        }
+    -> Element msg
+view links =
+    column [ Element.height fill, Element.width (fillPortion 1) ]
+        (List.map
+            (\a ->
+                Element.link []
+                    { url = Route.toString a.route
+                    , label = Element.text a.label
+                    }
+            )
+            links
+        )
