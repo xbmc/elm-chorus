@@ -38,7 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Ports go here
     // https://guide.elm-lang.org/interop/ports.html
   };
-
+  ws.onerror=function(event){
+    app.ports.connection.send("Disconnected");
+  }
   window.onbeforeunload = function () {
     app.ports.connection.send("Disconnected");
     ws.close();
