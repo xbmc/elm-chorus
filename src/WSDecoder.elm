@@ -158,7 +158,7 @@ type ResultResponse
     | ResultE (List ArtistObj)
     | ResultF (List AlbumObj)
     | ResultG (List MovieObj)
-    | ResultH Float --Int
+    | ResultH Float Int
 
 
 
@@ -307,7 +307,7 @@ percentDecoder : Decoder ResultResponse
 percentDecoder =
     Decode.succeed ResultH
         |> custom (at [ "result", "percentage" ] float)
-        --|> custom (at [ "result", "speed" ] int)
+        |> custom (at [ "result", "speed" ] int)
 
 --kodi ws connection
 type Connection = Connected | Disconnected | NotAsked

@@ -23,6 +23,7 @@ type alias PlayerControl msg =
     { playPauseMsg : msg
     , skipMsg : msg
     , reverseMsg : msg
+    , playing : Bool
     }
 
 

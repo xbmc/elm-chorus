@@ -47,6 +47,7 @@ type alias Model =
     , controlMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
+    , playing : Bool
     , song_list : List SongObj
     , movie_list : List MovieObj
     , volumeSlider : SingleSlider Msg
@@ -66,6 +67,7 @@ init flags url key =
       , controlMenu = False
       , players = []
       , currentlyPlaying = Nothing
+      , playing = False
       , song_list = []
       , movie_list = []
       , volumeSlider =
@@ -227,7 +229,7 @@ update msg model =
 
                 ResultC item ->
                     ( { model | currentlyPlaying = Just item }
-                    , sendAction """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage"]},"id":"0"}"""
+                    , sendAction """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage", "speed"]},"id":"0"}"""
                     )
 
                 ResultD songlist ->
@@ -248,13 +250,28 @@ update msg model =
                     , Cmd.none
                     )
 
-                ResultH percent ->
-                    --TODO slider
-                    let
-                        newSlider =
-                            SingleSlider.update percent model.progressSlider
-                    in
-                    ( { model | progressSlider = newSlider }, Cmd.none )
+                ResultH percent playing ->
+                    case playing of
+                        0 ->
+                            let
+                                newSlider =
+                                    SingleSlider.update percent model.progressSlider
+                            in
+                            ( { model | progressSlider = newSlider, playing = False }, Cmd.none )
+
+                        1 ->
+                            let
+                                newSlider =
+                                    SingleSlider.update percent model.progressSlider
+                            in
+                            ( { model | progressSlider = newSlider, playing = True }, Cmd.none )
+
+                        _ ->
+                            let
+                                newSlider =
+                                    SingleSlider.update percent model.progressSlider
+                            in
+                            ( { model | progressSlider = newSlider }, Cmd.none )
 
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
@@ -344,6 +361,7 @@ view { page, toMsg } model =
             { playPauseMsg = toMsg PlayPause
             , skipMsg = toMsg (Request Player_PlayPause Nothing) -- todo
             , reverseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing))) -- todo
+            , playing = model.playing
             }
         , currentlyPlaying =
             { currentlyPlaying = model.currentlyPlaying

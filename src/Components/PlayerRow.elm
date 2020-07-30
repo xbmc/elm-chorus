@@ -43,10 +43,11 @@ view layoutType =
 
 
 playControlRow : PlayerControl msg -> Element msg
-playControlRow { reverseMsg, playPauseMsg, skipMsg } =
+playControlRow { reverseMsg, playPauseMsg, skipMsg, playing } =
     row [ height fill, width (px 300), Background.color Colors.greyscaleShark, alignBottom, center, spaceEvenly ]
         [ el [ padding 10 ] (reverseButton reverseMsg)
-        , el [] (playButton playPauseMsg)
+        , el [] (playButton playing playPauseMsg)
+
         , el [ padding 10 ] (skipButton skipMsg)
         ]
 
@@ -152,9 +153,13 @@ reverseButton reverseMsg =
     materialButtonBig ( Filled.skip_previous, reverseMsg )
 
 
-playButton : msg -> Element msg
-playButton playPauseMsg =
-    materialButtonBig ( Filled.play_arrow, playPauseMsg )
+playButton : Bool -> msg -> Element msg
+playButton playing playPauseMsg =
+    case playing of
+        False ->
+            materialButtonBig ( Filled.play_arrow, playPauseMsg )
+        True ->
+            materialButtonBig ( Filled.pause, playPauseMsg )
 
 
 skipButton : msg -> Element msg
