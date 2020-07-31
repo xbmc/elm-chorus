@@ -2,6 +2,7 @@ module Pages.Music exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
 import Components.VerticalNav
+import Components.VerticalNavMusic
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -50,12 +51,13 @@ type alias Params =
 type alias Model =
     { currentlyPlaying : Maybe ItemDetails
     , song_list : List SongObj
+    , route : Route
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
-init shared { params } =
-    ( { currentlyPlaying = shared.currentlyPlaying, song_list = shared.song_list }
+init shared url =
+    ( { currentlyPlaying = shared.currentlyPlaying, song_list = shared.song_list, route = url.route }
     , sendAction """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "limits": { "start" : 0, "end": 25 }, "properties": [ "artist", "duration", "album", "track" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": true } }, "id": "libSongs"}"""
     )
 
@@ -104,30 +106,6 @@ materialButton ( icon, action ) =
         }
 
 
-menuBar : Element msg
-menuBar =
-    Components.VerticalNav.view
-        [ { route = Route.Music
-          , label = "Music"
-          }
-        , { route = Route.Music__Genres
-          , label = "Genres"
-          }
-        , { route = Route.Music__Genres
-          , label = "Top Music"
-          }
-        , { route = Route.Music__Artists
-          , label = "Artists"
-          }
-        , { route = Route.Music__Albums
-          , label = "Albums"
-          }
-        , { route = Route.Music__Videos
-          , label = "Videos"
-          }
-        ]
-
-
 
 -- VIEW
 
@@ -137,7 +115,7 @@ view model =
     { title = "Music"
     , body =
         [ row [ Element.height fill, Element.width fill ]
-            [ menuBar
+            [ Components.VerticalNavMusic.view model.route
             , column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7 ]
                 (List.map
                     (\song ->

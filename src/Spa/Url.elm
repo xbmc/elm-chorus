@@ -2,6 +2,7 @@ module Spa.Url exposing (Url, create)
 
 import Browser.Navigation exposing (Key)
 import Dict exposing (Dict)
+import Spa.Generated.Route as Route exposing (Route)
 import Url
 
 
@@ -10,6 +11,7 @@ type alias Url params =
     , params : params
     , query : Dict String String
     , rawUrl : Url.Url
+    , route : Route
     }
 
 
@@ -18,6 +20,7 @@ create params key url =
     { key = key
     , params = params
     , rawUrl = url
+    , route = Route.fromUrl url |> Maybe.withDefault Route.NotFound
     , query =
         url.query
             |> Maybe.map toQueryDict
