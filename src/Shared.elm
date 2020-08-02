@@ -23,6 +23,7 @@ import Request exposing (Params, Property(..), request)
 import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
+import List.Extra exposing (unique)
 import Time
 import Url exposing (Url)
 import WSDecoder exposing (Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
@@ -49,6 +50,7 @@ type alias Model =
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
     , song_list : List SongObj
+    , genre_list : List String
     , movie_list : List MovieObj
     , volumeSlider : SingleSlider Msg
     , progressSlider : SingleSlider Msg
@@ -69,6 +71,7 @@ init flags url key =
       , currentlyPlaying = Nothing
       , playing = False
       , song_list = []
+      , genre_list = []
       , movie_list = []
       , volumeSlider =
             SingleSlider.init
@@ -192,7 +195,7 @@ update msg model =
         ReceiveParamsResponse _ ->
             ( model
             , sendActions
-                [ """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "artist", "duration", "thumbnail"], "playerid": 0 }, "id": "AudioGetItem"}"""
+                [ """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "artist", "duration", "thumbnail", "genre"], "playerid": 0 }, "id": "AudioGetItem"}"""
                 , """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage", "speed"]},"id":"0"}"""
                 ]
             )
@@ -221,7 +224,7 @@ update msg model =
                                                 """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt playerid ++ """ }, "id": "VideoGetItem"}"""
 
                                             Audio ->
-                                                """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt playerid ++ """ }, "id": "AudioGetItem"}"""
+                                                """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "genre", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt playerid ++ """ }, "id": "AudioGetItem"}"""
                             )
                             model.players
                         )
@@ -233,7 +236,12 @@ update msg model =
                     )
 
                 ResultD songlist ->
-                    ( { model | song_list = songlist }, Cmd.none )
+                    let 
+                        genrelist =
+                            unique (List.concatMap (\song -> song.genre) songlist)
+
+                    in 
+                        ({ model | song_list = songlist, genre_list = genrelist }, Cmd.none )
 
                 ResultE _ ->
                     ( model
