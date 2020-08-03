@@ -59,10 +59,10 @@ init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
     ( { currentlyPlaying = shared.currentlyPlaying, song_list = shared.song_list, route = url.route }
     , sendActions
-    [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": true } }, "id": "libSongs"}"""
-    , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "properties": ["playcount", "artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "ascending", "method": "album", "ignorearticle": true } }, "id": "libAlbums"}"""
-    , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist", "ignorearticle": true } }, "id": 1}"""
-    ]
+        [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": true } }, "id": "libSongs"}"""
+        , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "properties": ["playcount", "artist", "genre", "rating", "thumbnail", "year", "mood", "style"], "sort": { "order": "ascending", "method": "album", "ignorearticle": true } }, "id": "libAlbums"}"""
+        , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ], "sort": { "order": "ascending", "method": "artist", "ignorearticle": true } }, "id": 1}"""
+        ]
     )
 
 
@@ -120,7 +120,7 @@ view model =
     , body =
         [ row [ Element.height fill, Element.width fill ]
             [ Components.VerticalNavMusic.view model.route
-            , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 60 0, spacingXY 5 7 ]
+            , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 60 0, spacingXY 5 7, Background.color Colors.background ]
                 (List.map
                     (\song ->
                         row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]

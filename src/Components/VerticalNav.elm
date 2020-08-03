@@ -2,6 +2,7 @@ module Components.VerticalNav exposing (view)
 
 import Colors
 import Element exposing (Attribute, Element, column, fill, fillPortion, padding, paddingXY, spacing)
+import Element.Background
 import Element.Font as Font exposing (Font)
 import Spa.Generated.Route as Route exposing (Route)
 
@@ -16,7 +17,7 @@ view :
             }
     -> Element msg
 view header currentRoute links =
-    column [ Element.height fill, Element.width (fillPortion 1), paddingXY 16 8, spacing 16, Font.color Colors.greyscaleGray ]
+    column [ Element.height fill, Element.width (fillPortion 1), paddingXY 16 8, spacing 16, Font.color Colors.greyscaleGray, Element.Background.color Colors.sidebar ]
         ([ header |> String.toUpper |> Element.text ]
             ++ List.map
                 (\a ->

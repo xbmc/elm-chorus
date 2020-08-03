@@ -115,7 +115,7 @@ view model =
                             (List.map
                                 (\artist ->
                                     column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color (rgb 0.9 0.9 0.9) ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
-                                        [ el [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ]] (Element.text artist.label)
+                                        [ el [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18] (Element.text artist.label)
                                         ]
                                 )
                                 model.artist_list
@@ -127,7 +127,7 @@ view model =
                             (List.map
                                 (\album ->
                                     column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color (rgb 0.9 0.9 0.9) ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
-                                        [ el [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ]] (Element.text album.label)
+                                        [ el [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18] (Element.text album.label)
                                         ]
                                 )
                                 model.album_list

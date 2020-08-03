@@ -135,8 +135,8 @@ constructMovieItem movie =
                 }
             )
         , column [ paddingXY 5 5, Background.color (rgb 1 1 1), Element.width (fill |> minimum 150 |> maximum 150), clip ]
-            [ el [ Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text movie.label)
-            , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text "2020")
+            [ el [ Font.color (Element.rgb 0 0 0), Font.size 18 ] (Element.text movie.label)
+            , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (Element.text "2020")
             ]
         ]
 

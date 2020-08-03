@@ -47,7 +47,6 @@ playControlRow { reverseMsg, playPauseMsg, skipMsg, playing } =
     row [ height fill, width (px 300), Background.color Colors.greyscaleShark, alignBottom, center, spaceEvenly ]
         [ el [ padding 10 ] (reverseButton reverseMsg)
         , el [] (playButton playing playPauseMsg)
-
         , el [ padding 10 ] (skipButton skipMsg)
         ]
 
@@ -61,29 +60,28 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
             [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
             (case currentlyPlaying of
                 Nothing ->
-                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text "Nothing playing")
-                    , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text "0")
+                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (text "Nothing playing")
+                    , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (text "0")
                     ]
 
                 Just item ->
-                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text item.title)
-                    , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (item.duration |> durationToString |> text)
+                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (text item.title)
+                    , el [ alignRight, Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (item.duration |> durationToString |> text)
                     ]
             )
         , row
             [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
             (case currentlyPlaying of
                 Nothing ->
-                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text "Nothing playing")
+                    [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13 ] (text "Nothing playing")
                     ]
 
                 Just item ->
-                    ( List.map 
+                    List.map
                         (\artist ->
-                            el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (text artist)
+                            el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13 ] (text artist)
                         )
-                    item.artist
-                    )
+                        item.artist
             )
         ]
 
@@ -158,6 +156,7 @@ playButton playing playPauseMsg =
     case playing of
         False ->
             materialButtonBig ( Filled.play_arrow, playPauseMsg )
+
         True ->
             materialButtonBig ( Filled.pause, playPauseMsg )
 

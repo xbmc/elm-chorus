@@ -22,7 +22,7 @@ layout layoutType =
                 , row
                     [ width fill, height fill ]
                     [ el [ width (px 50), height fill, Background.color Colors.navBackground ] LeftSidebar.view
-                    , column [ width fill, height fill, paddingXY 0 25, Background.color Colors.sidebar ] layoutType.page.body
+                    , column [ width fill, height fill ] layoutType.page.body
                     ]
                 ]
             ]
