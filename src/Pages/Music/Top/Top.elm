@@ -1,4 +1,4 @@
-module Pages.Music.Top exposing (Model, Msg, Params, page)
+module Pages.Music.Top.Top exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
 import Components.VerticalNavMusic
