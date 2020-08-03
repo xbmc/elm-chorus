@@ -26,7 +26,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -49,6 +49,8 @@ type alias Model =
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
+    , artist_list : List ArtistObj
+    , album_list : List AlbumObj
     , song_list : List SongObj
     , genre_list : List String
     , movie_list : List MovieObj
@@ -71,6 +73,8 @@ init flags url key =
       , players = []
       , currentlyPlaying = Nothing
       , playing = False
+      , artist_list = []
+      , album_list = []
       , song_list = []
       , genre_list = []
       , movie_list = []
@@ -243,13 +247,13 @@ update msg model =
                     in
                     ( { model | song_list = songlist, genre_list = genrelist }, Cmd.none )
 
-                ResultE _ ->
-                    ( model
+                ResultE artistlist ->
+                    ( { model | artist_list = artistlist }
                     , Cmd.none
                     )
 
-                ResultF _ ->
-                    ( model
+                ResultF albumlist ->
+                    ( { model | album_list = albumlist }
                     , Cmd.none
                     )
 

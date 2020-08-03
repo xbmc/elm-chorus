@@ -1,4 +1,4 @@
-module WSDecoder exposing (Connection(..), ArtistObj, Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (AlbumObj, Connection(..), ArtistObj, Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -254,12 +254,14 @@ artistDecoder =
         |> required "label" string
         |> required "artistid" int
         |> required "thumbnail" string
+        |> required "genre" (list string)
 
 
 type alias ArtistObj =
     { label : String
     , albumid : Int
     , thumbnail : String
+    , genre : List String
     }
 
 
@@ -275,12 +277,14 @@ albumDecoder =
         |> required "label" string
         |> required "albumid" int
         |> required "thumbnail" string
+        |> required "genre" (list string)
 
 
 type alias AlbumObj =
     { label : String
     , albumid : Int
     , thumbnail : String
+    , genre : List String
     }
 
 
