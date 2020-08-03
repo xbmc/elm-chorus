@@ -28,6 +28,7 @@ import Pages.Music.Videos
 import Pages.Settings.Web
 import Pages.Tvshows.Recent
 import Pages.Music.Top.Top
+import Pages.Music.Genre.Genre_String
 import Shared
 import Spa.Document as Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
@@ -58,6 +59,7 @@ type Model
     | Settings__Web__Model Pages.Settings.Web.Model
     | Tvshows__Recent__Model Pages.Tvshows.Recent.Model
     | Music__Top__Top__Model Pages.Music.Top.Top.Model
+    | Music__Genre__Genre_String__Model Pages.Music.Genre.Genre_String.Model
 
 
 type Msg
@@ -80,6 +82,7 @@ type Msg
     | Settings__Web__Msg Pages.Settings.Web.Msg
     | Tvshows__Recent__Msg Pages.Tvshows.Recent.Msg
     | Music__Top__Top__Msg Pages.Music.Top.Top.Msg
+    | Music__Genre__Genre_String__Msg Pages.Music.Genre.Genre_String.Msg
 
 
 
@@ -145,6 +148,9 @@ init route =
         
         Route.Music__Top__Top ->
             pages.music__top__top.init ()
+        
+        Route.Music__Genre__Genre_String params ->
+            pages.music__genre__genre_string.init params
 
 
 
@@ -210,6 +216,9 @@ update bigMsg bigModel =
         
         ( Music__Top__Top__Msg msg, Music__Top__Top__Model model ) ->
             pages.music__top__top.update msg model
+        
+        ( Music__Genre__Genre_String__Msg msg, Music__Genre__Genre_String__Model model ) ->
+            pages.music__genre__genre_string.update msg model
         
         _ ->
             ( bigModel, Cmd.none )
@@ -278,6 +287,9 @@ bundle bigModel =
         
         Music__Top__Top__Model model ->
             pages.music__top__top.bundle model
+        
+        Music__Genre__Genre_String__Model model ->
+            pages.music__genre__genre_string.bundle model
 
 
 view : Model -> Document Msg
@@ -364,6 +376,7 @@ pages :
     , settings__web : Upgraded Pages.Settings.Web.Params Pages.Settings.Web.Model Pages.Settings.Web.Msg
     , tvshows__recent : Upgraded Pages.Tvshows.Recent.Params Pages.Tvshows.Recent.Model Pages.Tvshows.Recent.Msg
     , music__top__top : Upgraded Pages.Music.Top.Top.Params Pages.Music.Top.Top.Model Pages.Music.Top.Top.Msg
+    , music__genre__genre_string : Upgraded Pages.Music.Genre.Genre_String.Params Pages.Music.Genre.Genre_String.Model Pages.Music.Genre.Genre_String.Msg
     }
 pages =
     { top = Pages.Top.page |> upgrade Top__Model Top__Msg
@@ -385,4 +398,5 @@ pages =
     , settings__web = Pages.Settings.Web.page |> upgrade Settings__Web__Model Settings__Web__Msg
     , tvshows__recent = Pages.Tvshows.Recent.page |> upgrade Tvshows__Recent__Model Tvshows__Recent__Msg
     , music__top__top = Pages.Music.Top.Top.page |> upgrade Music__Top__Top__Model Music__Top__Top__Msg
+    , music__genre__genre_string = Pages.Music.Genre.Genre_String.page |> upgrade Music__Genre__Genre_String__Model Music__Genre__Genre_String__Msg
     }

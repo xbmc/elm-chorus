@@ -120,8 +120,10 @@ view model =
                 (List.map
                     (\genre ->
                         column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color (rgb 0.9 0.9 0.9) ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
-                            [ el [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ] (Element.text genre)
-                            ]
+                            [ Element.link [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ]
+                        { url = Route.toString (Route.Music__Genre__Genre_String { genre = genre })
+                        , label = Element.text genre
+                        }]
                     )
                     model.genre_list
                 )

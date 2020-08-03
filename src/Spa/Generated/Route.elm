@@ -28,6 +28,7 @@ type Route
     | Settings__Web
     | Tvshows__Recent
     | Music__Top__Top
+    | Music__Genre__Genre_String { genre : String }
 
 
 fromUrl : Url -> Maybe Route
@@ -57,6 +58,9 @@ routes =
         , Parser.map Settings__Web (Parser.s "settings" </> Parser.s "web")
         , Parser.map Tvshows__Recent (Parser.s "tvshows" </> Parser.s "recent")
         , Parser.map Music__Top__Top (Parser.s "music" </> Parser.s "top")
+        , (Parser.s "music" </> Parser.s "genre" </> Parser.string)
+          |> Parser.map (\genre -> { genre = genre })
+          |> Parser.map Music__Genre__Genre_String
         ]
 
 
@@ -122,6 +126,9 @@ toString route =
                 
                 Music__Top__Top ->
                     [ "music", "top" ]
+                
+                Music__Genre__Genre_String { genre } ->
+                    [ "music", "genre", genre ]
     in
     segments
         |> String.join "/"
