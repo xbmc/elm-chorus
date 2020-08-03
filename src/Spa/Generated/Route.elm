@@ -20,7 +20,6 @@ type Route
     | Playlists
     | Thumbsup
     | Tvshows
-    | Music__Top
     | Movies__Recent
     | Music__Albums
     | Music__Artists
@@ -28,6 +27,7 @@ type Route
     | Music__Videos
     | Settings__Web
     | Tvshows__Recent
+    | Music__Top__Top
 
 
 fromUrl : Url -> Maybe Route
@@ -49,7 +49,6 @@ routes =
         , Parser.map Playlists (Parser.s "playlists")
         , Parser.map Thumbsup (Parser.s "thumbsup")
         , Parser.map Tvshows (Parser.s "tvshows")
-        , Parser.map Music__Top (Parser.s "music")
         , Parser.map Movies__Recent (Parser.s "movies" </> Parser.s "recent")
         , Parser.map Music__Albums (Parser.s "music" </> Parser.s "albums")
         , Parser.map Music__Artists (Parser.s "music" </> Parser.s "artists")
@@ -57,6 +56,7 @@ routes =
         , Parser.map Music__Videos (Parser.s "music" </> Parser.s "videos")
         , Parser.map Settings__Web (Parser.s "settings" </> Parser.s "web")
         , Parser.map Tvshows__Recent (Parser.s "tvshows" </> Parser.s "recent")
+        , Parser.map Music__Top__Top (Parser.s "music" </> Parser.s "top")
         ]
 
 
@@ -99,9 +99,6 @@ toString route =
                 Tvshows ->
                     [ "tvshows" ]
                 
-                Music__Top ->
-                    [ "music" ]
-                
                 Movies__Recent ->
                     [ "movies", "recent" ]
                 
@@ -122,6 +119,9 @@ toString route =
                 
                 Tvshows__Recent ->
                     [ "tvshows", "recent" ]
+                
+                Music__Top__Top ->
+                    [ "music", "top" ]
     in
     segments
         |> String.join "/"

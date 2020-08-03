@@ -18,12 +18,12 @@ import Browser.Navigation exposing (Key, pushUrl)
 import Components.Frame
 import Element exposing (..)
 import Json.Decode as D
+import List.Extra exposing (unique)
 import Method exposing (Method(..))
 import Request exposing (Params, Property(..), request)
 import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
-import List.Extra exposing (unique)
 import Time
 import Url exposing (Url)
 import WSDecoder exposing (Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
@@ -58,6 +58,7 @@ type alias Model =
     , windowHeight : Int
     , searchString : String
     }
+
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
@@ -236,12 +237,11 @@ update msg model =
                     )
 
                 ResultD songlist ->
-                    let 
+                    let
                         genrelist =
                             unique (List.concatMap (\song -> song.genre) songlist)
-
-                    in 
-                        ({ model | song_list = songlist, genre_list = genrelist }, Cmd.none )
+                    in
+                    ( { model | song_list = songlist, genre_list = genrelist }, Cmd.none )
 
                 ResultE _ ->
                     ( model

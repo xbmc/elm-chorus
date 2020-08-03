@@ -16,7 +16,7 @@ view currentRoute =
         , { route = Route.Music__Genres
           , label = "Genres"
           }
-        , { route = Route.Music__Genres
+        , { route = Route.Music__Top__Top
           , label = "Top Music"
           }
         , { route = Route.Music__Artists

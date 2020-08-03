@@ -20,7 +20,6 @@ import Pages.NotFound
 import Pages.Playlists
 import Pages.Thumbsup
 import Pages.Tvshows
-import Pages.Music.Top
 import Pages.Movies.Recent
 import Pages.Music.Albums
 import Pages.Music.Artists
@@ -28,6 +27,7 @@ import Pages.Music.Genres
 import Pages.Music.Videos
 import Pages.Settings.Web
 import Pages.Tvshows.Recent
+import Pages.Music.Top.Top
 import Shared
 import Spa.Document as Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
@@ -50,7 +50,6 @@ type Model
     | Playlists__Model Pages.Playlists.Model
     | Thumbsup__Model Pages.Thumbsup.Model
     | Tvshows__Model Pages.Tvshows.Model
-    | Music__Top__Model Pages.Music.Top.Model
     | Movies__Recent__Model Pages.Movies.Recent.Model
     | Music__Albums__Model Pages.Music.Albums.Model
     | Music__Artists__Model Pages.Music.Artists.Model
@@ -58,6 +57,7 @@ type Model
     | Music__Videos__Model Pages.Music.Videos.Model
     | Settings__Web__Model Pages.Settings.Web.Model
     | Tvshows__Recent__Model Pages.Tvshows.Recent.Model
+    | Music__Top__Top__Model Pages.Music.Top.Top.Model
 
 
 type Msg
@@ -72,7 +72,6 @@ type Msg
     | Playlists__Msg Pages.Playlists.Msg
     | Thumbsup__Msg Pages.Thumbsup.Msg
     | Tvshows__Msg Pages.Tvshows.Msg
-    | Music__Top__Msg Pages.Music.Top.Msg
     | Movies__Recent__Msg Pages.Movies.Recent.Msg
     | Music__Albums__Msg Pages.Music.Albums.Msg
     | Music__Artists__Msg Pages.Music.Artists.Msg
@@ -80,6 +79,7 @@ type Msg
     | Music__Videos__Msg Pages.Music.Videos.Msg
     | Settings__Web__Msg Pages.Settings.Web.Msg
     | Tvshows__Recent__Msg Pages.Tvshows.Recent.Msg
+    | Music__Top__Top__Msg Pages.Music.Top.Top.Msg
 
 
 
@@ -122,9 +122,6 @@ init route =
         Route.Tvshows ->
             pages.tvshows.init ()
         
-        Route.Music__Top ->
-            pages.music__top.init ()
-        
         Route.Movies__Recent ->
             pages.movies__recent.init ()
         
@@ -145,6 +142,9 @@ init route =
         
         Route.Tvshows__Recent ->
             pages.tvshows__recent.init ()
+        
+        Route.Music__Top__Top ->
+            pages.music__top__top.init ()
 
 
 
@@ -187,9 +187,6 @@ update bigMsg bigModel =
         ( Tvshows__Msg msg, Tvshows__Model model ) ->
             pages.tvshows.update msg model
         
-        ( Music__Top__Msg msg, Music__Top__Model model ) ->
-            pages.music__top.update msg model
-        
         ( Movies__Recent__Msg msg, Movies__Recent__Model model ) ->
             pages.movies__recent.update msg model
         
@@ -210,6 +207,9 @@ update bigMsg bigModel =
         
         ( Tvshows__Recent__Msg msg, Tvshows__Recent__Model model ) ->
             pages.tvshows__recent.update msg model
+        
+        ( Music__Top__Top__Msg msg, Music__Top__Top__Model model ) ->
+            pages.music__top__top.update msg model
         
         _ ->
             ( bigModel, Cmd.none )
@@ -255,9 +255,6 @@ bundle bigModel =
         Tvshows__Model model ->
             pages.tvshows.bundle model
         
-        Music__Top__Model model ->
-            pages.music__top.bundle model
-        
         Movies__Recent__Model model ->
             pages.movies__recent.bundle model
         
@@ -278,6 +275,9 @@ bundle bigModel =
         
         Tvshows__Recent__Model model ->
             pages.tvshows__recent.bundle model
+        
+        Music__Top__Top__Model model ->
+            pages.music__top__top.bundle model
 
 
 view : Model -> Document Msg
@@ -356,7 +356,6 @@ pages :
     , playlists : Upgraded Pages.Playlists.Params Pages.Playlists.Model Pages.Playlists.Msg
     , thumbsup : Upgraded Pages.Thumbsup.Params Pages.Thumbsup.Model Pages.Thumbsup.Msg
     , tvshows : Upgraded Pages.Tvshows.Params Pages.Tvshows.Model Pages.Tvshows.Msg
-    , music__top : Upgraded Pages.Music.Top.Params Pages.Music.Top.Model Pages.Music.Top.Msg
     , movies__recent : Upgraded Pages.Movies.Recent.Params Pages.Movies.Recent.Model Pages.Movies.Recent.Msg
     , music__albums : Upgraded Pages.Music.Albums.Params Pages.Music.Albums.Model Pages.Music.Albums.Msg
     , music__artists : Upgraded Pages.Music.Artists.Params Pages.Music.Artists.Model Pages.Music.Artists.Msg
@@ -364,6 +363,7 @@ pages :
     , music__videos : Upgraded Pages.Music.Videos.Params Pages.Music.Videos.Model Pages.Music.Videos.Msg
     , settings__web : Upgraded Pages.Settings.Web.Params Pages.Settings.Web.Model Pages.Settings.Web.Msg
     , tvshows__recent : Upgraded Pages.Tvshows.Recent.Params Pages.Tvshows.Recent.Model Pages.Tvshows.Recent.Msg
+    , music__top__top : Upgraded Pages.Music.Top.Top.Params Pages.Music.Top.Top.Model Pages.Music.Top.Top.Msg
     }
 pages =
     { top = Pages.Top.page |> upgrade Top__Model Top__Msg
@@ -377,7 +377,6 @@ pages =
     , playlists = Pages.Playlists.page |> upgrade Playlists__Model Playlists__Msg
     , thumbsup = Pages.Thumbsup.page |> upgrade Thumbsup__Model Thumbsup__Msg
     , tvshows = Pages.Tvshows.page |> upgrade Tvshows__Model Tvshows__Msg
-    , music__top = Pages.Music.Top.page |> upgrade Music__Top__Model Music__Top__Msg
     , movies__recent = Pages.Movies.Recent.page |> upgrade Movies__Recent__Model Movies__Recent__Msg
     , music__albums = Pages.Music.Albums.page |> upgrade Music__Albums__Model Music__Albums__Msg
     , music__artists = Pages.Music.Artists.page |> upgrade Music__Artists__Model Music__Artists__Msg
@@ -385,4 +384,5 @@ pages =
     , music__videos = Pages.Music.Videos.page |> upgrade Music__Videos__Model Music__Videos__Msg
     , settings__web = Pages.Settings.Web.page |> upgrade Settings__Web__Model Settings__Web__Msg
     , tvshows__recent = Pages.Tvshows.Recent.page |> upgrade Tvshows__Recent__Model Tvshows__Recent__Msg
+    , music__top__top = Pages.Music.Top.Top.page |> upgrade Music__Top__Top__Model Music__Top__Top__Msg
     }
