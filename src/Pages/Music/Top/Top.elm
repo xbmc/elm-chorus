@@ -1,6 +1,7 @@
 module Pages.Music.Top.Top exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
+import Components.SectionHeader
 import Components.VerticalNavMusic
 import Element exposing (..)
 import Element.Background as Background
@@ -113,24 +114,28 @@ view model =
         [ row [ Element.height fill, Element.width fill ]
             [ Components.VerticalNavMusic.view model.route
             , column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7 ]
-                (List.map
-                    (\song ->
-                        row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
-                            [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
-                            , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
-                            , el [ Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text song.label)
-                            , row [ alignRight ]
-                                (List.map
-                                    (\artist ->
-                                        el [ Font.color (Element.rgb 0.8 0.8 0.8), paddingXY 5 0 ] (Element.text artist)
+                (List.append
+                    [ Components.SectionHeader.view "Top Songs" Nothing False [ { title = "Toggle select all", action = Nothing } ]
+                    ]
+                    (List.map
+                        (\song ->
+                            row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
+                                [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
+                                , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
+                                , el [ Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text song.label)
+                                , row [ alignRight ]
+                                    (List.map
+                                        (\artist ->
+                                            el [ Font.color (Element.rgb 0.8 0.8 0.8), paddingXY 5 0 ] (Element.text artist)
+                                        )
+                                        song.artist
                                     )
-                                    song.artist
-                                )
-                            , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (song.duration |> durationToString |> Element.text)
-                            , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
-                            ]
+                                , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (song.duration |> durationToString |> Element.text)
+                                , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
+                                ]
+                        )
+                        model.song_list
                     )
-                    model.song_list
                 )
             ]
         ]
