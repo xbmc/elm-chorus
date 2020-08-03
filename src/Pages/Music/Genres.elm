@@ -1,6 +1,6 @@
 module Pages.Music.Genres exposing (Model, Msg, Params, page)
 
-import Colors exposing (greyIcon)
+import Colors exposing (greyIcon, greyscaleGray)
 import Components.VerticalNav
 import Components.VerticalNavMusic
 import Element exposing (..)
@@ -20,7 +20,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
-import Svg.Attributes
+import Svg.Attributes exposing (alignmentBaseline)
 import WSDecoder exposing (ItemDetails, SongObj)
 
 
@@ -116,16 +116,25 @@ view model =
     , body =
         [ row [ Element.height fill, Element.width fill ]
             [ Components.VerticalNavMusic.view model.route
-            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), paddingXY 5 5, spacingXY 5 7 ]
-                (List.map
-                    (\genre ->
-                        column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color (rgb 0.9 0.9 0.9) ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
-                            [ Element.link [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18, Font.family [ Font.typeface "Open Sans", Font.sansSerif ] ]
-                        { url = Route.toString (Route.Music__Genre__Genre_String { genre = genre })
-                        , label = Element.text genre
-                        }]
-                    )
-                    model.genre_list
+            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color Colors.background, paddingXY 5 5, spacingXY 5 7 ]
+                (model.genre_list
+                    |> List.sort
+                    |> List.map
+                        (\genre ->
+                            column
+                                [ Border.glow Colors.black 0.04
+                                , Background.color Colors.white
+                                , mouseOver [ Background.color (rgb 0.9 0.9 0.9) ]
+                                , Element.height (fill |> minimum 50 |> maximum 50)
+                                , Element.width (fill |> minimum 185 |> maximum 185)
+                                , Border.rounded 2
+                                ]
+                                [ Element.link [ Element.width fill, Element.height fill, paddingXY 7 16 ]
+                                    { url = Route.toString (Route.Music__Genre__Genre_String { genre = genre })
+                                    , label = Element.text genre
+                                    }
+                                ]
+                        )
                 )
             ]
         ]

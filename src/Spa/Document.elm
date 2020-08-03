@@ -5,7 +5,9 @@ module Spa.Document exposing
     )
 
 import Browser
+import Colors exposing (greyscaleGray)
 import Element exposing (..)
+import Element.Font as Font
 
 
 type alias Document msg =
@@ -25,7 +27,16 @@ toBrowserDocument : { body : Document msg, header : Element msg, playerBar : Ele
 toBrowserDocument { body, header, playerBar, rightSidebar } =
     { title = body.title
     , body =
-        [ Element.layout [ width fill, height fill, inFront header, inFront playerBar, inFront rightSidebar ]
+        [ Element.layout
+            [ width fill
+            , height fill
+            , inFront header
+            , inFront playerBar
+            , inFront rightSidebar
+            , Font.color greyscaleGray
+            , Font.size 14
+            , Font.family [ Font.typeface "opensans-light", Font.sansSerif ]
+            ]
             (column [ width fill, height fill ] body.body)
         ]
     }
