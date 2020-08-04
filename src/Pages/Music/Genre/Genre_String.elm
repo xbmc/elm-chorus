@@ -1,7 +1,7 @@
 module Pages.Music.Genre.Genre_String exposing (Params, Model, Msg, page)
 
 import Shared exposing (sendAction, sendActions)
-import Colors exposing (greyIcon)
+import Colors
 import Components.VerticalNav
 import Components.VerticalNavMusic
 import Spa.Document exposing (Document)
@@ -97,7 +97,7 @@ materialButton : ( Icon msg, msg ) -> Element msg
 materialButton ( icon, action ) =
     Input.button [ paddingXY 5 3 ]
         { onPress = Just action
-        , label = Element.html (icon 24 (MITypes.Color <| greyIcon))
+        , label = Element.html (icon 24 (MITypes.Color <| Colors.greyIcon))
         }
 
 -- VIEW
@@ -108,13 +108,13 @@ view model =
     { title = "Music.Genre_String"
     , body = [ row [ Element.height fill, Element.width fill ]
                 [ Components.VerticalNavMusic.view model.route
-                , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 60 0, spacingXY 5 7, Background.color (rgb 0.8 0.8 0.8) ]
-                    [ column [Element.height fill, Element.width fill] 
-                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color (rgb 0.9 0.9 0.9)] (Element.text (model.genre ++ " Artists"))
-                        , wrappedRow [ Element.height fill, Element.width fill, Background.color (rgb 0.8 0.8 0.8), paddingXY 5 5, spacingXY 5 7 ]
+                , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
+                    [ column [Element.height fill, Element.width fill, Font.color Colors.greyscaleGray] 
+                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar] (Element.text (model.genre ++ " Artists"))
+                        , wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
                             (List.map
                                 (\artist ->
-                                    column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color (rgb 0.9 0.9 0.9) ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
+                                    column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
                                         [ el [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18] (Element.text artist.label)
                                         ]
                                 )
@@ -122,37 +122,40 @@ view model =
                             )
                         ]
                     , column [Element.height fill, Element.width fill] 
-                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color (rgb 0.9 0.9 0.9)] (Element.text (model.genre ++ " Albums"))
-                        , wrappedRow [ Element.height fill, Element.width fill, Background.color (rgb 0.8 0.8 0.8), paddingXY 5 5, spacingXY 5 7 ]
+                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar] (Element.text (model.genre ++ " Albums"))
+                        , wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
                             (List.map
                                 (\album ->
-                                    column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color (rgb 0.9 0.9 0.9) ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
-                                        [ el [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18] (Element.text album.label)
+                                    column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
+                                        [ el [ Font.center, Font.color Colors.black, Font.size 18] (Element.text album.label)
                                         ]
                                 )
                                 model.album_list
                             )
                         ]
-                    , column [ Element.height fill, Element.width fill, paddingXY 60 0, spacingXY 5 7 ]
-                        (List.map
-                            (\song ->
-                                row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
-                                    [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
-                                    , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
-                                    , el [ Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text song.label)
-                                    , row [ alignRight ]
-                                        (List.map
-                                            (\artist ->
-                                                el [ Font.color (Element.rgb 0.8 0.8 0.8), paddingXY 5 0 ] (Element.text artist)
+                    , column [ Element.height fill, Element.width fill, alignBottom ]
+                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar] (Element.text (model.genre ++ " Songs"))
+                        , column [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
+                            (List.map
+                                (\song ->
+                                    row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
+                                        [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
+                                        , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
+                                        , el [ Font.color Colors.background ] (Element.text song.label)
+                                        , row [ alignRight ]
+                                            (List.map
+                                                (\artist ->
+                                                    el [ Font.color Colors.background, paddingXY 5 0 ] (Element.text artist)
+                                                )
+                                                song.artist
                                             )
-                                            song.artist
-                                        )
-                                    , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (song.duration |> durationToString |> Element.text)
-                                    , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
-                                    ]
+                                        , el [ alignRight, Font.color Colors.background ] (song.duration |> durationToString |> Element.text)
+                                        , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
+                                        ]
+                                )
+                                model.song_list
                             )
-                            model.song_list
-                        )
+                        ] 
                     ]
                 ]
             ]

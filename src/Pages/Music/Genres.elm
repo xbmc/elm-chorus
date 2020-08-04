@@ -124,7 +124,7 @@ view model =
                             column
                                 [ Border.glow Colors.black 0.04
                                 , Background.color Colors.white
-                                , mouseOver [ Background.color (rgb 0.9 0.9 0.9) ]
+                                , mouseOver [ Background.color Colors.sidebar ]
                                 , Element.height (fill |> minimum 50 |> maximum 50)
                                 , Element.width (fill |> minimum 185 |> maximum 185)
                                 , Border.rounded 2
