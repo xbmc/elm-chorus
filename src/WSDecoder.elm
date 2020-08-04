@@ -230,6 +230,7 @@ songDecoder =
         |> required "artist" (list string)
         |> required "duration" int
         |> required "songid" int
+        |> required "albumid" int
         |> required "genre" (list string)
 
 
@@ -238,6 +239,7 @@ type alias SongObj =
     , artist : List String
     , duration : Int
     , songid : Int
+    , albumid : Int
     , genre : List String
     }
 

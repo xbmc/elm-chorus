@@ -27,12 +27,12 @@ type alias Params =
 
 
 type alias Model =
-    {}
+    { artistid : Int }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( {}, Cmd.none )
+    ( { artistid = params.artistid}, Cmd.none )
 
 
 
