@@ -34,6 +34,10 @@ greyIcon : Color.Color
 greyIcon =
     Color.rgba 1 1 1 0.5
 
+blackIcon : Color.Color
+blackIcon =
+    Color.rgba 0 0 0 0.9
+
 
 grey : Element.Color
 grey =

@@ -28,6 +28,8 @@ import Pages.Music.Videos
 import Pages.Settings.Web
 import Pages.Tvshows.Recent
 import Pages.Music.Top.Top
+import Pages.Music.Album.Albumid_Int
+import Pages.Music.Artist.Artistid_Int
 import Pages.Music.Genre.Genre_String
 import Shared
 import Spa.Document as Document exposing (Document)
@@ -59,6 +61,8 @@ type Model
     | Settings__Web__Model Pages.Settings.Web.Model
     | Tvshows__Recent__Model Pages.Tvshows.Recent.Model
     | Music__Top__Top__Model Pages.Music.Top.Top.Model
+    | Music__Album__Albumid_Int__Model Pages.Music.Album.Albumid_Int.Model
+    | Music__Artist__Artistid_Int__Model Pages.Music.Artist.Artistid_Int.Model
     | Music__Genre__Genre_String__Model Pages.Music.Genre.Genre_String.Model
 
 
@@ -82,6 +86,8 @@ type Msg
     | Settings__Web__Msg Pages.Settings.Web.Msg
     | Tvshows__Recent__Msg Pages.Tvshows.Recent.Msg
     | Music__Top__Top__Msg Pages.Music.Top.Top.Msg
+    | Music__Album__Albumid_Int__Msg Pages.Music.Album.Albumid_Int.Msg
+    | Music__Artist__Artistid_Int__Msg Pages.Music.Artist.Artistid_Int.Msg
     | Music__Genre__Genre_String__Msg Pages.Music.Genre.Genre_String.Msg
 
 
@@ -148,6 +154,12 @@ init route =
         
         Route.Music__Top__Top ->
             pages.music__top__top.init ()
+        
+        Route.Music__Album__Albumid_Int params ->
+            pages.music__album__albumid_int.init params
+        
+        Route.Music__Artist__Artistid_Int params ->
+            pages.music__artist__artistid_int.init params
         
         Route.Music__Genre__Genre_String params ->
             pages.music__genre__genre_string.init params
@@ -216,6 +228,12 @@ update bigMsg bigModel =
         
         ( Music__Top__Top__Msg msg, Music__Top__Top__Model model ) ->
             pages.music__top__top.update msg model
+        
+        ( Music__Album__Albumid_Int__Msg msg, Music__Album__Albumid_Int__Model model ) ->
+            pages.music__album__albumid_int.update msg model
+        
+        ( Music__Artist__Artistid_Int__Msg msg, Music__Artist__Artistid_Int__Model model ) ->
+            pages.music__artist__artistid_int.update msg model
         
         ( Music__Genre__Genre_String__Msg msg, Music__Genre__Genre_String__Model model ) ->
             pages.music__genre__genre_string.update msg model
@@ -287,6 +305,12 @@ bundle bigModel =
         
         Music__Top__Top__Model model ->
             pages.music__top__top.bundle model
+        
+        Music__Album__Albumid_Int__Model model ->
+            pages.music__album__albumid_int.bundle model
+        
+        Music__Artist__Artistid_Int__Model model ->
+            pages.music__artist__artistid_int.bundle model
         
         Music__Genre__Genre_String__Model model ->
             pages.music__genre__genre_string.bundle model
@@ -376,6 +400,8 @@ pages :
     , settings__web : Upgraded Pages.Settings.Web.Params Pages.Settings.Web.Model Pages.Settings.Web.Msg
     , tvshows__recent : Upgraded Pages.Tvshows.Recent.Params Pages.Tvshows.Recent.Model Pages.Tvshows.Recent.Msg
     , music__top__top : Upgraded Pages.Music.Top.Top.Params Pages.Music.Top.Top.Model Pages.Music.Top.Top.Msg
+    , music__album__albumid_int : Upgraded Pages.Music.Album.Albumid_Int.Params Pages.Music.Album.Albumid_Int.Model Pages.Music.Album.Albumid_Int.Msg
+    , music__artist__artistid_int : Upgraded Pages.Music.Artist.Artistid_Int.Params Pages.Music.Artist.Artistid_Int.Model Pages.Music.Artist.Artistid_Int.Msg
     , music__genre__genre_string : Upgraded Pages.Music.Genre.Genre_String.Params Pages.Music.Genre.Genre_String.Model Pages.Music.Genre.Genre_String.Msg
     }
 pages =
@@ -398,5 +424,7 @@ pages =
     , settings__web = Pages.Settings.Web.page |> upgrade Settings__Web__Model Settings__Web__Msg
     , tvshows__recent = Pages.Tvshows.Recent.page |> upgrade Tvshows__Recent__Model Tvshows__Recent__Msg
     , music__top__top = Pages.Music.Top.Top.page |> upgrade Music__Top__Top__Model Music__Top__Top__Msg
+    , music__album__albumid_int = Pages.Music.Album.Albumid_Int.page |> upgrade Music__Album__Albumid_Int__Model Music__Album__Albumid_Int__Msg
+    , music__artist__artistid_int = Pages.Music.Artist.Artistid_Int.page |> upgrade Music__Artist__Artistid_Int__Model Music__Artist__Artistid_Int__Msg
     , music__genre__genre_string = Pages.Music.Genre.Genre_String.page |> upgrade Music__Genre__Genre_String__Model Music__Genre__Genre_String__Msg
     }

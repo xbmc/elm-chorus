@@ -28,6 +28,8 @@ type Route
     | Settings__Web
     | Tvshows__Recent
     | Music__Top__Top
+    | Music__Album__Albumid_Int { albumid : Int }
+    | Music__Artist__Artistid_Int { artistid : Int }
     | Music__Genre__Genre_String { genre : String }
 
 
@@ -58,6 +60,12 @@ routes =
         , Parser.map Settings__Web (Parser.s "settings" </> Parser.s "web")
         , Parser.map Tvshows__Recent (Parser.s "tvshows" </> Parser.s "recent")
         , Parser.map Music__Top__Top (Parser.s "music" </> Parser.s "top")
+        , (Parser.s "music" </> Parser.s "album" </> Parser.int)
+          |> Parser.map (\albumid -> { albumid = albumid })
+          |> Parser.map Music__Album__Albumid_Int
+        , (Parser.s "music" </> Parser.s "artist" </> Parser.int)
+          |> Parser.map (\artistid -> { artistid = artistid })
+          |> Parser.map Music__Artist__Artistid_Int
         , (Parser.s "music" </> Parser.s "genre" </> Parser.string)
           |> Parser.map (\genre -> { genre = genre })
           |> Parser.map Music__Genre__Genre_String
@@ -126,6 +134,12 @@ toString route =
                 
                 Music__Top__Top ->
                     [ "music", "top" ]
+                
+                Music__Album__Albumid_Int { albumid } ->
+                    [ "music", "album", String.fromInt albumid ]
+                
+                Music__Artist__Artistid_Int { artistid } ->
+                    [ "music", "artist", String.fromInt artistid ]
                 
                 Music__Genre__Genre_String { genre } ->
                     [ "music", "genre", genre ]

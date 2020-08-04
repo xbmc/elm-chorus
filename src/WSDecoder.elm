@@ -259,7 +259,7 @@ artistDecoder =
 
 type alias ArtistObj =
     { label : String
-    , albumid : Int
+    , artistid : Int
     , thumbnail : String
     , genre : List String
     }
@@ -276,6 +276,7 @@ albumDecoder =
     Decode.succeed AlbumObj
         |> required "label" string
         |> required "albumid" int
+        |> required "artist" (list string)
         |> required "thumbnail" string
         |> required "genre" (list string)
 
@@ -283,6 +284,7 @@ albumDecoder =
 type alias AlbumObj =
     { label : String
     , albumid : Int
+    , artist : List String
     , thumbnail : String
     , genre : List String
     }

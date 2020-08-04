@@ -18,6 +18,8 @@ import WSDecoder exposing (ItemDetails, SongObj, ArtistObj, AlbumObj)
 import Helper exposing (durationToString)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
+import Url exposing (percentEncode)
+import Url.Builder exposing (crossOrigin)
 
 page : Page Params Model Msg
 page =
@@ -53,7 +55,7 @@ init shared { params } =
     ( { genre = params.genre
     , song_list = (List.filter (\song -> List.member params.genre song.genre) shared.song_list)
     , album_list = (List.filter (\album -> List.member params.genre album.genre) shared.album_list)
-    , artist_list = (List.filter (\artist -> List.member params.genre artist.genre) shared.artist_list)
+    , artist_list = {-(List.filter (\artist -> List.member params.genre artist.genre)-} shared.artist_list
     , route = Route.Top
     } , Cmd.none )
 
@@ -63,6 +65,7 @@ init shared { params } =
 
 type Msg
     = SetCurrentlyPlaying SongObj
+    | DoNothing
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -76,6 +79,8 @@ update msg model =
                 , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
                 ]
             )
+        DoNothing ->
+            (model, Cmd.none)
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -100,6 +105,13 @@ materialButton ( icon, action ) =
         , label = Element.html (icon 24 (MITypes.Color <| Colors.greyIcon))
         }
 
+blackMaterialButton : ( Icon msg, msg ) -> Element msg
+blackMaterialButton ( icon, action ) =
+    Input.button [ paddingXY 5 3 ]
+        { onPress = Just action
+        , label = Element.html (icon 24 (MITypes.Color <| Colors.blackIcon))
+        }
+
 -- VIEW
 
 
@@ -110,31 +122,56 @@ view model =
                 [ Components.VerticalNavMusic.view model.route
                 , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
                     [ column [Element.height fill, Element.width fill, Font.color Colors.greyscaleGray] 
-                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar] (Element.text (model.genre ++ " Artists"))
+                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar, Font.color Colors.navText, paddingXY 10 20] (Element.text (model.genre ++ " Artists"))
                         , wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
                             (List.map
                                 (\artist ->
-                                    column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
-                                        [ el [ Font.center, Font.color (Element.rgb 0 0 0), Font.size 18] (Element.text artist.label)
+                                    column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> maximum 170), Element.width (fill |> maximum 280), Border.rounded 3, clipX ]
+                                        [ image [ alignTop, width fill, height fill ]
+                                            { src = crossOrigin "http://localhost:8080" [ "image", percentEncode artist.thumbnail ] []
+                                            , description = "Thumbnail"
+                                            }
+                                        , Element.link [ alignBottom, Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
+                                            { url = Route.toString (Route.Music__Artist__Artistid_Int { artistid = artist.artistid })
+                                            , label = Element.text artist.label
+                                            }
                                         ]
                                 )
                                 model.artist_list
                             )
                         ]
                     , column [Element.height fill, Element.width fill] 
-                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar] (Element.text (model.genre ++ " Albums"))
+                        [ row [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar, Font.color Colors.navText]
+                            [ el [ paddingXY 10 20] (Element.text (model.genre ++ " Albums"))
+                            , el [alignLeft] (blackMaterialButton ( Filled.more_vert, DoNothing ))
+                            ]
                         , wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
                             (List.map
                                 (\album ->
-                                    column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> minimum 50 |> maximum 50), Element.width (fill |> minimum 150 |> maximum 150), Border.rounded 3 ]
-                                        [ el [ Font.center, Font.color Colors.black, Font.size 18] (Element.text album.label)
+                                    column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> maximum 220), Element.width (fill |> maximum 160), Border.rounded 3, clipX]
+                                        [ image [ alignTop, width fill, height fill ]
+                                            { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
+                                            , description = "Thumbnail"
+                                            }
+                                        , Element.link [ alignBottom, Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
+                                            { url = Route.toString (Route.Music__Album__Albumid_Int { albumid = album.albumid })
+                                            , label = column [] 
+                                                        [ Element.text album.label
+                                                        , wrappedRow []
+                                                            (List.map
+                                                                (\artist -> 
+                                                                    Element.text artist
+                                                                )
+                                                                album.artist)
+                                                        ]
+                                            }
                                         ]
                                 )
                                 model.album_list
                             )
                         ]
                     , column [ Element.height fill, Element.width fill, alignBottom ]
-                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar] (Element.text (model.genre ++ " Songs"))
+                        [ el [Element.height (fill |> minimum 50 |> maximum 50), Element.width fill, Background.color Colors.sidebar, Font.color Colors.navText, paddingXY 10 20] (Element.text (model.genre ++ " Songs"))
                         , column [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
                             (List.map
                                 (\song ->
