@@ -16,12 +16,14 @@ import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
 import Request
 import Shared exposing (sendAction, sendActions)
+import Url exposing (percentEncode)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Svg.Attributes exposing (alignmentBaseline)
 import WSDecoder exposing (ItemDetails, SongObj)
+
 
 
 
@@ -130,7 +132,7 @@ view model =
                                 , Border.rounded 2
                                 ]
                                 [ Element.link [ Element.width fill, Element.height fill, paddingXY 7 16 ]
-                                    { url = Route.toString (Route.Music__Genre__Genre_String { genre = genre })
+                                    { url = Route.toString (Route.Music__Genre__Genre_String { genre = percentEncode genre })
                                     , label = Element.text genre
                                     }
                                 ]

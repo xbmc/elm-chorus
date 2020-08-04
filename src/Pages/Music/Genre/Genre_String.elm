@@ -18,7 +18,7 @@ import WSDecoder exposing (ItemDetails, SongObj, ArtistObj, AlbumObj)
 import Helper exposing (durationToString)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
-import Url exposing (percentEncode)
+import Url exposing (percentEncode, percentDecode)
 import Url.Builder exposing (crossOrigin)
 
 page : Page Params Model Msg
@@ -52,14 +52,21 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( { genre = params.genre
+    ( { genre = parseGenre (percentDecode params.genre)
     , song_list = (List.filter (\song -> List.member params.genre song.genre) shared.song_list)
     , album_list = (List.filter (\album -> List.member params.genre album.genre) shared.album_list)
-    , artist_list = {-(List.filter (\artist -> List.member params.genre artist.genre)-} shared.artist_list
+    , artist_list = (List.filter (\artist -> List.member params.genre artist.genre) shared.artist_list)
     , route = Route.Top
     } , Cmd.none )
 
 
+parseGenre : Maybe String -> String 
+parseGenre string =
+    case string of
+        Nothing ->
+            "None"
+        Just str ->
+            str
 -- UPDATE
 
 
