@@ -1,7 +1,7 @@
-module Components.SectionHeader exposing (view, viewAlbums, viewArtists)
+module Components.SectionHeader exposing (view, viewAlbums, viewArtists, viewAlbumSongs)
 
 import Colors exposing (greyIcon)
-import Element as Element exposing (Attribute, Element, alignBottom, alignRight, alignTop, centerX, centerY, clipX, column, el, fill, height, image, maximum, mouseOver, padding, paddingEach, paddingXY, px, rgb, spacingXY, width, wrappedRow)
+import Element as Element exposing (Attribute, Element, alignBottom, alignRight, alignTop, centerX, centerY, clipX, column, el, fill, fillPortion, height, image, maximum, mouseOver, padding, paddingEach, paddingXY, px, row, rgb, spacingXY, width, wrappedRow)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -10,6 +10,7 @@ import Material.Icons as Filled
 import Material.Icons.Types as MITypes
 import Url exposing (percentDecode, percentEncode)
 import Url.Builder exposing (crossOrigin)
+import Helper exposing (durationToString)
 import Spa.Generated.Route as Route exposing (Route)
 import WSDecoder exposing (AlbumObj, ArtistObj, ItemDetails, SongObj)
 
@@ -123,3 +124,43 @@ viewAlbums albumlist =
             albumlist
         )
 
+viewAlbumSongs : List AlbumObj -> List SongObj -> Element msg
+viewAlbumSongs albumlist songlist =
+    column [Element.height fill, Element.width fill]
+        (List.map
+            (\album ->
+                row [ Element.height fill, Element.width fill]
+                    [ column []
+                        [ case album.thumbnail of
+                            "" ->
+                                image [ width (fillPortion 1), height fill ]
+                                    { src = "https://via.placeholder.com/170"
+                                    , description = "Hero Image"
+                                    }
+                            _ ->
+                                image [ width (fillPortion 1), height fill]
+                                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
+                                    , description = "Thumbnail"
+                                    } 
+                        ]
+                    , column [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
+                        (List.map
+                            (\song ->
+                                row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ]]
+                                        [ el [ Font.color Colors.background ] (Element.text song.label)
+                                        , row [ alignRight ]
+                                            (List.map
+                                                (\artist ->
+                                                    el [ Font.color Colors.background, paddingXY 5 0 ] (Element.text artist)
+                                                )
+                                                song.artist
+                                            )
+                                        , el [ alignRight, Font.color Colors.background ] (song.duration |> durationToString |> Element.text)
+                                        ]
+                            )
+                            (List.filter (\song -> (song.albumid == album.albumid)) songlist) --filtered song list
+                        )
+                    ]
+            )
+            albumlist
+        )
