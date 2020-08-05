@@ -146,54 +146,14 @@ view model =
                         Nothing
                         False
                         []
-                    , wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
-                        (List.map
-                            (\artist ->
-                                column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> maximum 170), Element.width (fill |> maximum 280), Border.rounded 3, clipX ]
-                                    [ image [ alignTop, width fill, height fill ]
-                                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode artist.thumbnail ] []
-                                        , description = "Thumbnail"
-                                        }
-                                    , Element.link [ alignBottom, Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
-                                        { url = Route.toString (Route.Music__Artist__Artistid_Int { artistid = artist.artistid })
-                                        , label = Element.text artist.label
-                                        }
-                                    ]
-                            )
-                            model.artist_list
-                        )
+                    , Components.SectionHeader.viewArtists model.artist_list
                     ]
                 , column [ Element.height fill, Element.width fill ]
                     [ Components.SectionHeader.view (model.genre ++ " Albums")
                         Nothing
                         False
                         []
-                    , wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
-                        (List.map
-                            (\album ->
-                                column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> maximum 220), Element.width (fill |> maximum 160), Border.rounded 3, clipX ]
-                                    [ image [ alignTop, width fill, height fill ]
-                                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
-                                        , description = "Thumbnail"
-                                        }
-                                    , Element.link [ alignBottom, Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
-                                        { url = Route.toString (Route.Music__Album__Albumid_Int { albumid = album.albumid })
-                                        , label =
-                                            column []
-                                                [ Element.text album.label
-                                                , wrappedRow []
-                                                    (List.map
-                                                        (\artist ->
-                                                            Element.text artist
-                                                        )
-                                                        album.artist
-                                                    )
-                                                ]
-                                        }
-                                    ]
-                            )
-                            model.album_list
-                        )
+                    , Components.SectionHeader.viewAlbums model.album_list
                     ]
                 , column [ Element.height fill, Element.width fill, alignBottom ]
                     [ Components.SectionHeader.view (model.genre ++ " Songs")

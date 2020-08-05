@@ -1,12 +1,18 @@
-module Components.SectionHeader exposing (view)
+module Components.SectionHeader exposing (view, viewAlbums, viewArtists)
 
 import Colors exposing (greyIcon)
-import Element as Element exposing (Attribute, Element, alignRight, centerX, centerY, el, fill, height, padding, paddingEach, px, width)
+import Element as Element exposing (Attribute, Element, alignBottom, alignRight, alignTop, centerX, centerY, clipX, column, el, fill, height, image, maximum, mouseOver, padding, paddingEach, paddingXY, px, rgb, spacingXY, width, wrappedRow)
 import Element.Background as Background
+import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes
+import Url exposing (percentDecode, percentEncode)
+import Url.Builder exposing (crossOrigin)
+import Spa.Generated.Route as Route exposing (Route)
+import WSDecoder exposing (AlbumObj, ArtistObj, ItemDetails, SongObj)
+
 
 
 view : String -> Maybe msg -> Bool -> List { title : String, action : Maybe msg } -> Element msg
@@ -58,3 +64,52 @@ moreVertMenu showMenu moreVertItems =
 
     else
         []
+
+viewArtists : List ArtistObj -> Element msg
+viewArtists artistlist =
+    wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
+        (List.map
+            (\artist ->
+                column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> maximum 170), Element.width (fill |> maximum 280), Border.rounded 3, clipX ]
+                    [ image [ alignTop, width fill, height fill ]
+                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode artist.thumbnail ] []
+                        , description = "Thumbnail"
+                        }
+                    , Element.link [ alignBottom, Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
+                        { url = Route.toString (Route.Music__Artist__Artistid_Int { artistid = artist.artistid })
+                        , label = Element.text artist.label
+                        }
+                    ]
+            )
+            artistlist
+        )
+
+viewAlbums : List AlbumObj -> Element msg
+viewAlbums albumlist =
+    wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
+        (List.map
+            (\album ->
+                column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> maximum 220), Element.width (fill |> maximum 160), Border.rounded 3, clipX ]
+                    [ image [ alignTop, width fill, height fill ]
+                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
+                        , description = "Thumbnail"
+                        }
+                    , Element.link [ alignBottom, Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
+                        { url = Route.toString (Route.Music__Album__Albumid_Int { albumid = album.albumid })
+                        , label =
+                            column []
+                                [ Element.text album.label
+                                , wrappedRow []
+                                    (List.map
+                                        (\artist ->
+                                            Element.text artist
+                                        )
+                                        album.artist
+                                    )
+                                ]
+                        }
+                    ]
+            )
+            albumlist
+        )
+

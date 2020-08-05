@@ -1,9 +1,21 @@
 module Pages.Music.Albums exposing (Model, Msg, Params, page)
 
+import Colors
+import Components.SectionHeader
+import Components.VerticalNav
+import Components.VerticalNavMusic
+import Element exposing (..)
+import Element.Background as Background
+import Element.Border as Border
+import Element.Events
+import Element.Font as Font
+import Element.Input as Input
 import Shared
 import Spa.Document exposing (Document)
+import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
+import WSDecoder exposing (AlbumObj)
 
 
 page : Page Params Model Msg
@@ -27,12 +39,13 @@ type alias Params =
 
 
 type alias Model =
-    {}
+    { album_list : List AlbumObj
+    , route : Route }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( {}, Cmd.none )
+    ( {album_list = shared.album_list, route = Route.Music__Albums}, Cmd.none )
 
 
 
@@ -71,6 +84,12 @@ subscriptions model =
 
 view : Model -> Document Msg
 view model =
-    { title = "Music.Albums"
-    , body = []
+    { title = "Music.Artists"
+    , body = [ row [ Element.height fill, Element.width fill ]
+                [ Components.VerticalNavMusic.view model.route
+                , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
+                    [ Components.SectionHeader.viewAlbums model.album_list
+                    ]
+                ]
+            ]
     }
