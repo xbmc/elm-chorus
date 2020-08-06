@@ -19,7 +19,7 @@ view searchChanged =
             { label =
                 image [ width (px 50) ]
                     { description = ""
-                    , src = "https://kodi.wiki/images/8/8e/Thumbnail-symbol-transparent.png"
+                    , src = "https://github.com/ionif/elm-chorus/blob/master/logo.png"
                     }
             , url = Route.Top |> Route.toString
             }
