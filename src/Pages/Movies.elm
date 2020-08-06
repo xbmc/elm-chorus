@@ -1,6 +1,8 @@
 module Pages.Movies exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
+import Components.VerticalNav
+import Components.VerticalNavMovies
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -51,12 +53,13 @@ type alias Params =
 type alias Model =
     { currentlyPlaying : Maybe ItemDetails
     , movie_list : List MovieObj
+    , route : Route
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
-init shared { params } =
-    ( { currentlyPlaying = shared.currentlyPlaying, movie_list = shared.movie_list }
+init shared url =
+    ( { currentlyPlaying = shared.currentlyPlaying, movie_list = shared.movie_list, route = url.route }
     , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}"""
     )
 
@@ -149,12 +152,15 @@ view : Model -> Document Msg
 view model =
     { title = "Movies"
     , body =
-        [ wrappedRow [ Element.height fill, Element.width fill, Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
-            (List.map
-                (\movie ->
-                    constructMovieItem movie
+        [ row [ Element.height fill, Element.width fill ]
+            [ Components.VerticalNavMovies.view model.route
+            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
+                (List.map
+                    (\movie ->
+                        constructMovieItem movie
+                    )
+                    model.movie_list
                 )
-                model.movie_list
-            )
+            ]
         ]
     }
