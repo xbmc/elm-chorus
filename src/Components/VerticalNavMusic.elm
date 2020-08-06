@@ -29,3 +29,7 @@ view currentRoute =
           , label = "Videos"
           }
         ]
+        [ Route.Music__Artists
+        , Route.Music__Albums
+        , Route.Music__Videos
+        ]
