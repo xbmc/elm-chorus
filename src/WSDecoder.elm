@@ -281,6 +281,8 @@ albumDecoder =
         |> required "artist" (list string)
         |> required "thumbnail" string
         |> required "genre" (list string)
+        |> required "playcount" int
+        |> required "dateadded" string
 
 
 type alias AlbumObj =
@@ -289,6 +291,8 @@ type alias AlbumObj =
     , artist : List String
     , thumbnail : String
     , genre : List String
+    , playcount : Int
+    , dateadded : String
     }
 
 
