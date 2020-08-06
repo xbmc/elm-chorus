@@ -111,7 +111,7 @@ materialButton ( icon, action ) =
 
 constructMovieItem : MovieObj -> Element Msg
 constructMovieItem movie =
-    column [ paddingXY 5 5 ]
+    column [ spacingXY 5 0, Element.width fill, Element.height fill ]
         [ image
             [ Element.width (fill |> minimum 150 |> maximum 150)
             , Element.height (fill |> minimum 200 |> maximum 200)
@@ -134,7 +134,7 @@ constructMovieItem movie =
                 , src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
                 }
             )
-        , column [ paddingXY 5 5, Background.color (rgb 1 1 1), Element.width (fill |> minimum 150 |> maximum 150), clip ]
+        , column [ alignBottom, Background.color (rgb 1 1 1), Element.width (fill |> minimum 150 |> maximum 150), clip ]
             [ el [ Font.color (Element.rgb 0 0 0), Font.size 18 ] (Element.text movie.label)
             , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (Element.text "2020")
             ]
@@ -149,7 +149,7 @@ view : Model -> Document Msg
 view model =
     { title = "Movies"
     , body =
-        [ wrappedRow [ Element.height fill, Element.width fill, Background.color (rgb 0.8 0.8 0.8) ]
+        [ wrappedRow [ Element.height fill, Element.width fill, Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
             (List.map
                 (\movie ->
                     constructMovieItem movie
