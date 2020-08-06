@@ -49,12 +49,12 @@ musicButton =
 
 movieButton : Element msg
 movieButton =
-    materialIconLink ( Filled.movie, Route.Movies )
+    materialIconLink ( Filled.movie, Route.Movies__Recent )
 
 
 tvshowButton : Element msg
 tvshowButton =
-    materialIconLink ( Filled.tv, Route.Tvshows )
+    materialIconLink ( Filled.tv, Route.Tvshows__Recent )
 
 
 browserButton : Element msg

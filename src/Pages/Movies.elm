@@ -25,7 +25,6 @@ import Url.Builder exposing (crossOrigin)
 import WSDecoder exposing (ItemDetails, MovieObj)
 
 
-
 --import MovieItem exposing ()
 --import Components exposing ()
 
@@ -146,7 +145,6 @@ constructMovieItem movie =
 
 
 -- VIEW
-
 
 view : Model -> Document Msg
 view model =

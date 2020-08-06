@@ -10,11 +10,11 @@ view currentRoute =
     Components.VerticalNav.view
         "sections"
         currentRoute
-        [ { route = Route.Movies
+        [ { route = Route.Movies__Recent
           , label = "Movies"
           }
-        , { route = Route.Top
+        , { route = Route.Movies
           , label = "All movies"
           }
         ]
-        [Route.Top]
+        [Route.Movies]
