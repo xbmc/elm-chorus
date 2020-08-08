@@ -26,7 +26,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (TvshowObj, AlbumObj, ArtistObj, Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (SourceObj, TvshowObj, AlbumObj, ArtistObj, Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -55,6 +55,7 @@ type alias Model =
     , genre_list : List String
     , movie_list : List MovieObj
     , tvshow_list : List TvshowObj
+    , source_list : List SourceObj
     , volumeSlider : SingleSlider Msg
     , progressSlider : SingleSlider Msg
     , windowWidth : Int
@@ -80,6 +81,7 @@ init flags url key =
       , genre_list = []
       , movie_list = []
       , tvshow_list = []
+      , source_list = []
       , volumeSlider =
             SingleSlider.init
                 { min = 0
@@ -100,7 +102,16 @@ init flags url key =
       , windowHeight = flags.innerHeight
       , searchString = ""
       }
-    , Cmd.none
+    , sendActions
+        [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
+        , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "properties": ["playcount", "artist", "genre", "rating", "thumbnail", "year", "mood", "style", "dateadded"] }, "id": "libAlbums"}"""
+        , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ] }, "id": 1}"""
+        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ] }, "id": "libMusicVideos"}"""
+        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "properties" : ["art", "rating", "thumbnail", "playcount", "file"] }, "id": "libMovies"}"""
+        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"] }, "id": "libTvShows"}"""
+        , """{"jsonrpc": "2.0", "params": {"media": "video"}, "method": "Files.GetSources", "id": 1}"""
+        , """{"jsonrpc": "2.0", "params": {"media": "music"}, "method": "Files.GetSources", "id": 1}"""
+        ]
     )
 
 
@@ -286,6 +297,11 @@ update msg model =
                                     SingleSlider.update percent model.progressSlider
                             in
                             ( { model | progressSlider = newSlider }, Cmd.none )
+
+                ResultI sourcelist ->
+                    ( { model | source_list = sourcelist }
+                    , Cmd.none
+                    )
 
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
