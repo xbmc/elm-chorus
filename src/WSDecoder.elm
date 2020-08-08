@@ -1,4 +1,4 @@
-module WSDecoder exposing (SourceObj, TvshowObj, AlbumObj, Connection(..), ArtistObj, Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -210,6 +210,7 @@ type alias ItemDetails =
     }
 
 
+
 --queries decoder
 
 
@@ -317,6 +318,7 @@ type alias MovieObj =
     , thumbnail : String
     }
 
+
 type alias TvshowObj =
     { label : String
     , tvshowid : Int
@@ -334,7 +336,7 @@ percentDecoder =
 sourceQueryDecoder : Decoder ResultResponse
 sourceQueryDecoder =
     Decode.succeed ResultI
-        |> required "source" (list sourceDecoder)
+        |> custom (at [ "result", "source" ] (list sourceDecoder))
 
 
 sourceDecoder : Decoder SourceObj
@@ -349,8 +351,17 @@ type alias SourceObj =
     , file : String
     }
 
+
+
 --kodi ws connection
-type Connection = Connected | Disconnected | NotAsked
+
+
+type Connection
+    = Connected
+    | Disconnected
+    | NotAsked
+
+
 
 {- introspectDecoder : Decoder ResultResponse
    introspectDecoder =

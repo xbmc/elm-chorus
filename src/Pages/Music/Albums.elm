@@ -40,12 +40,13 @@ type alias Params =
 
 type alias Model =
     { album_list : List AlbumObj
-    , route : Route }
+    , route : Route
+    }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
-init shared { params } =
-    ( {album_list = shared.album_list, route = Route.Music__Albums}, Cmd.none )
+init shared url =
+    ( { album_list = shared.album_list, route = url.route }, Cmd.none )
 
 
 
@@ -85,11 +86,12 @@ subscriptions model =
 view : Model -> Document Msg
 view model =
     { title = "Music.Artists"
-    , body = [ row [ Element.height fill, Element.width fill ]
-                [ Components.VerticalNavMusic.view model.route
-                , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
-                    [ Components.SectionHeader.viewAlbums model.album_list
-                    ]
+    , body =
+        [ row [ Element.height fill, Element.width fill ]
+            [ Components.VerticalNavMusic.view model.route
+            , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
+                [ Components.SectionHeader.viewAlbums model.album_list
                 ]
             ]
+        ]
     }

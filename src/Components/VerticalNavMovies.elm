@@ -17,4 +17,4 @@ view currentRoute =
           , label = "All movies"
           }
         ]
-        [Route.Movies]
+        [ Route.Movies ]

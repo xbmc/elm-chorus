@@ -17,4 +17,4 @@ view currentRoute =
           , label = "All TV shows"
           }
         ]
-        [Route.Tvshows]
+        [ Route.Tvshows ]

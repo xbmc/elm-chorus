@@ -26,7 +26,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (SourceObj, TvshowObj, AlbumObj, ArtistObj, Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 

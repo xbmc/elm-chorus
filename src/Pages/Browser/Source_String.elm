@@ -1,13 +1,9 @@
-module Pages.Browser exposing (Model, Msg, Params, page)
+module Pages.Browser.Source_String exposing (Model, Msg, Params, page)
 
-import Components.VerticalNav
 import Shared
 import Spa.Document exposing (Document)
-import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
-import Url exposing (percentEncode)
-import WSDecoder exposing (SourceObj)
 
 
 page : Page Params Model Msg
@@ -27,18 +23,16 @@ page =
 
 
 type alias Params =
-    ()
+    { source : String }
 
 
 type alias Model =
-    { route : Route
-    , source_list : List SourceObj
-    }
+    {}
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
-init shared url =
-    ( { route = url.route, source_list = shared.source_list }, Cmd.none )
+init shared { params } =
+    ( {}, Cmd.none )
 
 
 
@@ -63,7 +57,7 @@ save model shared =
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( { model | source_list = shared.source_list }, Cmd.none )
+    ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -77,19 +71,6 @@ subscriptions model =
 
 view : Model -> Document Msg
 view model =
-    { title = "Browser"
-    , body =
-        [ Components.VerticalNav.view
-            "sources"
-            model.route
-            (List.map
-                (\source ->
-                    { route = Route.Browser__Source_String { source = percentEncode source.file }
-                    , label = source.label
-                    }
-                )
-                model.source_list
-            )
-            []
-        ]
+    { title = "Browser.Source_String"
+    , body = []
     }

@@ -27,6 +27,7 @@ type Route
     | Music__Videos
     | Settings__Web
     | Tvshows__Recent
+    | Browser__Source_String { source : String }
     | Music__Top__Top
     | Music__Album__Albumid_Int { albumid : Int }
     | Music__Artist__Artistid_Int { artistid : Int }
@@ -59,6 +60,9 @@ routes =
         , Parser.map Music__Videos (Parser.s "music" </> Parser.s "videos")
         , Parser.map Settings__Web (Parser.s "settings" </> Parser.s "web")
         , Parser.map Tvshows__Recent (Parser.s "tvshows" </> Parser.s "recent")
+        , (Parser.s "browser" </> Parser.string)
+          |> Parser.map (\source -> { source = source })
+          |> Parser.map Browser__Source_String
         , Parser.map Music__Top__Top (Parser.s "music" </> Parser.s "top")
         , (Parser.s "music" </> Parser.s "album" </> Parser.int)
           |> Parser.map (\albumid -> { albumid = albumid })
@@ -131,6 +135,9 @@ toString route =
                 
                 Tvshows__Recent ->
                     [ "tvshows", "recent" ]
+                
+                Browser__Source_String { source } ->
+                    [ "browser", source ]
                 
                 Music__Top__Top ->
                     [ "music", "top" ]

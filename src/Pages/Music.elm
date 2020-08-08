@@ -22,7 +22,7 @@ import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Svg.Attributes
-import WSDecoder exposing (ItemDetails, AlbumObj, SongObj)
+import WSDecoder exposing (AlbumObj, ItemDetails, SongObj)
 
 
 
@@ -116,27 +116,28 @@ materialButton ( icon, action ) =
 -- VIEW
 --song column
 {-
-    column [ Element.height fill, Element.width (fillPortion 6), paddingXY 60 0, spacingXY 5 7, Background.color Colors.background ]
-                (List.map
-                    (\song ->
-                        row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
-                            [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
-                            , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
-                            , el [ Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text song.label)
-                            , row [ alignRight ]
-                                (List.map
-                                    (\artist ->
-                                        el [ Font.color (Element.rgb 0.8 0.8 0.8), paddingXY 5 0 ] (Element.text artist)
-                                    )
-                                    song.artist
-                                )
-                            , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (song.duration |> durationToString |> Element.text)
-                            , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
-                            ]
-                    )
-                    model.song_list
-                )
+   column [ Element.height fill, Element.width (fillPortion 6), paddingXY 60 0, spacingXY 5 7, Background.color Colors.background ]
+               (List.map
+                   (\song ->
+                       row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
+                           [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
+                           , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
+                           , el [ Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text song.label)
+                           , row [ alignRight ]
+                               (List.map
+                                   (\artist ->
+                                       el [ Font.color (Element.rgb 0.8 0.8 0.8), paddingXY 5 0 ] (Element.text artist)
+                                   )
+                                   song.artist
+                               )
+                           , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (song.duration |> durationToString |> Element.text)
+                           , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
+                           ]
+                   )
+                   model.song_list
+               )
 -}
+
 
 view : Model -> Document Msg
 view model =
@@ -146,21 +147,21 @@ view model =
             [ Components.VerticalNavMusic.view model.route
             , column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7, Background.color Colors.background ]
                 [ column [ Element.height fill, Element.width fill ]
-                    [ Components.SectionHeader.view ("Recently Added Albums")
+                    [ Components.SectionHeader.view "Recently Added Albums"
                         Nothing
                         False
                         []
                     , Components.SectionHeader.viewAlbums (List.reverse (List.sortBy .albumid model.album_list))
                     ]
                 , column [ Element.height fill, Element.width fill ]
-                    [ Components.SectionHeader.view ("Recently Played Albums")
+                    [ Components.SectionHeader.view "Recently Played Albums"
                         Nothing
                         False
                         []
                     , Components.SectionHeader.viewAlbums (List.reverse (List.sortBy .playcount model.album_list))
                     ]
                 , column [ Element.height fill, Element.width fill ]
-                    [ Components.SectionHeader.view ("All Albums")
+                    [ Components.SectionHeader.view "All Albums"
                         Nothing
                         False
                         []

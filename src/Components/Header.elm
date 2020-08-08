@@ -1,7 +1,7 @@
 module Components.Header exposing (headerHeight, view)
 
 import Colors
-import Element exposing (Element, alignTop, el, fill, height, image, px, row, text, width, paddingXY)
+import Element exposing (Element, alignTop, el, fill, height, image, paddingXY, px, row, text, width)
 import Element.Background as Background
 import Element.Font as Font exposing (alignRight)
 import Spa.Generated.Route as Route
@@ -23,5 +23,6 @@ view searchChanged =
                     }
             , url = Route.Top |> Route.toString
             }
+
         -- , Input.search [] { onChange = searchChanged, text = "", placeholder = Just (Input.placeholder [] (Element.text "Search")), label = Input.labelHidden "Search" }
         ]

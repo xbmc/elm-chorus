@@ -157,7 +157,7 @@ view model =
             [ Components.VerticalNavTvshows.view model.route
             , column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7, Background.color Colors.background ]
                 [ column [ Element.height fill, Element.width fill ]
-                    [ Components.SectionHeader.view ("Recently Added TV shows")
+                    [ Components.SectionHeader.view "Recently Added TV shows"
                         Nothing
                         False
                         []
@@ -170,7 +170,7 @@ view model =
                         )
                     ]
                 , column [ Element.height fill, Element.width fill ]
-                    [ Components.SectionHeader.view ("All TV shows")
+                    [ Components.SectionHeader.view "All TV shows"
                         Nothing
                         False
                         []

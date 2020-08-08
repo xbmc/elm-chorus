@@ -27,6 +27,7 @@ import Pages.Music.Genres
 import Pages.Music.Videos
 import Pages.Settings.Web
 import Pages.Tvshows.Recent
+import Pages.Browser.Source_String
 import Pages.Music.Top.Top
 import Pages.Music.Album.Albumid_Int
 import Pages.Music.Artist.Artistid_Int
@@ -60,6 +61,7 @@ type Model
     | Music__Videos__Model Pages.Music.Videos.Model
     | Settings__Web__Model Pages.Settings.Web.Model
     | Tvshows__Recent__Model Pages.Tvshows.Recent.Model
+    | Browser__Source_String__Model Pages.Browser.Source_String.Model
     | Music__Top__Top__Model Pages.Music.Top.Top.Model
     | Music__Album__Albumid_Int__Model Pages.Music.Album.Albumid_Int.Model
     | Music__Artist__Artistid_Int__Model Pages.Music.Artist.Artistid_Int.Model
@@ -85,6 +87,7 @@ type Msg
     | Music__Videos__Msg Pages.Music.Videos.Msg
     | Settings__Web__Msg Pages.Settings.Web.Msg
     | Tvshows__Recent__Msg Pages.Tvshows.Recent.Msg
+    | Browser__Source_String__Msg Pages.Browser.Source_String.Msg
     | Music__Top__Top__Msg Pages.Music.Top.Top.Msg
     | Music__Album__Albumid_Int__Msg Pages.Music.Album.Albumid_Int.Msg
     | Music__Artist__Artistid_Int__Msg Pages.Music.Artist.Artistid_Int.Msg
@@ -151,6 +154,9 @@ init route =
         
         Route.Tvshows__Recent ->
             pages.tvshows__recent.init ()
+        
+        Route.Browser__Source_String params ->
+            pages.browser__source_string.init params
         
         Route.Music__Top__Top ->
             pages.music__top__top.init ()
@@ -225,6 +231,9 @@ update bigMsg bigModel =
         
         ( Tvshows__Recent__Msg msg, Tvshows__Recent__Model model ) ->
             pages.tvshows__recent.update msg model
+        
+        ( Browser__Source_String__Msg msg, Browser__Source_String__Model model ) ->
+            pages.browser__source_string.update msg model
         
         ( Music__Top__Top__Msg msg, Music__Top__Top__Model model ) ->
             pages.music__top__top.update msg model
@@ -302,6 +311,9 @@ bundle bigModel =
         
         Tvshows__Recent__Model model ->
             pages.tvshows__recent.bundle model
+        
+        Browser__Source_String__Model model ->
+            pages.browser__source_string.bundle model
         
         Music__Top__Top__Model model ->
             pages.music__top__top.bundle model
@@ -399,6 +411,7 @@ pages :
     , music__videos : Upgraded Pages.Music.Videos.Params Pages.Music.Videos.Model Pages.Music.Videos.Msg
     , settings__web : Upgraded Pages.Settings.Web.Params Pages.Settings.Web.Model Pages.Settings.Web.Msg
     , tvshows__recent : Upgraded Pages.Tvshows.Recent.Params Pages.Tvshows.Recent.Model Pages.Tvshows.Recent.Msg
+    , browser__source_string : Upgraded Pages.Browser.Source_String.Params Pages.Browser.Source_String.Model Pages.Browser.Source_String.Msg
     , music__top__top : Upgraded Pages.Music.Top.Top.Params Pages.Music.Top.Top.Model Pages.Music.Top.Top.Msg
     , music__album__albumid_int : Upgraded Pages.Music.Album.Albumid_Int.Params Pages.Music.Album.Albumid_Int.Model Pages.Music.Album.Albumid_Int.Msg
     , music__artist__artistid_int : Upgraded Pages.Music.Artist.Artistid_Int.Params Pages.Music.Artist.Artistid_Int.Model Pages.Music.Artist.Artistid_Int.Msg
@@ -423,6 +436,7 @@ pages =
     , music__videos = Pages.Music.Videos.page |> upgrade Music__Videos__Model Music__Videos__Msg
     , settings__web = Pages.Settings.Web.page |> upgrade Settings__Web__Model Settings__Web__Msg
     , tvshows__recent = Pages.Tvshows.Recent.page |> upgrade Tvshows__Recent__Model Tvshows__Recent__Msg
+    , browser__source_string = Pages.Browser.Source_String.page |> upgrade Browser__Source_String__Model Browser__Source_String__Msg
     , music__top__top = Pages.Music.Top.Top.page |> upgrade Music__Top__Top__Model Music__Top__Top__Msg
     , music__album__albumid_int = Pages.Music.Album.Albumid_Int.page |> upgrade Music__Album__Albumid_Int__Model Music__Album__Albumid_Int__Msg
     , music__artist__artistid_int = Pages.Music.Artist.Artistid_Int.page |> upgrade Music__Artist__Artistid_Int__Model Music__Artist__Artistid_Int__Msg

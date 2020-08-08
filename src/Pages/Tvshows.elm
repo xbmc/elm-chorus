@@ -142,6 +142,7 @@ constructTvshowItem tvshow =
 
 -- VIEW
 
+
 view : Model -> Document Msg
 view model =
     { title = "TVShows"

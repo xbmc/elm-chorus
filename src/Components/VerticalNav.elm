@@ -15,7 +15,7 @@ view :
             { route : Route
             , label : String
             }
-    ->  List Route
+    -> List Route
     -> Element msg
 view header currentRoute links listPagesWithFilter =
     case List.member currentRoute listPagesWithFilter of
@@ -31,9 +31,10 @@ view header currentRoute links listPagesWithFilter =
                         )
                         links
                 )
+
         True ->
             column [ Element.height fill, Element.width (fillPortion 1), Font.color Colors.greyscaleGray, Element.Background.color Colors.sidebar ]
-                [ column [Element.height fill, Element.width fill, paddingXY 16 8, spacing 16]
+                [ column [ Element.height fill, Element.width fill, paddingXY 16 8, spacing 16 ]
                     ([ header |> String.toUpper |> Element.text ]
                         ++ List.map
                             (\a ->
@@ -43,10 +44,10 @@ view header currentRoute links listPagesWithFilter =
                                     }
                             )
                             links
-                        )
-                , column [Element.height fill, Element.width fill, paddingXY 16 8, spacing 16] 
+                    )
+                , column [ Element.height fill, Element.width fill, paddingXY 16 8, spacing 16 ]
                     [ Element.text "FILTERS" ]
-                , column [Element.height fill, Element.width fill, paddingXY 16 8, spacing 16] 
+                , column [ Element.height fill, Element.width fill, paddingXY 16 8, spacing 16 ]
                     [ Element.text "SORT" ]
                 ]
 
