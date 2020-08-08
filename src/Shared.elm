@@ -26,7 +26,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (TvshowObj, AlbumObj, ArtistObj, Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -54,6 +54,7 @@ type alias Model =
     , song_list : List SongObj
     , genre_list : List String
     , movie_list : List MovieObj
+    , tvshow_list : List TvshowObj
     , volumeSlider : SingleSlider Msg
     , progressSlider : SingleSlider Msg
     , windowWidth : Int
@@ -78,6 +79,7 @@ init flags url key =
       , song_list = []
       , genre_list = []
       , movie_list = []
+      , tvshow_list = []
       , volumeSlider =
             SingleSlider.init
                 { min = 0

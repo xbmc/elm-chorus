@@ -1,4 +1,4 @@
-module WSDecoder exposing (AlbumObj, Connection(..), ArtistObj, Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (TvshowObj, AlbumObj, Connection(..), ArtistObj, Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, paramsResponseDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -313,6 +313,12 @@ movieDecoder =
 type alias MovieObj =
     { label : String
     , movieid : Int
+    , thumbnail : String
+    }
+
+type alias TvshowObj =
+    { label : String
+    , tvshowid : Int
     , thumbnail : String
     }
 
