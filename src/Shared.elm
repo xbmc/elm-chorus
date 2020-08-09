@@ -299,7 +299,7 @@ update msg model =
                             ( { model | progressSlider = newSlider }, Cmd.none )
 
                 ResultI sourcelist ->
-                    ( { model | source_list = sourcelist }
+                    ( { model | source_list = model.source_list ++ sourcelist }
                     , Cmd.none
                     )
 

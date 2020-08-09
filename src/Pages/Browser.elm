@@ -1,7 +1,7 @@
 module Pages.Browser exposing (Model, Msg, Params, page)
 
 import Components.VerticalNav
-import Shared
+import Shared exposing (sendActions)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
@@ -38,7 +38,12 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { route = url.route, source_list = shared.source_list }, Cmd.none )
+    ( { route = url.route, source_list = shared.source_list }
+    , sendActions 
+        [ """{"jsonrpc": "2.0", "params": {"media": "video"}, "method": "Files.GetSources", "id": 1}"""
+        , """{"jsonrpc": "2.0", "params": {"media": "music"}, "method": "Files.GetSources", "id": 1}"""
+        ] 
+    )
 
 
 

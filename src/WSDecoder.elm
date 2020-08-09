@@ -336,7 +336,7 @@ percentDecoder =
 sourceQueryDecoder : Decoder ResultResponse
 sourceQueryDecoder =
     Decode.succeed ResultI
-        |> custom (at [ "result", "source" ] (list sourceDecoder))
+        |> custom (at [ "result", "sources" ] (list sourceDecoder))
 
 
 sourceDecoder : Decoder SourceObj
