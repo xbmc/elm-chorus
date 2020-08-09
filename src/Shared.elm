@@ -145,6 +145,8 @@ type Msg
     | Request Method (Maybe Params)
     | Recv String
     | PlayPause
+    | SkipForward
+    | SkipPrevious
     | QueryPlayers Time.Posix
     | ReceiveParamsResponse ParamsResponse
     | ReceiveResultResponse ResultResponse
@@ -203,6 +205,16 @@ update msg model =
         PlayPause ->
             ( model
             , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
+            )
+
+        SkipForward ->
+            ( model
+            , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "skipnext" }, "id": 1 }"""
+            )
+
+        SkipPrevious ->
+            ( model
+            , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "skipprevious" }, "id": 1 }"""
             )
 
         QueryPlayers _ ->
@@ -389,8 +401,8 @@ view { page, toMsg } model =
             }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
-            , skipMsg = toMsg (Request Player_PlayPause Nothing) -- todo
-            , reverseMsg = toMsg (Request Player_PlayPause (Just (Params (Just 0) Nothing Nothing))) -- todo
+            , skipMsg = toMsg SkipForward
+            , reverseMsg = toMsg SkipPrevious
             , playing = model.playing
             }
         , currentlyPlaying =
