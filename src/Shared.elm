@@ -147,6 +147,7 @@ type Msg
     | PlayPause
     | SkipForward
     | SkipPrevious
+    | ToggleMute
     | QueryPlayers Time.Posix
     | ReceiveParamsResponse ParamsResponse
     | ReceiveResultResponse ResultResponse
@@ -215,6 +216,11 @@ update msg model =
         SkipPrevious ->
             ( model
             , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "skipprevious" }, "id": 1 }"""
+            )
+
+        ToggleMute ->
+            ( model
+            , sendAction """{"jsonrpc": "2.0","method": "Application.SetMute","params": { "mute": "toggle" },"id": 1}"""
             )
 
         QueryPlayers _ ->
@@ -410,7 +416,7 @@ view { page, toMsg } model =
             , progressSlider = Element.map toMsg (slider model.progressSlider)
             }
         , volumeAndControls =
-            { muteMsg = toMsg (Request Application_SetMute (Just (Params (Just 0) Nothing Nothing)))
+            { muteMsg = toMsg ToggleMute
             , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
             , shuffleMsg = toMsg (Request Player_SetShuffle (Just (Params (Just 0) Nothing Nothing)))
             , volumeSlider = Element.map toMsg (slider model.volumeSlider)
