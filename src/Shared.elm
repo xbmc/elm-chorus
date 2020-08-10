@@ -49,6 +49,7 @@ type alias Model =
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
+    , shuffle : Bool
     , artist_list : List ArtistObj
     , album_list : List AlbumObj
     , song_list : List SongObj
@@ -75,6 +76,7 @@ init flags url key =
       , players = []
       , currentlyPlaying = Nothing
       , playing = False
+      , shuffle = False
       , artist_list = []
       , album_list = []
       , song_list = []
@@ -111,6 +113,7 @@ init flags url key =
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"] }, "id": "libTvShows"}"""
         , """{"jsonrpc": "2.0", "params": {"media": "video"}, "method": "Files.GetSources", "id": 1}"""
         , """{"jsonrpc": "2.0", "params": {"media": "music"}, "method": "Files.GetSources", "id": 1}"""
+        , """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":false},"id":1}""" --set shuffle to false on init
         ]
     )
 
@@ -148,6 +151,7 @@ type Msg
     | SkipForward
     | SkipPrevious
     | ToggleMute
+    | ToggleShuffle
     | QueryPlayers Time.Posix
     | ReceiveParamsResponse ParamsResponse
     | ReceiveResultResponse ResultResponse
@@ -222,6 +226,17 @@ update msg model =
             ( model
             , sendAction """{"jsonrpc": "2.0","method": "Application.SetMute","params": { "mute": "toggle" },"id": 1}"""
             )
+
+        ToggleShuffle ->
+            case model.shuffle of
+                False ->
+                    ( model
+                    , sendAction """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":true},"id":1}"""
+                    )
+                True ->
+                    ( model
+                    , sendAction """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":false},"id":1}"""
+                    )
 
         QueryPlayers _ ->
             ( model
@@ -418,7 +433,7 @@ view { page, toMsg } model =
         , volumeAndControls =
             { muteMsg = toMsg ToggleMute
             , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
-            , shuffleMsg = toMsg (Request Player_SetShuffle (Just (Params (Just 0) Nothing Nothing)))
+            , shuffleMsg = toMsg ToggleShuffle
             , volumeSlider = Element.map toMsg (slider model.volumeSlider)
             }
         , rightSidebarExtended = model.rightSidebarExtended
