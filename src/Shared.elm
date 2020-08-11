@@ -351,11 +351,11 @@ update msg model =
 
         ScanVideoLibrary ->
             -- todo
-            ( model, sendAction """""" )
+            ( model, sendAction """{ "jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "videoScan"}""" )
 
         ScanMusicLibrary ->
             -- todo
-            ( model, sendAction """""" )
+            ( model, sendAction """{ "jsonrpc": "2.0", "method": "AudioLibrary.Scan", "id": "audioScan"}""" )
 
         VolumeSliderChange newValue ->
             let
@@ -418,7 +418,7 @@ view { page, toMsg } model =
             , controlMenuMsg = toMsg ToggleControlMenu
             , sendTextToKodiMsg = toMsg SendTextToKodi
             , scanMusicLibraryMsg = toMsg ScanMusicLibrary
-            , scanVideoLibraryMsg = toMsg ScanMusicLibrary
+            , scanVideoLibraryMsg = toMsg ScanVideoLibrary
             }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
