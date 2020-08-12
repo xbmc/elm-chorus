@@ -11,6 +11,7 @@ import Element.Events
 import Element.Font as Font
 import Element.Input as Input
 import Helper exposing (durationToString)
+import List.Extra exposing (unique)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
 import Shared exposing (sendAction, sendActions)
@@ -47,6 +48,7 @@ type alias Model =
     { genre : String
     , song_list : List SongObj
     , album_list : List AlbumObj
+    , artist_string_list : List String
     , artist_list : List ArtistObj
     , route : Route
     }
@@ -57,7 +59,8 @@ init shared { params } =
     ( { genre = parseGenre (percentDecode params.genre)
       , song_list = List.filter (\song -> List.member params.genre song.genre) shared.song_list
       , album_list = List.filter (\album -> List.member params.genre album.genre) shared.album_list
-      , artist_list = List.filter (\artist -> List.member params.genre artist.genre) shared.artist_list
+      , artist_string_list = unique (List.concatMap (\song -> song.artist) (List.filter (\song -> List.member params.genre song.genre) shared.song_list)) --get all artists from songs with the current genre, this is unused, just example code
+      , artist_list = List.filter (\artist -> List.member artist.label (unique (List.concatMap (\song -> song.artist) (List.filter (\song -> List.member params.genre song.genre) shared.song_list)))) shared.artist_list
       , route = Route.Top
       }
     , Cmd.none
