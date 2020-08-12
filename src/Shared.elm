@@ -50,6 +50,7 @@ type alias Model =
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
     , shuffle : Bool
+    , repeat : RepeatType
     , artist_list : List ArtistObj
     , album_list : List AlbumObj
     , song_list : List SongObj
@@ -77,6 +78,7 @@ init flags url key =
       , currentlyPlaying = Nothing
       , playing = False
       , shuffle = False
+      , repeat = Off
       , artist_list = []
       , album_list = []
       , song_list = []
@@ -111,9 +113,10 @@ init flags url key =
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ] }, "id": "libMusicVideos"}"""
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "properties" : ["art", "rating", "thumbnail", "playcount", "file"] }, "id": "libMovies"}"""
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"] }, "id": "libTvShows"}"""
-        , """{"jsonrpc": "2.0", "params": {"media": "video"}, "method": "Files.GetSources", "id": 1}"""
+        , """{"jsonrpc": "2.0", "params": {"media": "video"}, "method": "Files.GetSources", "id": 1}""" --get video and music sources
         , """{"jsonrpc": "2.0", "params": {"media": "music"}, "method": "Files.GetSources", "id": 1}"""
         , """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":false},"id":1}""" --set shuffle to false on init
+        , """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "off" }, "id": 1} -- repeat off""" --set repeat to off on init
         ]
     )
 
@@ -152,6 +155,7 @@ type Msg
     | SkipPrevious
     | ToggleMute
     | ToggleShuffle
+    | ToggleRepeat
     | QueryPlayers Time.Posix
     | ReceiveParamsResponse ParamsResponse
     | ReceiveResultResponse ResultResponse
@@ -169,6 +173,7 @@ songname : SongObj -> String
 songname song =
     song.label
 
+type RepeatType = Off | One | All
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -230,12 +235,27 @@ update msg model =
         ToggleShuffle ->
             case model.shuffle of
                 False ->
-                    ( model
+                    ( { model | shuffle = True }
                     , sendAction """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":true},"id":1}"""
                     )
                 True ->
-                    ( model
+                    ( { model | shuffle = False }
                     , sendAction """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":false},"id":1}"""
+                    )
+
+        ToggleRepeat ->
+            case model.repeat of
+                Off ->
+                    ( { model | repeat = One }
+                    , sendAction """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "one" }, "id": 1}"""
+                    )
+                One ->
+                    ( { model | repeat = All }
+                    , sendAction """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "all" }, "id": 1}"""
+                    )
+                All ->
+                    ( { model | repeat = Off }
+                    , sendAction """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "off" }, "id": 1}"""
                     )
 
         QueryPlayers _ ->
