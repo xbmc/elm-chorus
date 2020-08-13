@@ -69,19 +69,19 @@ addonsButton =
 
 thumbsupButton : Element msg
 thumbsupButton =
-    materialIconLink ( Filled.thumb_up, Route.Top )
+    materialIconLink ( Filled.thumb_up, Route.Thumbsup )
 
 
 playlistButton : Element msg
 playlistButton =
-    materialIconLink ( Filled.assignment, Route.Top )
+    materialIconLink ( Filled.assignment, Route.Playlists )
 
 
 settingsButton : Element msg
 settingsButton =
-    materialIconLink ( Filled.settings, Route.Top )
+    materialIconLink ( Filled.settings, Route.Settings__Web )
 
 
 helpButton : Element msg
 helpButton =
-    materialIconLink ( Filled.help, Route.Top )
+    materialIconLink ( Filled.help, Route.Help )

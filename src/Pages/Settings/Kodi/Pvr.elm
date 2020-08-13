@@ -1,4 +1,8 @@
-module Pages.Settings.Web exposing (Model, Msg, Params, page)
+module Pages.Settings.Kodi.Pvr exposing (Model, Msg, Params, page)
+
+import Spa.Document exposing (Document)
+import Spa.Page as Page exposing (Page)
+import Spa.Url as Url exposing (Url)
 
 import Colors
 import Components.VerticalNavSettings
@@ -63,7 +67,7 @@ subscriptions model =
 
 view : Model -> Document Msg
 view model =
-    { title = "Settings.Web"
+    { title = "Settings.Kodi.Pvr"
     , body =
         Components.VerticalNavSettings.view
             model.route

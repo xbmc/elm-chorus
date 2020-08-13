@@ -25,10 +25,20 @@ import Pages.Music.Albums
 import Pages.Music.Artists
 import Pages.Music.Genres
 import Pages.Music.Videos
+import Pages.Settings.Addons
+import Pages.Settings.Nav
+import Pages.Settings.Search
 import Pages.Settings.Web
 import Pages.Tvshows.Recent
 import Pages.Browser.Source_String
 import Pages.Music.Top.Top
+import Pages.Settings.Kodi.Games
+import Pages.Settings.Kodi.Interface
+import Pages.Settings.Kodi.Media
+import Pages.Settings.Kodi.Player
+import Pages.Settings.Kodi.Pvr
+import Pages.Settings.Kodi.Services
+import Pages.Settings.Kodi.System
 import Pages.Music.Album.Albumid_Int
 import Pages.Music.Artist.Artistid_Int
 import Pages.Music.Genre.Genre_String
@@ -59,10 +69,20 @@ type Model
     | Music__Artists__Model Pages.Music.Artists.Model
     | Music__Genres__Model Pages.Music.Genres.Model
     | Music__Videos__Model Pages.Music.Videos.Model
+    | Settings__Addons__Model Pages.Settings.Addons.Model
+    | Settings__Nav__Model Pages.Settings.Nav.Model
+    | Settings__Search__Model Pages.Settings.Search.Model
     | Settings__Web__Model Pages.Settings.Web.Model
     | Tvshows__Recent__Model Pages.Tvshows.Recent.Model
     | Browser__Source_String__Model Pages.Browser.Source_String.Model
     | Music__Top__Top__Model Pages.Music.Top.Top.Model
+    | Settings__Kodi__Games__Model Pages.Settings.Kodi.Games.Model
+    | Settings__Kodi__Interface__Model Pages.Settings.Kodi.Interface.Model
+    | Settings__Kodi__Media__Model Pages.Settings.Kodi.Media.Model
+    | Settings__Kodi__Player__Model Pages.Settings.Kodi.Player.Model
+    | Settings__Kodi__Pvr__Model Pages.Settings.Kodi.Pvr.Model
+    | Settings__Kodi__Services__Model Pages.Settings.Kodi.Services.Model
+    | Settings__Kodi__System__Model Pages.Settings.Kodi.System.Model
     | Music__Album__Albumid_Int__Model Pages.Music.Album.Albumid_Int.Model
     | Music__Artist__Artistid_Int__Model Pages.Music.Artist.Artistid_Int.Model
     | Music__Genre__Genre_String__Model Pages.Music.Genre.Genre_String.Model
@@ -85,10 +105,20 @@ type Msg
     | Music__Artists__Msg Pages.Music.Artists.Msg
     | Music__Genres__Msg Pages.Music.Genres.Msg
     | Music__Videos__Msg Pages.Music.Videos.Msg
+    | Settings__Addons__Msg Pages.Settings.Addons.Msg
+    | Settings__Nav__Msg Pages.Settings.Nav.Msg
+    | Settings__Search__Msg Pages.Settings.Search.Msg
     | Settings__Web__Msg Pages.Settings.Web.Msg
     | Tvshows__Recent__Msg Pages.Tvshows.Recent.Msg
     | Browser__Source_String__Msg Pages.Browser.Source_String.Msg
     | Music__Top__Top__Msg Pages.Music.Top.Top.Msg
+    | Settings__Kodi__Games__Msg Pages.Settings.Kodi.Games.Msg
+    | Settings__Kodi__Interface__Msg Pages.Settings.Kodi.Interface.Msg
+    | Settings__Kodi__Media__Msg Pages.Settings.Kodi.Media.Msg
+    | Settings__Kodi__Player__Msg Pages.Settings.Kodi.Player.Msg
+    | Settings__Kodi__Pvr__Msg Pages.Settings.Kodi.Pvr.Msg
+    | Settings__Kodi__Services__Msg Pages.Settings.Kodi.Services.Msg
+    | Settings__Kodi__System__Msg Pages.Settings.Kodi.System.Msg
     | Music__Album__Albumid_Int__Msg Pages.Music.Album.Albumid_Int.Msg
     | Music__Artist__Artistid_Int__Msg Pages.Music.Artist.Artistid_Int.Msg
     | Music__Genre__Genre_String__Msg Pages.Music.Genre.Genre_String.Msg
@@ -149,6 +179,15 @@ init route =
         Route.Music__Videos ->
             pages.music__videos.init ()
         
+        Route.Settings__Addons ->
+            pages.settings__addons.init ()
+        
+        Route.Settings__Nav ->
+            pages.settings__nav.init ()
+        
+        Route.Settings__Search ->
+            pages.settings__search.init ()
+        
         Route.Settings__Web ->
             pages.settings__web.init ()
         
@@ -160,6 +199,27 @@ init route =
         
         Route.Music__Top__Top ->
             pages.music__top__top.init ()
+        
+        Route.Settings__Kodi__Games ->
+            pages.settings__kodi__games.init ()
+        
+        Route.Settings__Kodi__Interface ->
+            pages.settings__kodi__interface.init ()
+        
+        Route.Settings__Kodi__Media ->
+            pages.settings__kodi__media.init ()
+        
+        Route.Settings__Kodi__Player ->
+            pages.settings__kodi__player.init ()
+        
+        Route.Settings__Kodi__Pvr ->
+            pages.settings__kodi__pvr.init ()
+        
+        Route.Settings__Kodi__Services ->
+            pages.settings__kodi__services.init ()
+        
+        Route.Settings__Kodi__System ->
+            pages.settings__kodi__system.init ()
         
         Route.Music__Album__Albumid_Int params ->
             pages.music__album__albumid_int.init params
@@ -226,6 +286,15 @@ update bigMsg bigModel =
         ( Music__Videos__Msg msg, Music__Videos__Model model ) ->
             pages.music__videos.update msg model
         
+        ( Settings__Addons__Msg msg, Settings__Addons__Model model ) ->
+            pages.settings__addons.update msg model
+        
+        ( Settings__Nav__Msg msg, Settings__Nav__Model model ) ->
+            pages.settings__nav.update msg model
+        
+        ( Settings__Search__Msg msg, Settings__Search__Model model ) ->
+            pages.settings__search.update msg model
+        
         ( Settings__Web__Msg msg, Settings__Web__Model model ) ->
             pages.settings__web.update msg model
         
@@ -237,6 +306,27 @@ update bigMsg bigModel =
         
         ( Music__Top__Top__Msg msg, Music__Top__Top__Model model ) ->
             pages.music__top__top.update msg model
+        
+        ( Settings__Kodi__Games__Msg msg, Settings__Kodi__Games__Model model ) ->
+            pages.settings__kodi__games.update msg model
+        
+        ( Settings__Kodi__Interface__Msg msg, Settings__Kodi__Interface__Model model ) ->
+            pages.settings__kodi__interface.update msg model
+        
+        ( Settings__Kodi__Media__Msg msg, Settings__Kodi__Media__Model model ) ->
+            pages.settings__kodi__media.update msg model
+        
+        ( Settings__Kodi__Player__Msg msg, Settings__Kodi__Player__Model model ) ->
+            pages.settings__kodi__player.update msg model
+        
+        ( Settings__Kodi__Pvr__Msg msg, Settings__Kodi__Pvr__Model model ) ->
+            pages.settings__kodi__pvr.update msg model
+        
+        ( Settings__Kodi__Services__Msg msg, Settings__Kodi__Services__Model model ) ->
+            pages.settings__kodi__services.update msg model
+        
+        ( Settings__Kodi__System__Msg msg, Settings__Kodi__System__Model model ) ->
+            pages.settings__kodi__system.update msg model
         
         ( Music__Album__Albumid_Int__Msg msg, Music__Album__Albumid_Int__Model model ) ->
             pages.music__album__albumid_int.update msg model
@@ -306,6 +396,15 @@ bundle bigModel =
         Music__Videos__Model model ->
             pages.music__videos.bundle model
         
+        Settings__Addons__Model model ->
+            pages.settings__addons.bundle model
+        
+        Settings__Nav__Model model ->
+            pages.settings__nav.bundle model
+        
+        Settings__Search__Model model ->
+            pages.settings__search.bundle model
+        
         Settings__Web__Model model ->
             pages.settings__web.bundle model
         
@@ -317,6 +416,27 @@ bundle bigModel =
         
         Music__Top__Top__Model model ->
             pages.music__top__top.bundle model
+        
+        Settings__Kodi__Games__Model model ->
+            pages.settings__kodi__games.bundle model
+        
+        Settings__Kodi__Interface__Model model ->
+            pages.settings__kodi__interface.bundle model
+        
+        Settings__Kodi__Media__Model model ->
+            pages.settings__kodi__media.bundle model
+        
+        Settings__Kodi__Player__Model model ->
+            pages.settings__kodi__player.bundle model
+        
+        Settings__Kodi__Pvr__Model model ->
+            pages.settings__kodi__pvr.bundle model
+        
+        Settings__Kodi__Services__Model model ->
+            pages.settings__kodi__services.bundle model
+        
+        Settings__Kodi__System__Model model ->
+            pages.settings__kodi__system.bundle model
         
         Music__Album__Albumid_Int__Model model ->
             pages.music__album__albumid_int.bundle model
@@ -409,10 +529,20 @@ pages :
     , music__artists : Upgraded Pages.Music.Artists.Params Pages.Music.Artists.Model Pages.Music.Artists.Msg
     , music__genres : Upgraded Pages.Music.Genres.Params Pages.Music.Genres.Model Pages.Music.Genres.Msg
     , music__videos : Upgraded Pages.Music.Videos.Params Pages.Music.Videos.Model Pages.Music.Videos.Msg
+    , settings__addons : Upgraded Pages.Settings.Addons.Params Pages.Settings.Addons.Model Pages.Settings.Addons.Msg
+    , settings__nav : Upgraded Pages.Settings.Nav.Params Pages.Settings.Nav.Model Pages.Settings.Nav.Msg
+    , settings__search : Upgraded Pages.Settings.Search.Params Pages.Settings.Search.Model Pages.Settings.Search.Msg
     , settings__web : Upgraded Pages.Settings.Web.Params Pages.Settings.Web.Model Pages.Settings.Web.Msg
     , tvshows__recent : Upgraded Pages.Tvshows.Recent.Params Pages.Tvshows.Recent.Model Pages.Tvshows.Recent.Msg
     , browser__source_string : Upgraded Pages.Browser.Source_String.Params Pages.Browser.Source_String.Model Pages.Browser.Source_String.Msg
     , music__top__top : Upgraded Pages.Music.Top.Top.Params Pages.Music.Top.Top.Model Pages.Music.Top.Top.Msg
+    , settings__kodi__games : Upgraded Pages.Settings.Kodi.Games.Params Pages.Settings.Kodi.Games.Model Pages.Settings.Kodi.Games.Msg
+    , settings__kodi__interface : Upgraded Pages.Settings.Kodi.Interface.Params Pages.Settings.Kodi.Interface.Model Pages.Settings.Kodi.Interface.Msg
+    , settings__kodi__media : Upgraded Pages.Settings.Kodi.Media.Params Pages.Settings.Kodi.Media.Model Pages.Settings.Kodi.Media.Msg
+    , settings__kodi__player : Upgraded Pages.Settings.Kodi.Player.Params Pages.Settings.Kodi.Player.Model Pages.Settings.Kodi.Player.Msg
+    , settings__kodi__pvr : Upgraded Pages.Settings.Kodi.Pvr.Params Pages.Settings.Kodi.Pvr.Model Pages.Settings.Kodi.Pvr.Msg
+    , settings__kodi__services : Upgraded Pages.Settings.Kodi.Services.Params Pages.Settings.Kodi.Services.Model Pages.Settings.Kodi.Services.Msg
+    , settings__kodi__system : Upgraded Pages.Settings.Kodi.System.Params Pages.Settings.Kodi.System.Model Pages.Settings.Kodi.System.Msg
     , music__album__albumid_int : Upgraded Pages.Music.Album.Albumid_Int.Params Pages.Music.Album.Albumid_Int.Model Pages.Music.Album.Albumid_Int.Msg
     , music__artist__artistid_int : Upgraded Pages.Music.Artist.Artistid_Int.Params Pages.Music.Artist.Artistid_Int.Model Pages.Music.Artist.Artistid_Int.Msg
     , music__genre__genre_string : Upgraded Pages.Music.Genre.Genre_String.Params Pages.Music.Genre.Genre_String.Model Pages.Music.Genre.Genre_String.Msg
@@ -434,10 +564,20 @@ pages =
     , music__artists = Pages.Music.Artists.page |> upgrade Music__Artists__Model Music__Artists__Msg
     , music__genres = Pages.Music.Genres.page |> upgrade Music__Genres__Model Music__Genres__Msg
     , music__videos = Pages.Music.Videos.page |> upgrade Music__Videos__Model Music__Videos__Msg
+    , settings__addons = Pages.Settings.Addons.page |> upgrade Settings__Addons__Model Settings__Addons__Msg
+    , settings__nav = Pages.Settings.Nav.page |> upgrade Settings__Nav__Model Settings__Nav__Msg
+    , settings__search = Pages.Settings.Search.page |> upgrade Settings__Search__Model Settings__Search__Msg
     , settings__web = Pages.Settings.Web.page |> upgrade Settings__Web__Model Settings__Web__Msg
     , tvshows__recent = Pages.Tvshows.Recent.page |> upgrade Tvshows__Recent__Model Tvshows__Recent__Msg
     , browser__source_string = Pages.Browser.Source_String.page |> upgrade Browser__Source_String__Model Browser__Source_String__Msg
     , music__top__top = Pages.Music.Top.Top.page |> upgrade Music__Top__Top__Model Music__Top__Top__Msg
+    , settings__kodi__games = Pages.Settings.Kodi.Games.page |> upgrade Settings__Kodi__Games__Model Settings__Kodi__Games__Msg
+    , settings__kodi__interface = Pages.Settings.Kodi.Interface.page |> upgrade Settings__Kodi__Interface__Model Settings__Kodi__Interface__Msg
+    , settings__kodi__media = Pages.Settings.Kodi.Media.page |> upgrade Settings__Kodi__Media__Model Settings__Kodi__Media__Msg
+    , settings__kodi__player = Pages.Settings.Kodi.Player.page |> upgrade Settings__Kodi__Player__Model Settings__Kodi__Player__Msg
+    , settings__kodi__pvr = Pages.Settings.Kodi.Pvr.page |> upgrade Settings__Kodi__Pvr__Model Settings__Kodi__Pvr__Msg
+    , settings__kodi__services = Pages.Settings.Kodi.Services.page |> upgrade Settings__Kodi__Services__Model Settings__Kodi__Services__Msg
+    , settings__kodi__system = Pages.Settings.Kodi.System.page |> upgrade Settings__Kodi__System__Model Settings__Kodi__System__Msg
     , music__album__albumid_int = Pages.Music.Album.Albumid_Int.page |> upgrade Music__Album__Albumid_Int__Model Music__Album__Albumid_Int__Msg
     , music__artist__artistid_int = Pages.Music.Artist.Artistid_Int.page |> upgrade Music__Artist__Artistid_Int__Model Music__Artist__Artistid_Int__Msg
     , music__genre__genre_string = Pages.Music.Genre.Genre_String.page |> upgrade Music__Genre__Genre_String__Model Music__Genre__Genre_String__Msg
