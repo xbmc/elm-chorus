@@ -1,4 +1,4 @@
-module Pages.Settings.Web exposing (Model, Msg, Params, page)
+module Pages.Settings.Addons exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.VerticalNavSettings
@@ -63,11 +63,14 @@ subscriptions model =
 
 view : Model -> Document Msg
 view model =
-    { title = "Settings.Web"
+    { title = "Settings.Addons"
     , body =
-        Components.VerticalNavSettings.view
-            model.route
-            ++ [ column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7, Background.color Colors.background ]
-                    []
-               ]
+        [ row [ Element.height fill, Element.width fill ]
+            (Components.VerticalNavSettings.view
+                model.route
+                ++ [ column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7, Background.color Colors.background ]
+                        []
+                   ]
+            )
+        ]
     }

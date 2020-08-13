@@ -25,10 +25,20 @@ type Route
     | Music__Artists
     | Music__Genres
     | Music__Videos
+    | Settings__Addons
+    | Settings__Nav
+    | Settings__Search
     | Settings__Web
     | Tvshows__Recent
     | Browser__Source_String { source : String }
     | Music__Top__Top
+    | Settings__Kodi__Games
+    | Settings__Kodi__Interface
+    | Settings__Kodi__Media
+    | Settings__Kodi__Player
+    | Settings__Kodi__Pvr
+    | Settings__Kodi__Services
+    | Settings__Kodi__System
     | Music__Album__Albumid_Int { albumid : Int }
     | Music__Artist__Artistid_Int { artistid : Int }
     | Music__Genre__Genre_String { genre : String }
@@ -58,12 +68,22 @@ routes =
         , Parser.map Music__Artists (Parser.s "music" </> Parser.s "artists")
         , Parser.map Music__Genres (Parser.s "music" </> Parser.s "genres")
         , Parser.map Music__Videos (Parser.s "music" </> Parser.s "videos")
+        , Parser.map Settings__Addons (Parser.s "settings" </> Parser.s "addons")
+        , Parser.map Settings__Nav (Parser.s "settings" </> Parser.s "nav")
+        , Parser.map Settings__Search (Parser.s "settings" </> Parser.s "search")
         , Parser.map Settings__Web (Parser.s "settings" </> Parser.s "web")
         , Parser.map Tvshows__Recent (Parser.s "tvshows" </> Parser.s "recent")
         , (Parser.s "browser" </> Parser.string)
           |> Parser.map (\source -> { source = source })
           |> Parser.map Browser__Source_String
         , Parser.map Music__Top__Top (Parser.s "music" </> Parser.s "top")
+        , Parser.map Settings__Kodi__Games (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "games")
+        , Parser.map Settings__Kodi__Interface (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "interface")
+        , Parser.map Settings__Kodi__Media (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "media")
+        , Parser.map Settings__Kodi__Player (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "player")
+        , Parser.map Settings__Kodi__Pvr (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "pvr")
+        , Parser.map Settings__Kodi__Services (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "services")
+        , Parser.map Settings__Kodi__System (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "system")
         , (Parser.s "music" </> Parser.s "album" </> Parser.int)
           |> Parser.map (\albumid -> { albumid = albumid })
           |> Parser.map Music__Album__Albumid_Int
@@ -130,6 +150,15 @@ toString route =
                 Music__Videos ->
                     [ "music", "videos" ]
                 
+                Settings__Addons ->
+                    [ "settings", "addons" ]
+                
+                Settings__Nav ->
+                    [ "settings", "nav" ]
+                
+                Settings__Search ->
+                    [ "settings", "search" ]
+                
                 Settings__Web ->
                     [ "settings", "web" ]
                 
@@ -141,6 +170,27 @@ toString route =
                 
                 Music__Top__Top ->
                     [ "music", "top" ]
+                
+                Settings__Kodi__Games ->
+                    [ "settings", "kodi", "games" ]
+                
+                Settings__Kodi__Interface ->
+                    [ "settings", "kodi", "interface" ]
+                
+                Settings__Kodi__Media ->
+                    [ "settings", "kodi", "media" ]
+                
+                Settings__Kodi__Player ->
+                    [ "settings", "kodi", "player" ]
+                
+                Settings__Kodi__Pvr ->
+                    [ "settings", "kodi", "pvr" ]
+                
+                Settings__Kodi__Services ->
+                    [ "settings", "kodi", "services" ]
+                
+                Settings__Kodi__System ->
+                    [ "settings", "kodi", "system" ]
                 
                 Music__Album__Albumid_Int { albumid } ->
                     [ "music", "album", String.fromInt albumid ]
