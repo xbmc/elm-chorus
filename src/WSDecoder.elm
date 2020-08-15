@@ -1,6 +1,6 @@
 module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
 
-import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string)
+import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string, bool)
 import Json.Decode.Pipeline exposing (custom, optional, required)
 import Method exposing (Method(..), methodToStr, strToMethod)
 
@@ -154,12 +154,13 @@ type ResultResponse
     = ResultA String
     | ResultB (List PlayerObj)
     | ResultC ItemDetails
-    | ResultD (List SongObj) --| ResultD IntrospectObj
+    | ResultD (List SongObj)
     | ResultE (List ArtistObj)
     | ResultF (List AlbumObj)
     | ResultG (List MovieObj)
-    | ResultH Float Int --percentage/volume
+    | ResultH Float Int --percentage/speed
     | ResultI (List SourceObj)
+    | ResultJ Bool Float --muted/volume
 
 
 
@@ -216,7 +217,7 @@ type alias ItemDetails =
 
 queryDecoder : Decoder ResultResponse
 queryDecoder =
-    Decode.oneOf [ percentDecoder, songQueryDecoder, artistQueryDecoder, albumQueryDecoder, movieQueryDecoder, sourceQueryDecoder ]
+    Decode.oneOf [ percentDecoder, songQueryDecoder, artistQueryDecoder, albumQueryDecoder, movieQueryDecoder, sourceQueryDecoder, volumeDecoder ]
 
 
 songQueryDecoder : Decoder ResultResponse
@@ -351,6 +352,11 @@ type alias SourceObj =
     , file : String
     }
 
+volumeDecoder : Decoder ResultResponse
+volumeDecoder =
+    Decode.succeed ResultJ
+        |> custom (at [ "result", "muted" ] bool)
+        |> custom (at [ "result", "volume" ] float)
 
 
 --kodi ws connection

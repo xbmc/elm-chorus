@@ -113,10 +113,10 @@ init flags url key =
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails" ] }, "id": "libMusicVideos"}"""
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "properties" : ["art", "rating", "thumbnail", "playcount", "file"] }, "id": "libMovies"}"""
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart"] }, "id": "libTvShows"}"""
-        , """{"jsonrpc": "2.0", "params": {"media": "video"}, "method": "Files.GetSources", "id": 1}""" --get video and music sources
-        , """{"jsonrpc": "2.0", "params": {"media": "music"}, "method": "Files.GetSources", "id": 1}"""
-        , """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":false},"id":1}""" --set shuffle to false on init
-        , """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "off" }, "id": 1} -- repeat off""" --set repeat to off on init
+        , """{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "video" }, "id": 1 }""" --get video and music sources
+        , """{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "music" }, "id": 1 }"""
+        , """{"jsonrpc": "2.0", "method": "Player.SetShuffle", "params": { "playerid": 0, "shuffle": false }, "id": 1 }""" --set shuffle to false on init
+        , """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "off" }, "id": 1 }""" --set repeat to off on init
         ]
     )
 
@@ -265,10 +265,7 @@ update msg model =
 
         ReceiveParamsResponse _ ->
             ( model
-            , sendActions
-                [ """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "artist", "duration", "thumbnail", "genre"], "playerid": 0 }, "id": "AudioGetItem"}"""
-                , """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage", "speed"]},"id":"0"}"""
-                ]
+            , Cmd.none
             )
 
         ReceiveResultResponse result ->
@@ -303,7 +300,10 @@ update msg model =
 
                 ResultC item ->
                     ( { model | currentlyPlaying = Just item }
-                    , sendAction """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage", "speed"]},"id":"0"}"""
+                    , sendActions
+                        [ """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage", "speed"]},"id":"0"}"""
+                        , """{"jsonrpc": "2.0", "method": "Application.GetProperties", "params" : { "properties" : [ "volume", "muted" ] }, "id": 0}""" --get volume on start
+                        ]
                     )
 
                 ResultD songlist ->
@@ -356,6 +356,17 @@ update msg model =
                     , Cmd.none
                     )
 
+                ResultJ muted volume ->
+                    let
+                        newSlider =
+                            SingleSlider.update volume model.volumeSlider
+                    in
+                        case muted of
+                            False ->
+                                ( { model | volumeSlider = newSlider }, Cmd.none)
+                            True ->
+                                ( { model | volumeSlider = newSlider }, Cmd.none)
+                        
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
             , Cmd.none
