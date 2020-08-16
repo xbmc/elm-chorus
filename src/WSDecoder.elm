@@ -311,12 +311,14 @@ movieDecoder =
         |> required "label" string
         |> required "movieid" int
         |> required "thumbnail" string
+        |> required "file" string
 
 
 type alias MovieObj =
     { label : String
     , movieid : Int
     , thumbnail : String
+    , file : String
     }
 
 

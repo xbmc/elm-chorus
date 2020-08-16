@@ -65,7 +65,6 @@ init shared url =
 
 type Msg
     = SetCurrentlyPlaying MovieObj
-    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -79,9 +78,6 @@ update msg model =
                 , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
                 ]
             )
-
-        NoOp ->
-            ( model, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -99,13 +95,6 @@ subscriptions model =
     Sub.none
 
 
-materialButton : ( Icon msg, msg ) -> Element msg
-materialButton ( icon, action ) =
-    Input.button [ paddingXY 5 3, Background.color (rgb 0.2 0.2 0.2) ]
-        { onPress = Just action
-        , label = Element.html (icon 24 (MITypes.Color <| greyIcon))
-        }
-
 
 constructMovieItem : MovieObj -> Element Msg
 constructMovieItem movie =
@@ -115,7 +104,11 @@ constructMovieItem movie =
             , Element.height (fill |> minimum 200 |> maximum 200)
             , inFront
                 (row []
-                    [ materialButton ( Filled.play_arrow, NoOp ) ]
+                    [ newTabLink [ paddingXY 5 3, Background.color (rgb 0.2 0.2 0.2) ]
+                        { url = Route.toString (Route.Videoplayer__Movieid_Int { movieid =  movie.movieid })
+                        , label = Element.html (Filled.play_arrow 24 (MITypes.Color <| greyIcon))
+                        } 
+                    ]
                 )
 
             {- , Element.Events.onMouseEnter ShowMenu

@@ -31,6 +31,7 @@ type Route
     | Settings__Web
     | Tvshows__Recent
     | Browser__Source_String { source : String }
+    | Videoplayer__Movieid_Int { movieid : Int }
     | Music__Top__Top
     | Settings__Kodi__Games
     | Settings__Kodi__Interface
@@ -76,6 +77,9 @@ routes =
         , (Parser.s "browser" </> Parser.string)
           |> Parser.map (\source -> { source = source })
           |> Parser.map Browser__Source_String
+        , (Parser.s "videoplayer" </> Parser.int)
+          |> Parser.map (\movieid -> { movieid = movieid })
+          |> Parser.map Videoplayer__Movieid_Int
         , Parser.map Music__Top__Top (Parser.s "music" </> Parser.s "top")
         , Parser.map Settings__Kodi__Games (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "games")
         , Parser.map Settings__Kodi__Interface (Parser.s "settings" </> Parser.s "kodi" </> Parser.s "interface")
@@ -167,6 +171,9 @@ toString route =
                 
                 Browser__Source_String { source } ->
                     [ "browser", source ]
+                
+                Videoplayer__Movieid_Int { movieid } ->
+                    [ "videoplayer", String.fromInt movieid ]
                 
                 Music__Top__Top ->
                     [ "music", "top" ]
