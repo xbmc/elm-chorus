@@ -134,11 +134,11 @@ view model =
             Just artist ->
                 column [ Element.height fill, Element.width fill ]
                     [ row [ Element.height (fillPortion 1), Element.width fill, Background.color Colors.navHeaderBackground ]
-                        [ image [ Element.height (fill |> maximum 240), Element.width (fillPortion 1 |> maximum 240) ]
+                        [ image [ Element.height (fill |> minimum 240 |> maximum 240), Element.width (fillPortion 1 |> maximum 240) ]
                             { src = crossOrigin "http://localhost:8080" [ "image", percentEncode artist.thumbnail ] []
                             , description = "Thumbnail"
                             }
-                        , column [ alignTop, Element.height fill, Element.width (fillPortion 7) ]
+                        , column [ alignTop, Element.height fill, Element.width (fillPortion 7), paddingXY 5 5 ]
                             [ Element.text artist.label
                             , row []
                                 [ Element.text "Buttons"
@@ -150,7 +150,52 @@ view model =
                             el [] (Element.text "")
 
                         Just art ->
-                            Components.SectionHeader.viewAlbumSongs (List.filter (\album -> List.member art.label album.artist) model.album_list) model.song_list
+                            column [ Element.height fill, Element.width fill, spacingXY 5 5 ]
+                                (List.map
+                                    (\album ->
+                                        row [ Element.height fill, Element.width fill ]
+                                            [ column [Element.height fill, Element.width (fillPortion 1), paddingXY 5 5]
+                                                [ case album.thumbnail of
+                                                    "" ->
+                                                        image [ width (fillPortion 1), height fill ]
+                                                            { src = "https://via.placeholder.com/170"
+                                                            , description = "Hero Image"
+                                                            }
+
+                                                    _ ->
+                                                        column [Element.height fill, Element.width fill, spacingXY 5 5]
+                                                            [ el [ Element.below (Element.text album.label) ]
+                                                             (image [ width (fillPortion 1), height fill ]
+                                                                { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
+                                                                , description = "Thumbnail"
+                                                                })
+                                                            ]
+                                                ]
+                                            , column [ Element.height fill, Element.width (fillPortion 3), paddingXY 5 5, spacingXY 5 7 ]
+                                                (List.map
+                                                    (\song ->
+                                                        row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
+                                                            [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
+                                                            , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
+                                                            , el [ Font.color Colors.background ] (Element.text song.label)
+                                                            , row [ alignRight ]
+                                                                (List.map
+                                                                    (\songartist ->
+                                                                        el [ Font.color Colors.background, paddingXY 5 0 ] (Element.text songartist)
+                                                                    )
+                                                                    song.artist
+                                                                )
+                                                            , el [ alignRight, Font.color Colors.background ] (song.duration |> durationToString |> Element.text)
+                                                            , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
+                                                            ]
+                                                    )
+                                                    (List.filter (\song -> song.albumid == album.albumid) model.song_list)
+                                                 --filtered song list
+                                                )
+                                            ]
+                                    )
+                                    (List.filter (\album -> List.member art.label album.artist) model.album_list) -- album list
+                                )
                     ]
         ]
     }
