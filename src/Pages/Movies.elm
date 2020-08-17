@@ -104,7 +104,7 @@ constructMovieItem movie =
             , Element.height (fill |> minimum 200 |> maximum 200)
             , inFront
                 (row []
-                    [ newTabLink [ paddingXY 5 3, Background.color (rgb 0.2 0.2 0.2) ]
+                    [ link [ paddingXY 5 3, Background.color (rgb 0.2 0.2 0.2) ]
                         { url = Route.toString (Route.Videoplayer__Movieid_Int { movieid =  movie.movieid })
                         , label = Element.html (Filled.play_arrow 24 (MITypes.Color <| greyIcon))
                         } 

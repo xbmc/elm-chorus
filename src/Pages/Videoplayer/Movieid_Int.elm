@@ -8,6 +8,8 @@ import Html.Attributes
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
+import Url exposing (percentEncode)
+import Url.Builder exposing (crossOrigin)
 import WSDecoder exposing (ItemDetails, MovieObj)
 
 page : Page Params Model Msg
@@ -93,16 +95,14 @@ subscriptions model =
 view : Model -> Document Msg
 view model =
     { title = "Videoplayer.Movieid_Int"
-    , body = [ column [Element.width fill, Element.height fill] 
-                        --(List.map (\movie -> Element.text movie.label) model.movie_list)
-                        [Element.text (String.fromInt model.movieid)
-                        , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
-                (List.map
-                    (\movie ->
-                        Element.text movie.label
-                    )
-                    model.movie_list
-                )
-                    ]
-                ]
+    , body = [ case model.movie of
+                Nothing ->
+                    Element.text "Error fetching movie"
+
+                Just movie ->
+                    Components.Video.view [Background.color (rgb 0 0 0)]
+                        { poster = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
+                        , source = crossOrigin "http://localhost:8080" [ "video", percentEncode movie.file ] [] -- fix url
+                        }
+            ]
     }
