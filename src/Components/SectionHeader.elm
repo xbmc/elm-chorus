@@ -1,7 +1,7 @@
 module Components.SectionHeader exposing (view, viewAlbums, viewArtists)
 
 import Colors exposing (greyIcon)
-import Element as Element exposing (Attribute, Element, alignBottom, alignRight, alignTop, centerX, centerY, clipX, column, el, fill, fillPortion, height, image, maximum, mouseOver, padding, paddingEach, paddingXY, px, rgb, row, spacingXY, width, wrappedRow)
+import Element as Element exposing (Attribute, Element, alignBottom, alignRight, alignTop, centerX, centerY, clipX, column, el, fill, fillPortion, height, image, maximum, minimum, mouseOver, padding, paddingEach, paddingXY, px, rgb, row, spacingXY, width, wrappedRow)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
@@ -103,7 +103,7 @@ viewAlbums albumlist =
     wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
         (List.map
             (\album ->
-                column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> maximum 220), Element.width (fill |> maximum 160), Border.rounded 3, clipX ]
+                column [ paddingXY 5 5, Background.color (rgb 1 1 1), mouseOver [ Background.color Colors.sidebar ], Element.height (fill |> maximum 220), Element.width (fill |> minimum 160), Border.rounded 3, clipX ]
                     [ image [ alignTop, width fill, height fill ]
                         { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
                         , description = "Thumbnail"
