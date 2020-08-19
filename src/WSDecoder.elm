@@ -1,4 +1,4 @@
-module WSDecoder exposing (LocalPlaylists, localPlaylistEncoder, AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (LocalPlaylists, localPlaylistEncoder, localPlaylistDecoder, AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string, bool)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -381,8 +381,8 @@ localPlaylistEncoder : LocalPlaylists -> String
 localPlaylistEncoder localPlaylist =
     Encode.encode 0
         <| Encode.object
-                [ ("localPlaylists", (Encode.list playlistObjEncoder localPlaylist.localPlaylists))
-                ]
+            [ ("localPlaylists", (Encode.list playlistObjEncoder localPlaylist.localPlaylists))
+            ]
 
 type alias PlaylistObj =
     { name : String 

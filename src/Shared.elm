@@ -36,7 +36,7 @@ import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, Loc
 type alias Flags =
     { innerWidth : Int
     , innerHeight : Int
-    , localPlaylists: Maybe LocalPlaylists
+    , localPlaylists: String
     }
 
 
