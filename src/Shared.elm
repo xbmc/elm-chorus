@@ -26,7 +26,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -36,6 +36,7 @@ import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, Mov
 type alias Flags =
     { innerWidth : Int
     , innerHeight : Int
+    , localPlaylists: Maybe LocalPlaylists
     }
 
 
@@ -64,7 +65,6 @@ type alias Model =
     , windowHeight : Int
     , searchString : String
     }
-
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =

@@ -1,9 +1,9 @@
-module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (LocalPlaylists, localPlaylistEncoder, AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, float, int, list, maybe, string, bool)
 import Json.Decode.Pipeline exposing (custom, optional, required)
 import Method exposing (Method(..), methodToStr, strToMethod)
-
+import Json.Encode as Encode
 
 
 -----------------------
@@ -363,14 +363,66 @@ volumeDecoder =
 
 --kodi ws connection
 
-
 type Connection
     = Connected
     | Disconnected
     | NotAsked
 
+--local playlist encode/decode
+type alias LocalPlaylists =
+    { localPlaylists : List PlaylistObj }
 
+localPlaylistDecoder : Decoder LocalPlaylists
+localPlaylistDecoder =
+    Decode.succeed LocalPlaylists
+        |> required "localPlaylists" (list playerObjDecoder)
 
+localPlaylistEncoder : LocalPlaylists -> String
+localPlaylistEncoder localPlaylist =
+    Encode.encode 0
+        <| Encode.object
+                [ ("localPlaylists", (Encode.list playlistObjEncoder localPlaylist.localPlaylists))
+                ]
+
+type alias PlaylistObj =
+    { name : String 
+    , songs : List PlaylistSongObj
+    }
+
+playerObjDecoder : Decoder PlaylistObj
+playerObjDecoder =
+  Decode.succeed PlaylistObj
+    |> required "name" string
+    |> required "songs" (list playlistSongDecoder)
+
+playlistObjEncoder : PlaylistObj -> Encode.Value
+playlistObjEncoder playlistObj =
+    Encode.object
+        [ ("name", Encode.string playlistObj.name)
+        , ("songs", (Encode.list playlistSongEncoder (List.map (\song -> song) playlistObj.songs)))
+        ]
+
+type alias PlaylistSongObj =
+    { label : String
+    , artist : List String
+    , duration : Int
+    , file : String
+    }
+
+playlistSongDecoder : Decoder PlaylistSongObj
+playlistSongDecoder =
+    Decode.succeed PlaylistSongObj
+        |> required "label" string
+        |> required "artist" (list string)
+        |> required "duration" int
+        |> required "file" string
+
+playlistSongEncoder : PlaylistSongObj -> Encode.Value
+playlistSongEncoder playlistSongObj =
+    Encode.object
+        [ ("label", Encode.string playlistSongObj.label)
+        , ("artist", (Encode.list Encode.string (List.map (\artist -> artist) playlistSongObj.artist)))
+        ]
 {- introspectDecoder : Decoder ResultResponse
    introspectDecoder =
            Decode.succeed ResultC
