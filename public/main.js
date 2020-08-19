@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Listen for commands from the `setStorage` port.
   // Turn the data to a string and put it in localStorage.
-  app.ports.setStorage.subscribe(function(playlists) {
-      localStorage.setItem('kodiLocalPlaylists', JSON.stringify(playlists));
+  app.ports.setStorage.subscribe(function (playlists) {
+      localStorage.setItem('kodiLocalPlaylists', playlists);
   });
 });

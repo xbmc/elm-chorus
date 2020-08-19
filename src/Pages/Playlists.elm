@@ -34,11 +34,15 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( case Decode.decodeString localPlaylistDecoder shared.flags.localPlaylists of
-        Ok decodedLocalPlaylists ->
-            { localPlaylists = Just decodedLocalPlaylists }
+    ( case shared.flags.localPlaylists of
+        Just localPlaylists ->
+            case Decode.decodeString localPlaylistDecoder localPlaylists of
+                Ok decodedLocalPlaylists ->
+                    { localPlaylists = Just decodedLocalPlaylists }
 
-        Err _ ->
+                Err _ ->
+                    { localPlaylists = Nothing }
+        Nothing ->
             { localPlaylists = Nothing }
     , Cmd.none
     )

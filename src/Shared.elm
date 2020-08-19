@@ -7,6 +7,7 @@ port module Shared exposing
     , responseReceiver
     , sendAction
     , sendActions
+    , setStorage
     , subscriptions
     , update
     , view
@@ -36,7 +37,7 @@ import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, Loc
 type alias Flags =
     { innerWidth : Int
     , innerHeight : Int
-    , localPlaylists : String
+    , localPlaylists : Maybe String
     }
 
 
@@ -132,17 +133,15 @@ port sendActions : List String -> Cmd msg
 
 --single cmd
 
-
 sendAction json =
     sendActions [ json ]
-
 
 port responseReceiver : (String -> msg) -> Sub msg
 
 
 port connection : (String -> msg) -> Sub msg
 
-
+port setStorage : String -> Cmd msg
 
 -- UPDATE
 
