@@ -1,11 +1,12 @@
 module Pages.Playlists exposing (Model, Msg, Params, page)
 
+import Json.Decode as Decode exposing (Decoder, string)
 import Shared
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
-import Json.Decode as Decode exposing (Decoder, string)
 import WSDecoder exposing (LocalPlaylists, localPlaylistDecoder)
+
 
 page : Page Params Model Msg
 page =
@@ -33,15 +34,13 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( 
-        case Decode.decodeString localPlaylistDecoder shared.flags.localPlaylists of
-            Ok decodedLocalPlaylists -> 
-                { localPlaylists = Just decodedLocalPlaylists }
+    ( case Decode.decodeString localPlaylistDecoder shared.flags.localPlaylists of
+        Ok decodedLocalPlaylists ->
+            { localPlaylists = Just decodedLocalPlaylists }
 
-            Err _ -> 
-                { localPlaylists = Nothing }
-    ,
-        Cmd.none 
+        Err _ ->
+            { localPlaylists = Nothing }
+    , Cmd.none
     )
 
 

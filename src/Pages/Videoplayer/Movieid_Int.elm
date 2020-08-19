@@ -1,16 +1,17 @@
-module Pages.Videoplayer.Movieid_Int exposing (Params, Model, Msg, page)
+module Pages.Videoplayer.Movieid_Int exposing (Model, Msg, Params, page)
 
-import Shared
 import Components.Video
 import Element exposing (..)
 import Element.Background as Background
 import Html.Attributes
+import Shared
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Url exposing (percentEncode)
 import Url.Builder exposing (crossOrigin)
 import WSDecoder exposing (ItemDetails, MovieObj)
+
 
 page : Page Params Model Msg
 page =
@@ -35,15 +36,18 @@ type alias Params =
 type alias Model =
     { movieid : Int
     , movie : Maybe MovieObj
-    , movie_list : List MovieObj }
+    , movie_list : List MovieObj
+    }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
     ( { movieid = params.movieid
-    , movie = getMovie params.movieid shared.movie_list
-    , movie_list = shared.movie_list
-    }, Cmd.none )
+      , movie = getMovie params.movieid shared.movie_list
+      , movie_list = shared.movie_list
+      }
+    , Cmd.none
+    )
 
 
 checkMovieId : Int -> MovieObj -> Bool
@@ -58,6 +62,8 @@ checkMovieId firstId movie =
 getMovie : Int -> List MovieObj -> Maybe MovieObj
 getMovie id movielist =
     List.head (List.filter (\movie -> checkMovieId id movie) movielist)
+
+
 
 -- UPDATE
 
@@ -95,14 +101,15 @@ subscriptions model =
 view : Model -> Document Msg
 view model =
     { title = "Videoplayer.Movieid_Int"
-    , body = [ case model.movie of
-                Nothing ->
-                    Element.text "Error fetching movie"
+    , body =
+        [ case model.movie of
+            Nothing ->
+                Element.text "Error fetching movie"
 
-                Just movie ->
-                    Components.Video.view [Background.color (rgb 0 0 0)]
-                        { poster = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
-                        , source = crossOrigin "http://localhost:8080" [ "video", percentEncode movie.file ] [] -- fix url
-                        }
-            ]
+            Just movie ->
+                Components.Video.view [ Background.color (rgb 0 0 0) ]
+                    { poster = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
+                    , source = crossOrigin "http://localhost:8080" [ "video", percentEncode movie.file ] [] -- fix url
+                    }
+        ]
     }

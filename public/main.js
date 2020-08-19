@@ -3,9 +3,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Initial data passed to Elm (should match `Flags` defined in `Shared.elm`)
   // https://guide.elm-lang.org/interop/flags.html
+
+  var storedData = localStorage.getItem('kodiLocalPlaylists');
+
   var flags = {
     innerWidth: window.innerWidth,
     innerHeight: window.innerHeight,
+    localPlaylists: storedData ? JSON.parse(storedData) : null,
   };
 
   // Start our Elm application
@@ -45,4 +49,10 @@ document.addEventListener("DOMContentLoaded", function () {
     app.ports.connection.send("Disconnected");
     ws.close();
   };
+
+  // Listen for commands from the `setStorage` port.
+  // Turn the data to a string and put it in localStorage.
+  app.ports.setStorage.subscribe(function(playlists) {
+      localStorage.setItem('kodiLocalPlaylists', JSON.stringify(playlists));
+  });
 });

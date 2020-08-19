@@ -154,7 +154,7 @@ view model =
                                 (List.map
                                     (\album ->
                                         row [ Element.height fill, Element.width fill ]
-                                            [ column [Element.height fill, Element.width (fillPortion 1), paddingXY 5 5]
+                                            [ column [ Element.height fill, Element.width (fillPortion 1), paddingXY 5 5 ]
                                                 [ case album.thumbnail of
                                                     "" ->
                                                         image [ width (fillPortion 1), height fill ]
@@ -163,12 +163,13 @@ view model =
                                                             }
 
                                                     _ ->
-                                                        column [Element.height fill, Element.width fill, spacingXY 5 5]
+                                                        column [ Element.height fill, Element.width fill, spacingXY 5 5 ]
                                                             [ el [ Element.below (Element.text album.label) ]
-                                                             (image [ width (fillPortion 1), height fill ]
-                                                                { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
-                                                                , description = "Thumbnail"
-                                                                })
+                                                                (image [ width (fillPortion 1), height fill ]
+                                                                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
+                                                                    , description = "Thumbnail"
+                                                                    }
+                                                                )
                                                             ]
                                                 ]
                                             , column [ Element.height fill, Element.width (fillPortion 3), paddingXY 5 5, spacingXY 5 7 ]
@@ -194,7 +195,8 @@ view model =
                                                 )
                                             ]
                                     )
-                                    (List.filter (\album -> List.member art.label album.artist) model.album_list) -- album list
+                                    (List.filter (\album -> List.member art.label album.artist) model.album_list)
+                                 -- album list
                                 )
                     ]
         ]

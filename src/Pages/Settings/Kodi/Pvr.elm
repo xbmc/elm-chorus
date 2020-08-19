@@ -1,9 +1,5 @@
 module Pages.Settings.Kodi.Pvr exposing (Model, Msg, Params, page)
 
-import Spa.Document exposing (Document)
-import Spa.Page as Page exposing (Page)
-import Spa.Url as Url exposing (Url)
-
 import Colors
 import Components.VerticalNavSettings
 import Element exposing (column, fill, fillPortion, row, spacingXY)

@@ -95,7 +95,6 @@ subscriptions model =
     Sub.none
 
 
-
 constructMovieItem : MovieObj -> Element Msg
 constructMovieItem movie =
     column [ spacingXY 5 0, Element.width fill, Element.height fill ]
@@ -105,9 +104,9 @@ constructMovieItem movie =
             , inFront
                 (row []
                     [ link [ paddingXY 5 3, Background.color (rgb 0.2 0.2 0.2) ]
-                        { url = Route.toString (Route.Videoplayer__Movieid_Int { movieid =  movie.movieid })
+                        { url = Route.toString (Route.Videoplayer__Movieid_Int { movieid = movie.movieid })
                         , label = Element.html (Filled.play_arrow 24 (MITypes.Color <| greyIcon))
-                        } 
+                        }
                     ]
                 )
 

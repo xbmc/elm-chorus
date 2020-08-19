@@ -79,15 +79,17 @@ viewArtists artistlist =
     wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
         (List.map
             (\artist ->
-                column [ paddingXY 5 5
-                        , Background.color (rgb 1 1 1)
-                        , mouseOver [ Background.color Colors.sidebar ]
-                        , Element.height (fill |> minimum 170 |> maximum 170)
-                        , Element.width (fill |> minimum 280 |> maximum 280)
-                        , Border.rounded 3
-                        , clipX
-                        --, Element.below (artistLabel artist)
-                        ]
+                column
+                    [ paddingXY 5 5
+                    , Background.color (rgb 1 1 1)
+                    , mouseOver [ Background.color Colors.sidebar ]
+                    , Element.height (fill |> minimum 170 |> maximum 170)
+                    , Element.width (fill |> minimum 280 |> maximum 280)
+                    , Border.rounded 3
+                    , clipX
+
+                    --, Element.below (artistLabel artist)
+                    ]
                     [ case artist.thumbnail of
                         "" ->
                             image [ width fill, height fill, Element.inFront (artistLabel artist) ]

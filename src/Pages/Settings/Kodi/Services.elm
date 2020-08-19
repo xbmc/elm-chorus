@@ -1,9 +1,5 @@
 module Pages.Settings.Kodi.Services exposing (Model, Msg, Params, page)
 
-import Spa.Document exposing (Document)
-import Spa.Page as Page exposing (Page)
-import Spa.Url as Url exposing (Url)
-
 import Colors
 import Components.VerticalNavSettings
 import Element exposing (column, fill, fillPortion, row, spacingXY)
@@ -12,6 +8,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
+
 
 page : Page Params Model Msg
 page =

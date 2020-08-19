@@ -36,7 +36,7 @@ import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, Loc
 type alias Flags =
     { innerWidth : Int
     , innerHeight : Int
-    , localPlaylists: String
+    , localPlaylists : String
     }
 
 
@@ -65,6 +65,7 @@ type alias Model =
     , windowHeight : Int
     , searchString : String
     }
+
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
@@ -173,7 +174,12 @@ songname : SongObj -> String
 songname song =
     song.label
 
-type RepeatType = Off | One | All
+
+type RepeatType
+    = Off
+    | One
+    | All
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -238,6 +244,7 @@ update msg model =
                     ( { model | shuffle = True }
                     , sendAction """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":true},"id":1}"""
                     )
+
                 True ->
                     ( { model | shuffle = False }
                     , sendAction """{"jsonrpc":"2.0","method":"Player.SetShuffle","params":{"playerid":0,"shuffle":false},"id":1}"""
@@ -249,10 +256,12 @@ update msg model =
                     ( { model | repeat = One }
                     , sendAction """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "one" }, "id": 1}"""
                     )
+
                 One ->
                     ( { model | repeat = All }
                     , sendAction """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "all" }, "id": 1}"""
                     )
+
                 All ->
                     ( { model | repeat = Off }
                     , sendAction """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "off" }, "id": 1}"""
@@ -361,12 +370,13 @@ update msg model =
                         newSlider =
                             SingleSlider.update volume model.volumeSlider
                     in
-                        case muted of
-                            False ->
-                                ( { model | volumeSlider = newSlider }, Cmd.none)
-                            True ->
-                                ( { model | volumeSlider = newSlider }, Cmd.none)
-                        
+                    case muted of
+                        False ->
+                            ( { model | volumeSlider = newSlider }, Cmd.none )
+
+                        True ->
+                            ( { model | volumeSlider = newSlider }, Cmd.none )
+
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
             , Cmd.none
