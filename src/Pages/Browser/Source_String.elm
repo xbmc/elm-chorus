@@ -1,10 +1,14 @@
 module Pages.Browser.Source_String exposing (Model, Msg, Params, page)
 
-import Shared
+import Components.VerticalNav
+import Element exposing (..)
+import Shared exposing (sendAction)
 import Spa.Document exposing (Document)
+import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
-
+import Url exposing (percentEncode, percentDecode)
+import WSDecoder exposing (SourceObj, FileObj)
 
 page : Page Params Model Msg
 page =
@@ -23,18 +27,37 @@ page =
 
 
 type alias Params =
-    { source : String }
+    { source : String
+    }
 
 
 type alias Model =
-    {}
+    { source : String
+    , files : List FileObj 
+    , source_list : List SourceObj
+    , route : Route
+    }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( {}, Cmd.none )
+    ( { source = parseSource (percentDecode params.source)
+        , files = shared.file_list
+        , source_list = shared.source_list
+        , route = Route.Top
+      }
+      , sendAction 
+            ("""{"jsonrpc":"2.0","method":"Files.GetDirectory","id":"1","params":{"directory":\"""" ++ parseSource (percentDecode params.source) ++ """\","media":"files"}}""") )
 
 
+parseSource : Maybe String -> String
+parseSource string =
+    case string of
+        Nothing ->
+            "None"
+
+        Just str ->
+            str
 
 -- UPDATE
 
@@ -57,7 +80,7 @@ save model shared =
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( model, Cmd.none )
+    ( { source = model.source, files = shared.file_list, source_list = shared.source_list, route = model.route }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -72,5 +95,27 @@ subscriptions model =
 view : Model -> Document Msg
 view model =
     { title = "Browser.Source_String"
-    , body = []
+    , body = 
+        [ row [ Element.height fill, Element.width fill ]
+            [ Components.VerticalNav.view
+                "sources"
+                model.route
+                (List.map
+                    (\source ->
+                        { route = Route.Browser__Source_String { source = percentEncode source.file }
+                        , label = source.label
+                        }
+                    )
+                    model.source_list
+                )
+                []
+            , column [Element.width fill, Element.height fill]
+                (List.map
+                    (\file ->
+                        Element.text file.label
+                    )
+                model.files
+                )
+            ]
+        ]
     }

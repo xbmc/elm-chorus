@@ -27,7 +27,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (FileObj, AlbumObj, ArtistObj, Connection(..), ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -60,6 +60,7 @@ type alias Model =
     , movie_list : List MovieObj
     , tvshow_list : List TvshowObj
     , source_list : List SourceObj
+    , file_list : List FileObj
     , volumeSlider : SingleSlider Msg
     , progressSlider : SingleSlider Msg
     , windowWidth : Int
@@ -88,6 +89,7 @@ init flags url key =
       , movie_list = []
       , tvshow_list = []
       , source_list = []
+      , file_list = []
       , volumeSlider =
             SingleSlider.init
                 { min = 0
@@ -375,6 +377,11 @@ update msg model =
 
                         True ->
                             ( { model | volumeSlider = newSlider }, Cmd.none )
+
+                ResultK filelist ->
+                    ( { model | file_list = filelist }
+                    , Cmd.none
+                    )
 
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }

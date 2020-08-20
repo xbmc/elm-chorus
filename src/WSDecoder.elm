@@ -1,4 +1,4 @@
-module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (FileObj, AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, maybe, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -162,6 +162,7 @@ type ResultResponse
     | ResultH Float Int --percentage/speed
     | ResultI (List SourceObj)
     | ResultJ Bool Float --muted/volume
+    | ResultK (List FileObj)
 
 
 
@@ -218,7 +219,15 @@ type alias ItemDetails =
 
 queryDecoder : Decoder ResultResponse
 queryDecoder =
-    Decode.oneOf [ percentDecoder, songQueryDecoder, artistQueryDecoder, albumQueryDecoder, movieQueryDecoder, sourceQueryDecoder, volumeDecoder ]
+    Decode.oneOf [ percentDecoder
+                    , songQueryDecoder
+                    , artistQueryDecoder
+                    , albumQueryDecoder
+                    , movieQueryDecoder
+                    , sourceQueryDecoder
+                    , volumeDecoder
+                    , fileQueryDecoder
+                ]
 
 
 songQueryDecoder : Decoder ResultResponse
@@ -362,6 +371,44 @@ volumeDecoder =
         |> custom (at [ "result", "muted" ] bool)
         |> custom (at [ "result", "volume" ] float)
 
+fileQueryDecoder : Decoder ResultResponse
+fileQueryDecoder =
+    Decode.succeed ResultK
+        |> custom (at [ "result", "files" ] (list fileDecoder))
+
+type alias FileObj =
+    { label : String
+    , file : String
+    , filetype : FileType
+    }
+
+fileDecoder : Decoder FileObj
+fileDecoder =
+    Decode.succeed FileObj
+        |> required "label" string
+        |> required "file" string
+        |> required "filetype" fileTypeDecoder
+
+-- file Type
+type FileType
+    = Directory
+    | File
+
+parseFileType : String -> Result String FileType
+parseFileType string =
+    case string of
+        "directory" ->
+            Ok Directory
+
+        "file" ->
+            Ok File
+
+        _ ->
+            Err ("Invalid filetype: " ++ string)
+
+fileTypeDecoder : Decoder FileType
+fileTypeDecoder =
+    Decode.string |> Decode.andThen (fromResult << parseFileType)
 
 
 --kodi ws connection
