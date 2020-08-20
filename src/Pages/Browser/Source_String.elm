@@ -1,14 +1,17 @@
 module Pages.Browser.Source_String exposing (Model, Msg, Params, page)
 
+import Colors
 import Components.VerticalNav
 import Element exposing (..)
+import Element.Background as Background
+import Element.Font as Font exposing (Font)
 import Shared exposing (sendAction)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Url exposing (percentEncode, percentDecode)
-import WSDecoder exposing (SourceObj, FileObj)
+import WSDecoder exposing (SourceObj, FileObj, FileType(..))
 
 page : Page Params Model Msg
 page =
@@ -112,7 +115,25 @@ view model =
             , column [Element.width fill, Element.height fill]
                 (List.map
                     (\file ->
-                        Element.text file.label
+                        case file.filetype of
+                            Directory ->
+                                Element.link 
+                                    [ paddingXY 10 10
+                                    , Background.color Colors.greyscaleDustGray
+                                    , Element.mouseOver
+                                        [ Background.color Colors.greyscaleOuterSpace]
+                                    , Font.color Colors.white 
+                                    ]
+                                    { url = Route.toString (Route.Browser__Source_String { source = percentEncode file.file })
+                                    , label = Element.text file.label
+                                    }
+                            File ->
+                                el [paddingXY 10 10
+                                    , Background.color Colors.greyscaleDustGray
+                                    , Element.mouseOver [ Background.color Colors.greyscaleOuterSpace]
+                                    , Font.color Colors.white
+                                    ]
+                                    (Element.text file.label)
                     )
                 model.files
                 )
