@@ -31,6 +31,7 @@ import Pages.Settings.Search
 import Pages.Settings.Web
 import Pages.Tvshows.Recent
 import Pages.Browser.Source_String
+import Pages.Playlists.Name_String
 import Pages.Videoplayer.Movieid_Int
 import Pages.Music.Top.Top
 import Pages.Settings.Kodi.Games
@@ -76,6 +77,7 @@ type Model
     | Settings__Web__Model Pages.Settings.Web.Model
     | Tvshows__Recent__Model Pages.Tvshows.Recent.Model
     | Browser__Source_String__Model Pages.Browser.Source_String.Model
+    | Playlists__Name_String__Model Pages.Playlists.Name_String.Model
     | Videoplayer__Movieid_Int__Model Pages.Videoplayer.Movieid_Int.Model
     | Music__Top__Top__Model Pages.Music.Top.Top.Model
     | Settings__Kodi__Games__Model Pages.Settings.Kodi.Games.Model
@@ -113,6 +115,7 @@ type Msg
     | Settings__Web__Msg Pages.Settings.Web.Msg
     | Tvshows__Recent__Msg Pages.Tvshows.Recent.Msg
     | Browser__Source_String__Msg Pages.Browser.Source_String.Msg
+    | Playlists__Name_String__Msg Pages.Playlists.Name_String.Msg
     | Videoplayer__Movieid_Int__Msg Pages.Videoplayer.Movieid_Int.Msg
     | Music__Top__Top__Msg Pages.Music.Top.Top.Msg
     | Settings__Kodi__Games__Msg Pages.Settings.Kodi.Games.Msg
@@ -199,6 +202,9 @@ init route =
         
         Route.Browser__Source_String params ->
             pages.browser__source_string.init params
+        
+        Route.Playlists__Name_String params ->
+            pages.playlists__name_string.init params
         
         Route.Videoplayer__Movieid_Int params ->
             pages.videoplayer__movieid_int.init params
@@ -309,6 +315,9 @@ update bigMsg bigModel =
         
         ( Browser__Source_String__Msg msg, Browser__Source_String__Model model ) ->
             pages.browser__source_string.update msg model
+        
+        ( Playlists__Name_String__Msg msg, Playlists__Name_String__Model model ) ->
+            pages.playlists__name_string.update msg model
         
         ( Videoplayer__Movieid_Int__Msg msg, Videoplayer__Movieid_Int__Model model ) ->
             pages.videoplayer__movieid_int.update msg model
@@ -422,6 +431,9 @@ bundle bigModel =
         
         Browser__Source_String__Model model ->
             pages.browser__source_string.bundle model
+        
+        Playlists__Name_String__Model model ->
+            pages.playlists__name_string.bundle model
         
         Videoplayer__Movieid_Int__Model model ->
             pages.videoplayer__movieid_int.bundle model
@@ -547,6 +559,7 @@ pages :
     , settings__web : Upgraded Pages.Settings.Web.Params Pages.Settings.Web.Model Pages.Settings.Web.Msg
     , tvshows__recent : Upgraded Pages.Tvshows.Recent.Params Pages.Tvshows.Recent.Model Pages.Tvshows.Recent.Msg
     , browser__source_string : Upgraded Pages.Browser.Source_String.Params Pages.Browser.Source_String.Model Pages.Browser.Source_String.Msg
+    , playlists__name_string : Upgraded Pages.Playlists.Name_String.Params Pages.Playlists.Name_String.Model Pages.Playlists.Name_String.Msg
     , videoplayer__movieid_int : Upgraded Pages.Videoplayer.Movieid_Int.Params Pages.Videoplayer.Movieid_Int.Model Pages.Videoplayer.Movieid_Int.Msg
     , music__top__top : Upgraded Pages.Music.Top.Top.Params Pages.Music.Top.Top.Model Pages.Music.Top.Top.Msg
     , settings__kodi__games : Upgraded Pages.Settings.Kodi.Games.Params Pages.Settings.Kodi.Games.Model Pages.Settings.Kodi.Games.Msg
@@ -583,6 +596,7 @@ pages =
     , settings__web = Pages.Settings.Web.page |> upgrade Settings__Web__Model Settings__Web__Msg
     , tvshows__recent = Pages.Tvshows.Recent.page |> upgrade Tvshows__Recent__Model Tvshows__Recent__Msg
     , browser__source_string = Pages.Browser.Source_String.page |> upgrade Browser__Source_String__Model Browser__Source_String__Msg
+    , playlists__name_string = Pages.Playlists.Name_String.page |> upgrade Playlists__Name_String__Model Playlists__Name_String__Msg
     , videoplayer__movieid_int = Pages.Videoplayer.Movieid_Int.page |> upgrade Videoplayer__Movieid_Int__Model Videoplayer__Movieid_Int__Msg
     , music__top__top = Pages.Music.Top.Top.page |> upgrade Music__Top__Top__Model Music__Top__Top__Msg
     , settings__kodi__games = Pages.Settings.Kodi.Games.page |> upgrade Settings__Kodi__Games__Model Settings__Kodi__Games__Msg

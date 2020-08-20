@@ -2,11 +2,12 @@ module Components.PlayerRow exposing (playerHeight, view)
 
 import Colors exposing (greyIcon)
 import Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
-import Element exposing (Attribute, Element, alignBottom, alignLeft, alignRight, centerX, column, el, fill, height, image, padding, paddingXY, px, rgb, row, spaceEvenly, spacing, text, width)
+import Element exposing (Attribute, Element, alignBottom, alignLeft, alignRight, centerX, column, el, fill, height, htmlAttribute, image, padding, paddingXY, px, rgb, row, spaceEvenly, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font exposing (center)
 import Element.Input as Input
 import Helper exposing (durationToString)
+import Html.Attributes
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
 import Spa.Generated.Route as Route
@@ -21,7 +22,7 @@ playerHeight =
 
 view : LayoutType msg -> Element msg
 view layoutType =
-    row [ height (px playerHeight), width fill, alignBottom ]
+    row [ height (px playerHeight), width fill, alignBottom, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
         [ playControlRow layoutType.playerControl
         , column [ width (px playerHeight) ]
             [ case layoutType.currentlyPlaying.currentlyPlaying of

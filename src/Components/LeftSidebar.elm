@@ -3,6 +3,7 @@ module Components.LeftSidebar exposing (view)
 import Colors
 import Element exposing (..)
 import Element.Background as Background
+import Html.Attributes
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Coloring(..), Icon)
 import Spa.Generated.Route as Route exposing (Route)
@@ -10,7 +11,7 @@ import Spa.Generated.Route as Route exposing (Route)
 
 view : Element msg
 view =
-    column [ height fill, centerX, spacing 20, padding 15, alignLeft ]
+    column [ height fill, centerX, spacing 20, padding 15, alignLeft, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
         [ musicButton
         , movieButton
         , tvshowButton
