@@ -1,6 +1,6 @@
 module Pages.Playlists exposing (Model, Msg, Params, page)
 
-import Components.VerticalNav
+import Components.VerticalNavPlaylists
 import Element exposing (..)
 import Json.Decode as Decode exposing (Decoder, string)
 import Shared
@@ -9,7 +9,7 @@ import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Spa.Generated.Route as Route exposing (Route)
 import WSDecoder exposing (LocalPlaylists, localPlaylistDecoder)
-
+import Url exposing (percentEncode)
 
 page : Page Params Model Msg
 page =
@@ -56,13 +56,13 @@ init shared { params } =
 
 
 type Msg
-    = ReplaceMe
+    = NewPlaylist
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ReplaceMe ->
+        NewPlaylist ->
             ( model, Cmd.none )
 
 
@@ -90,9 +90,13 @@ view model =
     { title = "Playlists"
     , body = [ case model.localPlaylists of
                     Nothing ->
-                        row[][]
+                        Components.VerticalNavPlaylists.view
+                            "playlists"
+                            Route.Top
+                            []
+                            NewPlaylist
                     Just localPlaylists -> 
-                        Components.VerticalNav.view
+                        Components.VerticalNavPlaylists.view
                             "playlists"
                             Route.Top
                             (List.map
@@ -103,6 +107,6 @@ view model =
                                 )
                                 localPlaylists.localPlaylists
                             )
-                            []
+                            NewPlaylist
                 ]
     }
