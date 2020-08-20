@@ -1,10 +1,13 @@
 module Pages.Playlists exposing (Model, Msg, Params, page)
 
+import Components.VerticalNav
+import Element exposing (..)
 import Json.Decode as Decode exposing (Decoder, string)
 import Shared
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
+import Spa.Generated.Route as Route exposing (Route)
 import WSDecoder exposing (LocalPlaylists, localPlaylistDecoder)
 
 
@@ -85,5 +88,21 @@ subscriptions model =
 view : Model -> Document Msg
 view model =
     { title = "Playlists"
-    , body = []
+    , body = [ case model.localPlaylists of
+                    Nothing ->
+                        row[][]
+                    Just localPlaylists -> 
+                        Components.VerticalNav.view
+                            "playlists"
+                            Route.Top
+                            (List.map
+                                (\playlist ->
+                                    { route = Route.Playlists__Name_String { name = percentEncode playlist.name }
+                                    , label = playlist.name
+                                    }
+                                )
+                                localPlaylists.localPlaylists
+                            )
+                            []
+                ]
     }
