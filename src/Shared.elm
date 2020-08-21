@@ -430,7 +430,7 @@ update msg model =
             ( { model | searchString = searchString }, Cmd.none )
 
         CloseDialog ->
-            ({ model | showDialog = False}, Cmd.none )
+            ({ model | showDialog = False}, Browser.Navigation.reload )
 
 
 -- SUBSCRIPTIONS
