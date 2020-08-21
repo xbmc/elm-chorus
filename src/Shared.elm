@@ -27,7 +27,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (FileObj, AlbumObj, ArtistObj, Connection(..), ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -135,15 +135,20 @@ port sendActions : List String -> Cmd msg
 
 --single cmd
 
+
 sendAction json =
     sendActions [ json ]
+
 
 port responseReceiver : (String -> msg) -> Sub msg
 
 
 port connection : (String -> msg) -> Sub msg
 
+
 port setStorage : String -> Cmd msg
+
+
 
 -- UPDATE
 
@@ -456,7 +461,7 @@ subscriptions _ =
 view :
     { page : Document msg, toMsg : Msg -> msg }
     -> Model
-    -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg }
+    -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg, leftSidebar : Element msg }
 view { page, toMsg } model =
     Components.Frame.layout
         { page = page
@@ -487,7 +492,7 @@ view { page, toMsg } model =
         , rightSidebarMsg = toMsg ToggleRightSidebar
         , connection = model.connection
         , windowHeight = model.windowHeight
-        , searchChanged = toMsg (SearchChanged "")
+        , searchChanged = SearchChanged >> toMsg
         }
 
 

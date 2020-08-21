@@ -15,7 +15,7 @@ type alias LayoutType msg =
     , rightSidebarMsg : msg
     , connection : Connection
     , windowHeight : Int
-    , searchChanged : msg
+    , searchChanged : String -> msg
     }
 
 
