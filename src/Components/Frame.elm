@@ -1,17 +1,25 @@
 module Components.Frame exposing (layout)
 
+import Components.DialogView exposing (config)
 import Components.Header as Header
 import Components.LayoutType exposing (LayoutType)
 import Components.LeftSidebar as LeftSidebar
 import Components.PlayerRow as PlayerRow exposing (view)
 import Components.RightSidebar as RightSidebar
+import Dialog exposing (view)
 import Element exposing (..)
 import Material.Icons.Types exposing (Coloring(..))
 import Spa.Document exposing (Document)
 
-
-layout : LayoutType msg -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg, leftSidebar : Element msg }
+layout : LayoutType msg -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg, leftSidebar : Element msg, dialogBox : Element msg }
 layout layoutType =
+    let
+        dialogConfig =
+            if layoutType.dialogBox.showDialog then
+                Just (Components.DialogView.config layoutType.dialogBox.closeDialogMsg)
+            else
+                Nothing
+    in
     { body =
         { title = layoutType.page.title
         , body =
@@ -28,4 +36,5 @@ layout layoutType =
     , playerBar = PlayerRow.view layoutType
     , rightSidebar = RightSidebar.view layoutType.rightSidebarExtended layoutType.rightSidebarMsg (layoutType.windowHeight - PlayerRow.playerHeight) layoutType.connection
     , leftSidebar = LeftSidebar.view
+    , dialogBox = (Dialog.view dialogConfig)
     }

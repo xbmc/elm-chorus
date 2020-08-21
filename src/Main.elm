@@ -127,7 +127,7 @@ update msg model =
             )
 
 
-view : Model -> { body : Document Msg, header : Element Msg, playerBar : Element Msg, rightSidebar : Element Msg, leftSidebar : Element Msg }
+view : Model -> { body : Document Msg, header : Element Msg, playerBar : Element Msg, rightSidebar : Element Msg, leftSidebar : Element Msg, dialogBox : Element Msg }
 view model =
     Shared.view
         { page =

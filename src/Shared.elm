@@ -66,6 +66,7 @@ type alias Model =
     , windowWidth : Int
     , windowHeight : Int
     , searchString : String
+    , showDialog : Bool
     }
 
 
@@ -109,6 +110,7 @@ init flags url key =
       , windowWidth = flags.innerWidth
       , windowHeight = flags.innerHeight
       , searchString = ""
+      , showDialog = False
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
@@ -174,6 +176,7 @@ type Msg
     | VolumeSliderChange Float
     | ProgressSliderChange Float
     | SearchChanged String
+    | CloseDialog
 
 
 songname : SongObj -> String
@@ -210,12 +213,12 @@ update msg model =
         Recv state ->
             case state of
                 "Connected" ->
-                    ( { model | connection = Connected }
+                    ( { model | connection = Connected, showDialog = False }
                     , Cmd.none
                     )
 
                 "Disconnected" ->
-                    ( { model | connection = Disconnected }
+                    ( { model | connection = Disconnected, showDialog = True }
                     , Cmd.none
                     )
 
@@ -426,6 +429,8 @@ update msg model =
         SearchChanged searchString ->
             ( { model | searchString = searchString }, Cmd.none )
 
+        CloseDialog ->
+            ({ model | showDialog = False}, Cmd.none )
 
 
 -- SUBSCRIPTIONS
@@ -453,47 +458,48 @@ subscriptions _ =
         , Time.every 1000 QueryPlayers
         ]
 
-
-
 -- VIEW
-
 
 view :
     { page : Document msg, toMsg : Msg -> msg }
     -> Model
-    -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg, leftSidebar : Element msg }
+    -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg, leftSidebar : Element msg, dialogBox : Element msg }
 view { page, toMsg } model =
     Components.Frame.layout
-        { page = page
-        , controlMenu =
-            { controlMenu = model.controlMenu
-            , controlMenuMsg = toMsg ToggleControlMenu
-            , sendTextToKodiMsg = toMsg SendTextToKodi
-            , scanMusicLibraryMsg = toMsg ScanMusicLibrary
-            , scanVideoLibraryMsg = toMsg ScanVideoLibrary
+            { page = page
+            , controlMenu =
+                { controlMenu = model.controlMenu
+                , controlMenuMsg = toMsg ToggleControlMenu
+                , sendTextToKodiMsg = toMsg SendTextToKodi
+                , scanMusicLibraryMsg = toMsg ScanMusicLibrary
+                , scanVideoLibraryMsg = toMsg ScanVideoLibrary
+                }
+            , playerControl =
+                { playPauseMsg = toMsg PlayPause
+                , skipMsg = toMsg SkipForward
+                , reverseMsg = toMsg SkipPrevious
+                , playing = model.playing
+                }
+            , currentlyPlaying =
+                { currentlyPlaying = model.currentlyPlaying
+                , progressSlider = Element.map toMsg (slider model.progressSlider)
+                }
+            , volumeAndControls =
+                { muteMsg = toMsg ToggleMute
+                , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
+                , shuffleMsg = toMsg ToggleShuffle
+                , volumeSlider = Element.map toMsg (slider model.volumeSlider)
+                }
+            , rightSidebarExtended = model.rightSidebarExtended
+            , rightSidebarMsg = toMsg ToggleRightSidebar
+            , connection = model.connection
+            , windowHeight = model.windowHeight
+            , searchChanged = SearchChanged >> toMsg
+            , dialogBox = 
+                { showDialog = model.showDialog
+                , closeDialogMsg = toMsg CloseDialog
+                }
             }
-        , playerControl =
-            { playPauseMsg = toMsg PlayPause
-            , skipMsg = toMsg SkipForward
-            , reverseMsg = toMsg SkipPrevious
-            , playing = model.playing
-            }
-        , currentlyPlaying =
-            { currentlyPlaying = model.currentlyPlaying
-            , progressSlider = Element.map toMsg (slider model.progressSlider)
-            }
-        , volumeAndControls =
-            { muteMsg = toMsg ToggleMute
-            , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
-            , shuffleMsg = toMsg ToggleShuffle
-            , volumeSlider = Element.map toMsg (slider model.volumeSlider)
-            }
-        , rightSidebarExtended = model.rightSidebarExtended
-        , rightSidebarMsg = toMsg ToggleRightSidebar
-        , connection = model.connection
-        , windowHeight = model.windowHeight
-        , searchChanged = SearchChanged >> toMsg
-        }
 
 
 slider : SingleSlider msg -> Element msg

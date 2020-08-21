@@ -7,6 +7,7 @@
     "dependencies": {
         "direct": {
             "NoRedInk/elm-json-decode-pipeline": "1.0.0",
+            "PaackEng/elm-ui-dialog": "1.0.0",
             "avh4/elm-color": "1.0.0",
             "carwow/elm-slider": "11.1.6",
             "elm/browser": "1.0.2",

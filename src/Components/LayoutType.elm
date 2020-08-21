@@ -4,7 +4,6 @@ import Element exposing (Element)
 import Spa.Document exposing (Document)
 import WSDecoder exposing (Connection, ItemDetails)
 
-
 type alias LayoutType msg =
     { page : Document msg
     , controlMenu : ControlMenu msg
@@ -16,6 +15,7 @@ type alias LayoutType msg =
     , connection : Connection
     , windowHeight : Int
     , searchChanged : String -> msg
+    , dialogBox : DialogBox msg
     }
 
 
@@ -47,4 +47,9 @@ type alias ControlMenu msg =
     , sendTextToKodiMsg : msg
     , scanVideoLibraryMsg : msg
     , scanMusicLibraryMsg : msg
+    }
+
+type alias DialogBox msg =
+    { showDialog : Bool
+    , closeDialogMsg : msg
     }

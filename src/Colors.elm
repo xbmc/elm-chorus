@@ -54,7 +54,9 @@ white : Element.Color
 white =
     Element.rgb255 255 255 255
 
-
+red : Element.Color
+red =
+    Element.rgb255 250 0 0
 
 -- Palette
 
