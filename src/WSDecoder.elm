@@ -1,4 +1,4 @@
-module WSDecoder exposing (FileType(..), FileObj, AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (Path, prepareDownloadDecoder, FileType(..), FileObj, AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, maybe, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -487,8 +487,14 @@ playlistSongEncoder playlistSongObj =
         , ( "artist", Encode.list Encode.string (List.map (\artist -> artist) playlistSongObj.artist) )
         ]
 
+-- Files.PrepareDownload decoder
+prepareDownloadDecoder : Decoder Path
+prepareDownloadDecoder =
+    Decode.succeed Path
+        |> custom (at [ "result", "details", "path" ] string)
 
-
+type alias Path =
+    { path : String }
 {- introspectDecoder : Decoder ResultResponse
    introspectDecoder =
            Decode.succeed ResultC

@@ -67,6 +67,7 @@ type alias Model =
     , windowHeight : Int
     , searchString : String
     , showDialog : Bool
+    , prepareDownloadPath : Maybe String
     }
 
 
@@ -111,6 +112,7 @@ init flags url key =
       , windowHeight = flags.innerHeight
       , searchString = ""
       , showDialog = False
+      , prepareDownloadPath = Nothing
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""

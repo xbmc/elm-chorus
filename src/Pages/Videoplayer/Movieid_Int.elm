@@ -4,13 +4,14 @@ import Components.Video
 import Element exposing (..)
 import Element.Background as Background
 import Html.Attributes
+import Http
 import Shared
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Url exposing (percentEncode)
 import Url.Builder exposing (crossOrigin)
-import WSDecoder exposing (ItemDetails, MovieObj)
+import WSDecoder exposing (Path, ItemDetails, MovieObj, prepareDownloadDecoder)
 
 
 page : Page Params Model Msg
@@ -37,17 +38,29 @@ type alias Model =
     { movieid : Int
     , movie : Maybe MovieObj
     , movie_list : List MovieObj
+    , prepareDownloadPath : Maybe String
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( { movieid = params.movieid
-      , movie = getMovie params.movieid shared.movie_list
-      , movie_list = shared.movie_list
-      }
-    , Cmd.none
-    )
+    case (getMovie params.movieid shared.movie_list) of
+        Just movie ->
+            ( { movieid = params.movieid
+              , movie = Just movie
+              , movie_list = shared.movie_list
+              , prepareDownloadPath = shared.prepareDownloadPath
+              }
+            , postRequestMovie movie.file
+            )
+        Nothing ->
+            ( { movieid = params.movieid
+              , movie = Nothing
+              , movie_list = shared.movie_list
+              , prepareDownloadPath = shared.prepareDownloadPath
+              }
+            , Cmd.none
+            )
 
 
 checkMovieId : Int -> MovieObj -> Bool
@@ -69,24 +82,28 @@ getMovie id movielist =
 
 
 type Msg
-    = ReplaceMe
+    = GotMovie (Result Http.Error (Path))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ReplaceMe ->
-            ( model, Cmd.none )
+        GotMovie result ->
+            case result of
+                Ok pathObj ->
+                    ( { model | prepareDownloadPath = Just pathObj.path }, Cmd.none )
+                Err _ ->
+                    ( model, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
-    shared
+    { shared | prepareDownloadPath = model.prepareDownloadPath }
 
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( { model | movie_list = shared.movie_list }, Cmd.none )
+    ( { model | movie_list = shared.movie_list, prepareDownloadPath = shared.prepareDownloadPath }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -94,6 +111,13 @@ subscriptions model =
     Sub.none
 
 
+postRequestMovie : String -> Cmd Msg
+postRequestMovie path =
+  Http.post
+    { url = ("""http://localhost:8080/jsonrpc?request={"jsonrpc":"2.0","params":{"path":""" ++ path ++ """},"method":"Files.PrepareDownload","id":"1"}""")
+    , body = Http.emptyBody
+    , expect = Http.expectJson GotMovie prepareDownloadDecoder
+    }
 
 -- VIEW
 
@@ -107,9 +131,14 @@ view model =
                 Element.text "Error fetching movie"
 
             Just movie ->
-                Components.Video.view [ Background.color (rgb 0 0 0) ]
-                    { poster = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
-                    , source = crossOrigin "http://localhost:8080" [ "video", percentEncode movie.file ] [] -- fix url
-                    }
+                case model.prepareDownloadPath of
+                    Nothing -> 
+                        Element.text "Error fetching movie"
+                    Just path ->
+                        Components.Video.view [ Background.color (rgb 0 0 0) ]
+                            { poster = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
+                            , source = crossOrigin "http://localhost:8080" [ path ] []
+                            --source = crossOrigin "http://localhost:8080" [ "vfs/%2fUsers%2falex%2fDesktop%2fdesktop%2fFilms%2fSenior%20Project%2fused%2fIMG_2652.m4v"] [] --source = crossOrigin "http://localhost:8080" [ "video", percentEncode movie.file ] [] -- fix url
+                            }
         ]
     }
