@@ -114,7 +114,7 @@ subscriptions model =
 postRequestMovie : String -> Cmd Msg
 postRequestMovie path =
   Http.get
-    { url = crossOrigin ("""http://localhost:8080/jsonrpc?request={"jsonrpc":"2.0","params":{"path":\"""" ++ path ++ """\"},"method":"Files.PrepareDownload","id":"1"}""") [] []
+    { url = crossOrigin ("http://localhost:8080") [ ("""jsonrpc?request={"jsonrpc":"2.0","params":{"path":\"""" ++ path ++ """\"},"method":"Files.PrepareDownload","id":"1"}""") ] []
     , expect = Http.expectJson GotMovie prepareDownloadDecoder
     }
 
