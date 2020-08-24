@@ -45,21 +45,21 @@ type alias Model =
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
     case (getMovie params.movieid shared.movie_list) of
-        Just movie ->
-            ( { movieid = params.movieid
-              , movie = Just movie
-              , movie_list = shared.movie_list
-              , prepareDownloadPath = shared.prepareDownloadPath
-              }
-            , postRequestMovie movie.file
-            )
         Nothing ->
             ( { movieid = params.movieid
-              , movie = Nothing
+              , movie = getMovie params.movieid shared.movie_list
               , movie_list = shared.movie_list
               , prepareDownloadPath = shared.prepareDownloadPath
               }
             , Cmd.none
+            )
+        Just mov ->
+            ( { movieid = params.movieid
+              , movie = getMovie params.movieid shared.movie_list
+              , movie_list = shared.movie_list
+              , prepareDownloadPath = shared.prepareDownloadPath
+              }
+            , postRequestMovie mov.file
             )
 
 
@@ -113,9 +113,8 @@ subscriptions model =
 
 postRequestMovie : String -> Cmd Msg
 postRequestMovie path =
-  Http.post
-    { url = ("""http://localhost:8080/jsonrpc?request={"jsonrpc":"2.0","params":{"path":""" ++ path ++ """},"method":"Files.PrepareDownload","id":"1"}""")
-    , body = Http.emptyBody
+  Http.get
+    { url = crossOrigin ("""http://localhost:8080/jsonrpc?request={"jsonrpc":"2.0","params":{"path":\"""" ++ path ++ """\"},"method":"Files.PrepareDownload","id":"1"}""") [] []
     , expect = Http.expectJson GotMovie prepareDownloadDecoder
     }
 
@@ -128,12 +127,12 @@ view model =
     , body =
         [ case model.movie of
             Nothing ->
-                Element.text "Error fetching movie"
+                Element.text "Erro fetching movie"
 
             Just movie ->
                 case model.prepareDownloadPath of
                     Nothing -> 
-                        Element.text "Error fetching movie"
+                        Element.text movie.label
                     Just path ->
                         Components.Video.view [ Background.color (rgb 0 0 0) ]
                             { poster = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
