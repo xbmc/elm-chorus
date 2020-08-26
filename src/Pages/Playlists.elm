@@ -1,6 +1,7 @@
 module Pages.Playlists exposing (Model, Msg, Params, page)
 
 import Components.VerticalNavPlaylists
+import Components.LayoutType exposing (DialogType(..))
 import Element exposing (..)
 import Json.Decode as Decode exposing (Decoder, string)
 import Shared
@@ -32,7 +33,8 @@ type alias Params =
 
 
 type alias Model =
-    { localPlaylists : Maybe LocalPlaylists }
+    { localPlaylists : Maybe LocalPlaylists
+    , showDialog : DialogType }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
@@ -41,12 +43,12 @@ init shared { params } =
         Just localPlaylists ->
             case Decode.decodeString localPlaylistDecoder localPlaylists of
                 Ok decodedLocalPlaylists ->
-                    { localPlaylists = Just decodedLocalPlaylists }
+                    { localPlaylists = Just decodedLocalPlaylists, showDialog = shared.showDialog }
 
                 Err _ ->
-                    { localPlaylists = Nothing }
+                    { localPlaylists = Nothing, showDialog = shared.showDialog }
         Nothing ->
-            { localPlaylists = Nothing }
+            { localPlaylists = Nothing, showDialog = shared.showDialog }
     , Cmd.none
     )
 
@@ -57,18 +59,21 @@ init shared { params } =
 
 type Msg
     = NewPlaylist
+    | CloseDialog
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NewPlaylist ->
-            ( model, Cmd.none )
+            ( { model | showDialog = TextInputDialog }, Cmd.none )
+        CloseDialog ->
+            ({ model | showDialog = None }, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
-    shared
+    { shared | showDialog = model.showDialog }
 
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )

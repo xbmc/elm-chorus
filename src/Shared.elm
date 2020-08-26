@@ -70,6 +70,7 @@ type alias Model =
     , searchString : String
     , showDialog : DialogType
     , prepareDownloadPath : Maybe String
+    , playlistName : String
     }
 
 
@@ -115,6 +116,7 @@ init flags url key =
       , searchString = ""
       , showDialog = None
       , prepareDownloadPath = Nothing
+      , playlistName = ""
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
@@ -180,6 +182,7 @@ type Msg
     | VolumeSliderChange Float
     | ProgressSliderChange Float
     | SearchChanged String
+    | AttemptReconnectionDialog
     | CloseDialog
     | NewPlaylist String
 
@@ -434,11 +437,14 @@ update msg model =
         SearchChanged searchString ->
             ( { model | searchString = searchString }, Cmd.none )
 
-        CloseDialog ->
+        AttemptReconnectionDialog ->
             ({ model | showDialog = None }, Browser.Navigation.reload )
 
+        CloseDialog ->
+            ({ model | showDialog = None, playlistName = "" }, Cmd.none )--setStorage (encode model.localPlaylists) ) --saves playlistName before its reset
+
         NewPlaylist name ->
-            ( model, Cmd.none )
+            ( { model | showDialog = TextInputDialog, playlistName = name }, Cmd.none )
 
 
 -- SUBSCRIPTIONS
@@ -505,8 +511,10 @@ view { page, toMsg } model =
             , searchChanged = SearchChanged >> toMsg
             , dialogBox = 
                 { showDialog = model.showDialog
+                , attemptReconnectionMsg = toMsg AttemptReconnectionDialog
                 , closeDialogMsg = toMsg CloseDialog
                 , textChangeMsg = NewPlaylist >> toMsg
+                , playlistName = model.playlistName
                 }
             }
 

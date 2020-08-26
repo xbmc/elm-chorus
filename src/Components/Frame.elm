@@ -17,9 +17,9 @@ layout layoutType =
         dialogConfig =
             case layoutType.dialogBox.showDialog of
                 ConnectionDialog ->
-                    Just (Components.DialogView.config layoutType.dialogBox.closeDialogMsg)
+                    Just (Components.DialogView.config layoutType.dialogBox.attemptReconnectionMsg)
                 TextInputDialog ->
-                    Just (Components.DialogView.textInputConfig layoutType.dialogBox.closeDialogMsg layoutType.dialogBox.textChangeMsg)
+                    Just (Components.DialogView.textInputConfig layoutType.dialogBox.playlistName layoutType.dialogBox.closeDialogMsg layoutType.dialogBox.textChangeMsg)
                 None ->
                     Maybe.Nothing
     in

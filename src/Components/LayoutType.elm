@@ -51,8 +51,10 @@ type alias ControlMenu msg =
 
 type alias DialogBox msg =
     { showDialog : DialogType
+    , attemptReconnectionMsg : msg
     , closeDialogMsg : msg
     , textChangeMsg : String -> msg
+    , playlistName : String
     }
 
 type DialogType = ConnectionDialog | TextInputDialog | None

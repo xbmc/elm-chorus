@@ -55,8 +55,8 @@ footerButtons closeDialogMsg =
             }
         ]
 
-textInputConfig : msg -> (String -> msg) -> Config msg
-textInputConfig closeDialogMsg textChangeMsg =
+textInputConfig : String -> msg -> (String -> msg) -> Config msg
+textInputConfig playlistName closeDialogMsg textChangeMsg =
     { closeMessage = Just closeDialogMsg
     , maskAttributes = []
     , containerAttributes =
@@ -72,18 +72,38 @@ textInputConfig closeDialogMsg textChangeMsg =
     , bodyAttributes = [ padding 20, Font.size 24, Font.color Colors.grey ]
     , footerAttributes = []
     , header = Just (text "")
-    , body = Just (textInputBody textChangeMsg)
-    , footer = Just (footerButtons closeDialogMsg)
+    , body = Just (textInputBody playlistName textChangeMsg)
+    , footer = Just (textInputFooterButtons closeDialogMsg)
     }
 
-textInputBody : (String -> msg) -> Element msg
-textInputBody textChangeMsg =
+textInputBody : String -> (String -> msg) -> Element msg
+textInputBody playlistName textChangeMsg =
     column [ width fill ] 
         [ Input.text 
             [ centerX ] 
             { onChange = textChangeMsg
-            , text = ""
+            , text = playlistName
             , placeholder = Nothing
             , label = Input.labelAbove [] (text "Playlist name: ")
             } 
+        ]
+
+textInputFooterButtons : msg -> Element msg
+textInputFooterButtons closeDialogMsg =
+    row [ width fill, padding 2, spacing 5 ]
+        [ Input.button
+            [ Background.color Colors.cerulean
+            , Font.color Colors.white
+            , Font.bold
+            , Border.rounded 3
+            , paddingXY 30 12
+            , centerX
+            , mouseOver
+                [ Background.color Colors.cerulean
+                , Font.color Colors.grey
+                ]
+            ]
+            { onPress = Just closeDialogMsg
+            , label = text "OK"
+            }
         ]
