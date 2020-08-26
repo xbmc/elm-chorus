@@ -17,8 +17,10 @@ port module Shared exposing
 
 import Browser.Navigation exposing (Key, pushUrl)
 import Components.Frame
+import Components.LayoutType exposing (DialogType(..))
 import Element exposing (..)
 import Json.Decode as D
+import Json.Encode as E
 import List.Extra exposing (unique)
 import Method exposing (Method(..))
 import Request exposing (Params, Property(..), request)
@@ -66,7 +68,7 @@ type alias Model =
     , windowWidth : Int
     , windowHeight : Int
     , searchString : String
-    , showDialog : Bool
+    , showDialog : DialogType
     , prepareDownloadPath : Maybe String
     }
 
@@ -111,7 +113,7 @@ init flags url key =
       , windowWidth = flags.innerWidth
       , windowHeight = flags.innerHeight
       , searchString = ""
-      , showDialog = False
+      , showDialog = None
       , prepareDownloadPath = Nothing
       }
     , sendActions
@@ -179,6 +181,7 @@ type Msg
     | ProgressSliderChange Float
     | SearchChanged String
     | CloseDialog
+    | NewPlaylist String
 
 
 songname : SongObj -> String
@@ -215,12 +218,12 @@ update msg model =
         Recv state ->
             case state of
                 "Connected" ->
-                    ( { model | connection = Connected, showDialog = False }
+                    ( { model | connection = Connected, showDialog = None }
                     , Cmd.none
                     )
 
                 "Disconnected" ->
-                    ( { model | connection = Disconnected, showDialog = True }
+                    ( { model | connection = Disconnected, showDialog = ConnectionDialog }
                     , Cmd.none
                     )
 
@@ -432,7 +435,10 @@ update msg model =
             ( { model | searchString = searchString }, Cmd.none )
 
         CloseDialog ->
-            ({ model | showDialog = False}, Browser.Navigation.reload )
+            ({ model | showDialog = None }, Browser.Navigation.reload )
+
+        NewPlaylist name ->
+            ( model, Cmd.none )
 
 
 -- SUBSCRIPTIONS
@@ -500,6 +506,7 @@ view { page, toMsg } model =
             , dialogBox = 
                 { showDialog = model.showDialog
                 , closeDialogMsg = toMsg CloseDialog
+                , textChangeMsg = NewPlaylist >> toMsg
                 }
             }
 

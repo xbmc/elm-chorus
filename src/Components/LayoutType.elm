@@ -1,4 +1,4 @@
-module Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
+module Components.LayoutType exposing (DialogType(..), ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
 
 import Element exposing (Element)
 import Spa.Document exposing (Document)
@@ -50,6 +50,10 @@ type alias ControlMenu msg =
     }
 
 type alias DialogBox msg =
-    { showDialog : Bool
+    { showDialog : DialogType
     , closeDialogMsg : msg
+    , textChangeMsg : String -> msg
     }
+
+type DialogType = ConnectionDialog | TextInputDialog | None
+

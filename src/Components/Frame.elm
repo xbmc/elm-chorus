@@ -2,7 +2,7 @@ module Components.Frame exposing (layout)
 
 import Components.DialogView exposing (config)
 import Components.Header as Header
-import Components.LayoutType exposing (LayoutType)
+import Components.LayoutType exposing (LayoutType, DialogType(..))
 import Components.LeftSidebar as LeftSidebar
 import Components.PlayerRow as PlayerRow exposing (view)
 import Components.RightSidebar as RightSidebar
@@ -15,10 +15,13 @@ layout : LayoutType msg -> { body : Document msg, header : Element msg, playerBa
 layout layoutType =
     let
         dialogConfig =
-            if layoutType.dialogBox.showDialog then
-                Just (Components.DialogView.config layoutType.dialogBox.closeDialogMsg)
-            else
-                Nothing
+            case layoutType.dialogBox.showDialog of
+                ConnectionDialog ->
+                    Just (Components.DialogView.config layoutType.dialogBox.closeDialogMsg)
+                TextInputDialog ->
+                    Just (Components.DialogView.textInputConfig layoutType.dialogBox.closeDialogMsg layoutType.dialogBox.textChangeMsg)
+                None ->
+                    Maybe.Nothing
     in
     { body =
         { title = layoutType.page.title
