@@ -20,7 +20,7 @@ import Components.Frame
 import Components.LayoutType exposing (DialogType(..))
 import Element exposing (..)
 import Json.Decode as D
-import Json.Encode as E
+import Json.Encode as E exposing (Value)
 import List.Extra exposing (unique)
 import Method exposing (Method(..))
 import Request exposing (Params, Property(..), request)
@@ -29,7 +29,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -71,11 +71,26 @@ type alias Model =
     , showDialog : DialogType
     , prepareDownloadPath : Maybe String
     , playlistName : String
+    , playlists : LocalPlaylists
     }
 
 
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init flags url key =
+    let
+        decodedlocalPlaylists =
+            case flags.localPlaylists of
+                Nothing ->
+                    { localPlaylists = [] }
+
+                Just localPlaylists ->
+                    case D.decodeString localPlaylistDecoder localPlaylists of
+                        Ok playlists ->
+                            playlists
+
+                        Err _ ->
+                            { localPlaylists = [] }
+    in
     ( { flags = flags
       , url = url
       , key = key
@@ -117,6 +132,7 @@ init flags url key =
       , showDialog = None
       , prepareDownloadPath = Nothing
       , playlistName = ""
+      , playlists = decodedlocalPlaylists
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
@@ -438,13 +454,25 @@ update msg model =
             ( { model | searchString = searchString }, Cmd.none )
 
         AttemptReconnectionDialog ->
-            ({ model | showDialog = None }, Browser.Navigation.reload )
+            ( { model | showDialog = None }, Browser.Navigation.reload )
 
         CloseDialog ->
-            ({ model | showDialog = None, playlistName = "" }, Cmd.none )--setStorage (encode model.localPlaylists) ) --saves playlistName before its reset
+            let
+                playlistObj =
+                    { name = model.playlistName, songs = [] }
+            in
+            ( { model
+                | showDialog = None
+                , playlists = { localPlaylists = model.playlists.localPlaylists ++ [ playlistObj ] } --sets localPlaylist field
+                , playlistName = ""
+              }
+            , setStorage (localPlaylistEncoder model.playlists)
+            )
 
+        --saves playlistName before its reset
         NewPlaylist name ->
             ( { model | showDialog = TextInputDialog, playlistName = name }, Cmd.none )
+
 
 
 -- SUBSCRIPTIONS
@@ -472,7 +500,10 @@ subscriptions _ =
         , Time.every 1000 QueryPlayers
         ]
 
+
+
 -- VIEW
+
 
 view :
     { page : Document msg, toMsg : Msg -> msg }
@@ -480,43 +511,43 @@ view :
     -> { body : Document msg, header : Element msg, playerBar : Element msg, rightSidebar : Element msg, leftSidebar : Element msg, dialogBox : Element msg }
 view { page, toMsg } model =
     Components.Frame.layout
-            { page = page
-            , controlMenu =
-                { controlMenu = model.controlMenu
-                , controlMenuMsg = toMsg ToggleControlMenu
-                , sendTextToKodiMsg = toMsg SendTextToKodi
-                , scanMusicLibraryMsg = toMsg ScanMusicLibrary
-                , scanVideoLibraryMsg = toMsg ScanVideoLibrary
-                }
-            , playerControl =
-                { playPauseMsg = toMsg PlayPause
-                , skipMsg = toMsg SkipForward
-                , reverseMsg = toMsg SkipPrevious
-                , playing = model.playing
-                }
-            , currentlyPlaying =
-                { currentlyPlaying = model.currentlyPlaying
-                , progressSlider = Element.map toMsg (slider model.progressSlider)
-                }
-            , volumeAndControls =
-                { muteMsg = toMsg ToggleMute
-                , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
-                , shuffleMsg = toMsg ToggleShuffle
-                , volumeSlider = Element.map toMsg (slider model.volumeSlider)
-                }
-            , rightSidebarExtended = model.rightSidebarExtended
-            , rightSidebarMsg = toMsg ToggleRightSidebar
-            , connection = model.connection
-            , windowHeight = model.windowHeight
-            , searchChanged = SearchChanged >> toMsg
-            , dialogBox = 
-                { showDialog = model.showDialog
-                , attemptReconnectionMsg = toMsg AttemptReconnectionDialog
-                , closeDialogMsg = toMsg CloseDialog
-                , textChangeMsg = NewPlaylist >> toMsg
-                , playlistName = model.playlistName
-                }
+        { page = page
+        , controlMenu =
+            { controlMenu = model.controlMenu
+            , controlMenuMsg = toMsg ToggleControlMenu
+            , sendTextToKodiMsg = toMsg SendTextToKodi
+            , scanMusicLibraryMsg = toMsg ScanMusicLibrary
+            , scanVideoLibraryMsg = toMsg ScanVideoLibrary
             }
+        , playerControl =
+            { playPauseMsg = toMsg PlayPause
+            , skipMsg = toMsg SkipForward
+            , reverseMsg = toMsg SkipPrevious
+            , playing = model.playing
+            }
+        , currentlyPlaying =
+            { currentlyPlaying = model.currentlyPlaying
+            , progressSlider = Element.map toMsg (slider model.progressSlider)
+            }
+        , volumeAndControls =
+            { muteMsg = toMsg ToggleMute
+            , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
+            , shuffleMsg = toMsg ToggleShuffle
+            , volumeSlider = Element.map toMsg (slider model.volumeSlider)
+            }
+        , rightSidebarExtended = model.rightSidebarExtended
+        , rightSidebarMsg = toMsg ToggleRightSidebar
+        , connection = model.connection
+        , windowHeight = model.windowHeight
+        , searchChanged = SearchChanged >> toMsg
+        , dialogBox =
+            { showDialog = model.showDialog
+            , attemptReconnectionMsg = toMsg AttemptReconnectionDialog
+            , closeDialogMsg = toMsg CloseDialog
+            , textChangeMsg = NewPlaylist >> toMsg
+            , playlistName = model.playlistName
+            }
+        }
 
 
 slider : SingleSlider msg -> Element msg

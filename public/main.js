@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var flags = {
     innerWidth: window.innerWidth,
     innerHeight: window.innerHeight,
-    localPlaylists: storedData ? JSON.parse(storedData) : null,
+    localPlaylists: storedData ? storedData : null,
   };
 
   // Start our Elm application

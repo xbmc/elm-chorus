@@ -1,4 +1,4 @@
-module WSDecoder exposing (Path, prepareDownloadDecoder, FileType(..), FileObj, AlbumObj, ArtistObj, Connection(..), Item, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, FileType(..), Item, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, maybe, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -219,15 +219,16 @@ type alias ItemDetails =
 
 queryDecoder : Decoder ResultResponse
 queryDecoder =
-    Decode.oneOf [ percentDecoder
-                    , songQueryDecoder
-                    , artistQueryDecoder
-                    , albumQueryDecoder
-                    , movieQueryDecoder
-                    , sourceQueryDecoder
-                    , volumeDecoder
-                    , fileQueryDecoder
-                ]
+    Decode.oneOf
+        [ percentDecoder
+        , songQueryDecoder
+        , artistQueryDecoder
+        , albumQueryDecoder
+        , movieQueryDecoder
+        , sourceQueryDecoder
+        , volumeDecoder
+        , fileQueryDecoder
+        ]
 
 
 songQueryDecoder : Decoder ResultResponse
@@ -371,16 +372,19 @@ volumeDecoder =
         |> custom (at [ "result", "muted" ] bool)
         |> custom (at [ "result", "volume" ] float)
 
+
 fileQueryDecoder : Decoder ResultResponse
 fileQueryDecoder =
     Decode.succeed ResultK
         |> custom (at [ "result", "files" ] (list fileDecoder))
+
 
 type alias FileObj =
     { label : String
     , file : String
     , filetype : FileType
     }
+
 
 fileDecoder : Decoder FileObj
 fileDecoder =
@@ -389,10 +393,15 @@ fileDecoder =
         |> required "file" string
         |> required "filetype" fileTypeDecoder
 
+
+
 -- file Type
+
+
 type FileType
     = Directory
     | File
+
 
 parseFileType : String -> Result String FileType
 parseFileType string =
@@ -406,9 +415,11 @@ parseFileType string =
         _ ->
             Err ("Invalid filetype: " ++ string)
 
+
 fileTypeDecoder : Decoder FileType
 fileTypeDecoder =
     Decode.string |> Decode.andThen (fromResult << parseFileType)
+
 
 
 --kodi ws connection
@@ -431,7 +442,7 @@ type alias LocalPlaylists =
 localPlaylistDecoder : Decoder LocalPlaylists
 localPlaylistDecoder =
     Decode.succeed LocalPlaylists
-        |> required "localPlaylists" (list playerObjDecoder)
+        |> required "localPlaylists" (list playlistObjDecoder)
 
 
 localPlaylistEncoder : LocalPlaylists -> String
@@ -444,57 +455,40 @@ localPlaylistEncoder localPlaylist =
 
 type alias PlaylistObj =
     { name : String
-    , songs : List PlaylistSongObj
+    , songs : List Int --store songids
     }
 
 
-playerObjDecoder : Decoder PlaylistObj
-playerObjDecoder =
+playlistObjDecoder : Decoder PlaylistObj
+playlistObjDecoder =
     Decode.succeed PlaylistObj
         |> required "name" string
-        |> required "songs" (list playlistSongDecoder)
+        |> required "songs" (list int)
 
 
 playlistObjEncoder : PlaylistObj -> Encode.Value
 playlistObjEncoder playlistObj =
     Encode.object
         [ ( "name", Encode.string playlistObj.name )
-        , ( "songs", Encode.list playlistSongEncoder (List.map (\song -> song) playlistObj.songs) )
+        , ( "songs", Encode.list Encode.int (List.map (\song -> song) playlistObj.songs) )
         ]
 
 
-type alias PlaylistSongObj =
-    { label : String
-    , artist : List String
-    , duration : Int
-    , file : String
-    }
-
-
-playlistSongDecoder : Decoder PlaylistSongObj
-playlistSongDecoder =
-    Decode.succeed PlaylistSongObj
-        |> required "label" string
-        |> required "artist" (list string)
-        |> required "duration" int
-        |> required "file" string
-
-
-playlistSongEncoder : PlaylistSongObj -> Encode.Value
-playlistSongEncoder playlistSongObj =
-    Encode.object
-        [ ( "label", Encode.string playlistSongObj.label )
-        , ( "artist", Encode.list Encode.string (List.map (\artist -> artist) playlistSongObj.artist) )
-        ]
 
 -- Files.PrepareDownload decoder
+
+
 prepareDownloadDecoder : Decoder Path
 prepareDownloadDecoder =
     Decode.succeed Path
         |> custom (at [ "result", "details", "path" ] string)
 
+
 type alias Path =
     { path : String }
+
+
+
 {- introspectDecoder : Decoder ResultResponse
    introspectDecoder =
            Decode.succeed ResultC
