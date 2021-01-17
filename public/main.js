@@ -1,4 +1,5 @@
 //@ts-check
+import { Elm } from '../src/Main.elm';
 
 document.addEventListener("DOMContentLoaded", function () {
   // Initial data passed to Elm (should match `Flags` defined in `Shared.elm`)
