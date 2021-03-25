@@ -65,6 +65,10 @@ cerulean : Element.Color
 cerulean =
     Element.rgb255 18 178 231
 
+greyCerulean : Element.Color
+greyCerulean =
+    Element.rgb255 51 122 183    
+
 
 ceriseRed : Element.Color
 ceriseRed =
