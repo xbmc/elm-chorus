@@ -1,4 +1,4 @@
-module Components.LeftSidebar exposing (view)
+module Components.LeftSidebar exposing (view,initialModel)
 
 import Colors
 import Element exposing (..)

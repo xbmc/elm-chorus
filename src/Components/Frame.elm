@@ -38,6 +38,6 @@ layout layoutType =
     , header = Header.view layoutType.searchChanged
     , playerBar = PlayerRow.view layoutType
     , rightSidebar = RightSidebar.view layoutType.rightSidebarExtended layoutType.rightSidebarMsg (layoutType.windowHeight - PlayerRow.playerHeight) layoutType.connection
-    , leftSidebar = LeftSidebar.view
+    , leftSidebar = LeftSidebar.view LeftSidebar.initialModel
     , dialogBox = (Dialog.view dialogConfig)
     }
