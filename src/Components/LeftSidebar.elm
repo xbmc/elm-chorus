@@ -30,7 +30,7 @@ type Msg
     = Enter
     | Leave
 
-view : Model -> Element Msg
+view : Model -> Element msg
 view model =
     column [ height fill, centerX, spacing 20, padding 15, alignLeft, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
         [ musicButton model
@@ -61,7 +61,7 @@ view model =
 --             }
 --       ]
 
-materialIconLinkNew : Model-> Icon Msg -> Route -> String  -> Element Msg
+materialIconLinkNew : Model-> Icon Msg -> Route -> String  -> Element msg
 materialIconLinkNew  model icon route  name =
     let
         temp =
@@ -77,56 +77,56 @@ materialIconLinkNew  model icon route  name =
         (Events.onMouseEnter Enter
               :: Events.onMouseLeave Leave
               :: temp)
-    <|
-        Element.link []
+
+        (Element.link []
             { url = Route.toString route
             , label = Element.html (icon 20 (MITypes.Color <| (Colors.fromElementColorToColor <| Colors.greyscaleOuterSpace)))
-            }
+            })
       ]
 
 -- buttons
 
 
-musicButton : Model -> Element Msg
+musicButton : Model -> Element msg
 musicButton model =
     materialIconLinkNew model Filled.library_music Route.Music "Music"
 
 
-movieButton : Model -> Element Msg
+movieButton : Model -> Element msg
 movieButton model =
     materialIconLinkNew model Filled.movie Route.Movies__Recent "Movies"
 
 
-tvshowButton : Model -> Element Msg
+tvshowButton : Model -> Element msg
 tvshowButton model =
     materialIconLinkNew model Filled.tv Route.Tvshows__Recent "TV shows"
 
 
-browserButton : Model -> Element Msg
+browserButton : Model -> Element msg
 browserButton model =
     materialIconLinkNew model Filled.list Route.Browser "Browser"
 
 
-addonsButton : Model -> Element Msg
+addonsButton : Model -> Element msg
 addonsButton model =
     materialIconLinkNew model Filled.extension Route.Addons "Add-ons"
 
 
-thumbsupButton : Model -> Element Msg
+thumbsupButton : Model -> Element msg
 thumbsupButton model =
     materialIconLinkNew model Filled.thumb_up Route.Thumbsup "Thumbs up"
 
 
-playlistButton : Model -> Element Msg
+playlistButton : Model -> Element msg
 playlistButton model =
     materialIconLinkNew model Filled.assignment Route.Playlists "Playlists"
 
 
-settingsButton : Model -> Element Msg
+settingsButton : Model -> Element msg
 settingsButton model =
     materialIconLinkNew model Filled.settings Route.Settings__Web "Settings"
 
 
-helpButton : Model -> Element Msg
+helpButton : Model -> Element msg
 helpButton model =
     materialIconLinkNew model Filled.help Route.Help "Help"
