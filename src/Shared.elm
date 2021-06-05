@@ -50,6 +50,16 @@ type alias Model =
     , connection : Connection
     , rightSidebarExtended : Bool
     , controlMenu : Bool
+    , musicHover : Bool
+    , moviesHover : Bool
+    , tvshowHover : Bool
+    , browserHover : Bool
+    , addonsHover : Bool
+    , thumbsupHover : Bool
+    , playlistHover : Bool
+    , settingsHover : Bool
+    , helpHover : Bool
+    , rightSidebarMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
@@ -97,6 +107,16 @@ init flags url key =
       , connection = NotAsked
       , rightSidebarExtended = False
       , controlMenu = False
+      , musicHover = False
+      , moviesHover = False
+      , tvshowHover = False
+      , browserHover = False
+      , addonsHover = False
+      , thumbsupHover = False
+      , playlistHover = False
+      , settingsHover = False
+      , helpHover = False
+      , rightSidebarMenu = False
       , players = []
       , currentlyPlaying = Nothing
       , playing = False
@@ -192,6 +212,25 @@ type Msg
     | ReceiveResultResponse ResultResponse
     | ToggleRightSidebar
     | ToggleControlMenu
+    | ToggleMusicHover
+    | ToggleMusicLeave
+    | ToggleMoviesHover
+    | ToggleMoviesLeave
+    | ToggleTvshowHover
+    | ToggleTvshowLeave
+    | ToggleBrowserHover
+    | ToggleBrowserLeave
+    | ToggleAddonsHover
+    | ToggleAddonsLeave
+    | ToggleThumbsupHover
+    | ToggleThumbsupLeave
+    | TogglePlaylistHover
+    | TogglePlaylistLeave
+    | ToggleSettingsHover
+    | ToggleSettingsLeave
+    | ToggleHelpHover
+    | ToggleHelpLeave
+    | ToggleRightSidebarMenu
     | SendTextToKodi
     | ScanVideoLibrary
     | ScanMusicLibrary
@@ -425,6 +464,101 @@ update msg model =
             , Cmd.none
             )
 
+        ToggleMusicHover ->
+            ( { model | musicHover = True }
+            , Cmd.none
+            )
+
+        ToggleMusicLeave ->
+            ( { model | musicHover = False }
+            , Cmd.none
+            )
+
+        ToggleMoviesHover ->
+              ( { model | moviesHover = True }
+              , Cmd.none
+              )
+
+        ToggleMoviesLeave ->
+              ( { model | moviesHover = False }
+              , Cmd.none
+              )
+
+        ToggleTvshowHover ->
+                ( { model | tvshowHover = True }
+                , Cmd.none
+                )
+
+        ToggleTvshowLeave ->
+                ( { model | tvshowHover = False }
+                , Cmd.none
+                )
+
+        ToggleBrowserHover ->
+                  ( { model | browserHover = True }
+                  , Cmd.none
+                  )
+
+        ToggleBrowserLeave ->
+                  ( { model | browserHover = False }
+                  , Cmd.none
+                  )
+
+        ToggleAddonsHover ->
+                    ( { model | addonsHover = True }
+                    , Cmd.none
+                    )
+
+        ToggleAddonsLeave ->
+                    ( { model | addonsHover = False }
+                    , Cmd.none
+                    )
+
+        ToggleThumbsupHover ->
+                      ( { model | thumbsupHover = True }
+                      , Cmd.none
+                      )
+
+        ToggleThumbsupLeave ->
+                      ( { model | thumbsupHover = False }
+                      , Cmd.none
+                      )
+
+        TogglePlaylistHover ->
+                        ( { model | playlistHover = True }
+                        , Cmd.none
+                        )
+
+        TogglePlaylistLeave ->
+                        ( { model | playlistHover = False }
+                        , Cmd.none
+                        )
+
+        ToggleSettingsHover ->
+                          ( { model | settingsHover = True }
+                          , Cmd.none
+                          )
+
+        ToggleSettingsLeave ->
+                          ( { model | settingsHover = False }
+                          , Cmd.none
+                          )
+
+        ToggleHelpHover ->
+                            ( { model | helpHover = True }
+                            , Cmd.none
+                            )
+
+        ToggleHelpLeave ->
+                            ( { model | helpHover = False }
+                            , Cmd.none
+                            )
+
+        ToggleRightSidebarMenu ->
+            ( { model | rightSidebarMenu = not model.rightSidebarMenu }
+            , Cmd.none
+            )
+
         SendTextToKodi ->
             ( model, Cmd.none )
 
@@ -519,6 +653,39 @@ view { page, toMsg } model =
             , scanMusicLibraryMsg = toMsg ScanMusicLibrary
             , scanVideoLibraryMsg = toMsg ScanVideoLibrary
             }
+        , leftSidebarControl =
+          { musicHover = model.musicHover
+          , musicHoverMsg = toMsg ToggleMusicHover
+          , musicLeaveMsg = toMsg ToggleMusicLeave
+          , moviesHover = model.moviesHover
+          , moviesHoverMsg = toMsg ToggleMoviesHover
+          , moviesLeaveMsg = toMsg ToggleMoviesLeave
+          , tvshowHover = model.tvshowHover
+          , tvshowHoverMsg = toMsg ToggleTvshowHover
+          , tvshowLeaveMsg = toMsg ToggleTvshowLeave
+          , browserHover = model.browserHover
+          , browserHoverMsg = toMsg ToggleBrowserHover
+          , browserLeaveMsg = toMsg ToggleBrowserLeave
+          , addonsHover = model.addonsHover
+          , addonsHoverMsg = toMsg ToggleAddonsHover
+          , addonsLeaveMsg = toMsg ToggleAddonsLeave
+          , thumbsupHover = model.thumbsupHover
+          , thumbsupHoverMsg = toMsg ToggleThumbsupHover
+          , thumbsupLeaveMsg = toMsg ToggleThumbsupLeave
+          , playlistHover = model.playlistHover
+          , playlistHoverMsg = toMsg TogglePlaylistHover
+          , playlistLeaveMsg = toMsg TogglePlaylistLeave
+          , settingsHover = model.settingsHover
+          , settingsHoverMsg = toMsg ToggleSettingsHover
+          , settingsLeaveMsg = toMsg ToggleSettingsLeave
+          , helpHover = model.helpHover
+          , helpHoverMsg = toMsg ToggleHelpHover
+          , helpLeaveMsg = toMsg ToggleHelpLeave
+          }
+        , rightSidebarMenu =
+          { rightSidebarMenu = model.rightSidebarMenu
+          , rightSidebarMenuMsg = toMsg ToggleRightSidebarMenu
+          }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
             , skipMsg = toMsg SkipForward

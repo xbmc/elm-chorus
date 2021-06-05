@@ -1,132 +1,110 @@
-module Components.LeftSidebar exposing (view,initialModel)
+module Components.LeftSidebar exposing (view)
 
 import Colors
 import Element exposing (..)
 import Element.Background as Background
-import Html.Attributes
+import Element.Font as Font
 import Element.Events as Events
+import Html.Attributes
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Coloring(..), Icon)
 import Spa.Generated.Route as Route exposing (Route)
+import Components.LayoutType exposing (LeftSidebarControl)
 
-type Model
-    = Normal
-    | Hover
 
-update : Msg -> Model -> Model
-update msg model =
-    case msg of
-        Leave ->
-            Normal
-
-        Enter ->
-            Hover
-
-initialModel : Model
-initialModel =
-    Normal
-
-type Msg
-    = Enter
-    | Leave
-
-view : Model -> Element msg
-view model =
-    column [ height fill, centerX, spacing 20, padding 15, alignLeft, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
-        [ musicButton model
-        , movieButton model
-        , tvshowButton model
-        , browserButton model
-        , addonsButton model
-        , thumbsupButton model
-        , playlistButton model
-        , settingsButton model
-        , helpButton model
+view : LeftSidebarControl msg -> Element msg
+view  leftSidebarControl =
+    column [ height fill, centerX, alignLeft, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
+        [ el [height (px 20)] (text "" )
+        , musicButton leftSidebarControl
+        , movieButton leftSidebarControl
+        , tvshowButton leftSidebarControl
+        , browserButton leftSidebarControl
+        , addonsButton leftSidebarControl
+        , thumbsupButton leftSidebarControl
+        , playlistButton leftSidebarControl
+        , settingsButton leftSidebarControl
+        , helpButton leftSidebarControl
         ]
 
---
--- materialIconLink : ( Icon msg, Route ) -> Element Msg
--- materialIconLink ( icon, route ) =
---     row[]
---     [el
---         [ Element.mouseOver
---             [ scale 1.1
---             , Background.color Colors.brandPrimary
---             ]
---         ]
---     <|
---         Element.link []
---             { url = Route.toString route
---             , label = Element.html (icon 20 (MITypes.Color <| (Colors.fromElementColorToColor <| Colors.greyscaleOuterSpace)))
---             }
---       ]
 
-materialIconLinkNew : Model-> Icon Msg -> Route -> String  -> Element msg
-materialIconLinkNew  model icon route  name =
+materialIconLink : Bool -> msg -> msg -> String -> Icon msg -> Route -> Element msg
+materialIconLink  elementHover elementHoverMsg elementLeaveMsg name icon route =
     let
-        temp =
-            case model of
-                Hover ->
-                    [ Element.onRight (Element.text name), scale 1.1, Background.color Colors.brandPrimary]
+      leftSidebarIcon =
+        case elementHover of
+            True ->
+                row[]
+                [el [paddingXY 7 0] (Element.html (icon 20 Inherit))
+                , el [paddingXY 5 0, Font.size 14] (text name)
+                ]
 
-                Normal ->
-                    []
+            False ->
+                el [paddingXY 7 0] (Element.html (icon 20 Inherit))
+
+      leftSidebarIconStyle =
+        case elementHover of
+          True ->
+            [Background.color Colors.brandPrimary, Font.color (rgb255 255 255 255), padding 8]
+
+          False ->
+            [Font.color (rgb255 0 0 0), padding 8]
     in
-    row[]
-    [el
-        (Events.onMouseEnter Enter
-              :: Events.onMouseLeave Leave
-              :: temp)
+    el []
 
-        (Element.link []
+        (Element.link (Events.onMouseEnter elementHoverMsg
+              :: Events.onMouseLeave elementLeaveMsg
+              :: leftSidebarIconStyle)
             { url = Route.toString route
-            , label = Element.html (icon 20 (MITypes.Color <| (Colors.fromElementColorToColor <| Colors.greyscaleOuterSpace)))
-            })
-      ]
+            , label = leftSidebarIcon
+            }
+        )
+
+
 
 -- buttons
 
 
-musicButton : Model -> Element msg
-musicButton model =
-    materialIconLinkNew model Filled.library_music Route.Music "Music"
+musicButton : LeftSidebarControl msg -> Element msg
+musicButton leftSidebarControl =
+    materialIconLink leftSidebarControl.musicHover leftSidebarControl.musicHoverMsg leftSidebarControl.musicLeaveMsg "Music" Filled.library_music Route.Music
 
 
-movieButton : Model -> Element msg
-movieButton model =
-    materialIconLinkNew model Filled.movie Route.Movies__Recent "Movies"
+movieButton : LeftSidebarControl msg -> Element msg
+movieButton leftSidebarControl =
+    materialIconLink leftSidebarControl.moviesHover leftSidebarControl.moviesHoverMsg leftSidebarControl.moviesLeaveMsg "Movies" Filled.movie Route.Movies__Recent
 
 
-tvshowButton : Model -> Element msg
-tvshowButton model =
-    materialIconLinkNew model Filled.tv Route.Tvshows__Recent "TV shows"
+tvshowButton : LeftSidebarControl msg -> Element msg
+tvshowButton leftSidebarControl =
+    materialIconLink leftSidebarControl.tvshowHover leftSidebarControl.tvshowHoverMsg leftSidebarControl.tvshowLeaveMsg "TV shows" Filled.tv Route.Tvshows__Recent
 
 
-browserButton : Model -> Element msg
-browserButton model =
-    materialIconLinkNew model Filled.list Route.Browser "Browser"
+browserButton : LeftSidebarControl msg -> Element msg
+browserButton leftSidebarControl =
+    materialIconLink leftSidebarControl.browserHover leftSidebarControl.browserHoverMsg leftSidebarControl.browserLeaveMsg "Browser" Filled.list Route.Browser
 
 
-addonsButton : Model -> Element msg
-addonsButton model =
-    materialIconLinkNew model Filled.extension Route.Addons "Add-ons"
+addonsButton : LeftSidebarControl msg -> Element msg
+addonsButton leftSidebarControl =
+    materialIconLink leftSidebarControl.addonsHover leftSidebarControl.addonsHoverMsg leftSidebarControl.addonsLeaveMsg "Add-ons" Filled.extension Route.Addons
 
 
-thumbsupButton : Model -> Element msg
-thumbsupButton model =
-    materialIconLinkNew model Filled.thumb_up Route.Thumbsup "Thumbs up"
+thumbsupButton : LeftSidebarControl msg -> Element msg
+thumbsupButton leftSidebarControl =
+    materialIconLink leftSidebarControl.thumbsupHover leftSidebarControl.thumbsupHoverMsg leftSidebarControl.thumbsupLeaveMsg "Thumbs up" Filled.thumb_up Route.Thumbsup
 
 
-playlistButton : Model -> Element msg
-playlistButton model =
-    materialIconLinkNew model Filled.assignment Route.Playlists "Playlists"
+playlistButton : LeftSidebarControl msg -> Element msg
+playlistButton leftSidebarControl =
+    materialIconLink leftSidebarControl.playlistHover leftSidebarControl.playlistHoverMsg leftSidebarControl.playlistLeaveMsg "Playlists" Filled.assignment Route.Playlists
 
 
-settingsButton : Model -> Element msg
-settingsButton model =
-    materialIconLinkNew model Filled.settings Route.Settings__Web "Settings"
+settingsButton : LeftSidebarControl msg -> Element msg
+settingsButton leftSidebarControl =
+    materialIconLink leftSidebarControl.settingsHover leftSidebarControl.settingsHoverMsg leftSidebarControl.settingsLeaveMsg "Settings" Filled.settings Route.Settings__Web
 
 
-helpButton : Model -> Element msg
-helpButton model =
-    materialIconLinkNew model Filled.help Route.Help "Help"
+helpButton : LeftSidebarControl msg -> Element msg
+helpButton leftSidebarControl =
+    materialIconLink leftSidebarControl.helpHover leftSidebarControl.helpHoverMsg leftSidebarControl.helpLeaveMsg "Help" Filled.help Route.Help
