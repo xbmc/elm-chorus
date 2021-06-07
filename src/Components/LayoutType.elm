@@ -1,4 +1,4 @@
-module Components.LayoutType exposing (DialogType(..), LeftSidebarControl, RightSidebarMenu, ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
+module Components.LayoutType exposing (DialogType(..), LeftSidebarControl, ShowRightSidebarMenu, ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
 
 import Element exposing (Element)
 import Spa.Document exposing (Document)
@@ -8,7 +8,7 @@ type alias LayoutType msg =
     { page : Document msg
     , controlMenu : ControlMenu msg
     , leftSidebarControl : LeftSidebarControl msg
-    , rightSidebarMenu : RightSidebarMenu msg
+    , showRightSidebarMenu : ShowRightSidebarMenu msg
     , playerControl : PlayerControl msg
     , currentlyPlaying : CurrentlyPlaying msg
     , volumeAndControls : VolumeAndControls msg
@@ -79,9 +79,9 @@ type alias ControlMenu msg =
     , scanMusicLibraryMsg : msg
     }
 
-type alias RightSidebarMenu msg =
-    { rightSidebarMenu : Bool
-    , rightSidebarMenuMsg : msg
+type alias ShowRightSidebarMenu msg =
+    { showRightSidebarMenu : Bool
+    , showRightSidebarMenuMsg : msg
     }
 
 type alias DialogBox msg =

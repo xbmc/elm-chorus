@@ -1,7 +1,7 @@
 module Components.RightSidebar exposing (view)
 
 import Colors exposing (greyIcon)
-import Components.LayoutType exposing (RightSidebarMenu)
+import Components.LayoutType exposing (ShowRightSidebarMenu)
 import Element exposing (Attribute, Element, alignRight, centerX, centerY, column, el, fill, height, htmlAttribute, padding, paddingXY, px, rgb, row, spacing, text, width)
 import Element.Background as Background
 import Element.Input as Input
@@ -11,15 +11,15 @@ import Material.Icons.Types as MITypes
 import WSDecoder exposing (Connection(..))
 
 
-view : RightSidebarMenu msg -> Bool -> msg -> Int -> Connection -> Element msg
-view { rightSidebarMenu, rightSidebarMenuMsg } rightSidebarExtended rightSidebarMsg panelHeight connection =
+view : ShowRightSidebarMenu msg -> Bool -> msg -> Int -> Connection -> Element msg
+view { showRightSidebarMenu, showRightSidebarMenuMsg } rightSidebarExtended rightSidebarMsg panelHeight connection =
     if rightSidebarExtended then
         column
             [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
             [ row [ width fill ]
                 [ Input.button [ Background.color Colors.backgroundKodi, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Kodi" }
                 , Input.button [ Background.color Colors.backgroundLocal, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Local" }
-                , el (rightSidebarMenuDropDown rightSidebarMenu)
+                , el (rightSidebarMenuDropDown showRightSidebarMenu)
                     (case connection of
                         Connected ->
                             Element.text "Connected"
@@ -31,7 +31,7 @@ view { rightSidebarMenu, rightSidebarMenuMsg } rightSidebarExtended rightSidebar
                             Element.text "Not asked"
                     )
                 , Input.button ( [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight, centerY ])
-                    { onPress = Just rightSidebarMenuMsg
+                    { onPress = Just showRightSidebarMenuMsg
                     , label =
                         Element.html
                             (Filled.more_vert 32 (MITypes.Color <| greyIcon))
@@ -48,8 +48,8 @@ view { rightSidebarMenu, rightSidebarMenuMsg } rightSidebarExtended rightSidebar
             ]
 
 rightSidebarMenuDropDown : Bool -> List (Attribute msg)
-rightSidebarMenuDropDown rightSidebarMenu =
-    if rightSidebarMenu then
+rightSidebarMenuDropDown showRightSidebarMenu =
+    if showRightSidebarMenu then
         [ Element.below
             (Element.column [ width (px 150), Background.color Colors.white ]
                 [ Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] {onPress = Nothing, label = el [] (text "Current playlist") }

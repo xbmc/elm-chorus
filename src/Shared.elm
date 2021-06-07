@@ -59,7 +59,7 @@ type alias Model =
     , playlistHover : Bool
     , settingsHover : Bool
     , helpHover : Bool
-    , rightSidebarMenu : Bool
+    , showRightSidebarMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
@@ -116,7 +116,7 @@ init flags url key =
       , playlistHover = False
       , settingsHover = False
       , helpHover = False
-      , rightSidebarMenu = False
+      , showRightSidebarMenu = False
       , players = []
       , currentlyPlaying = Nothing
       , playing = False
@@ -230,7 +230,7 @@ type Msg
     | ToggleSettingsLeave
     | ToggleHelpHover
     | ToggleHelpLeave
-    | ToggleRightSidebarMenu
+    | ToggleShowRightSidebarMenu
     | SendTextToKodi
     | ScanVideoLibrary
     | ScanMusicLibrary
@@ -554,8 +554,8 @@ update msg model =
                             , Cmd.none
                             )
 
-        ToggleRightSidebarMenu ->
-            ( { model | rightSidebarMenu = not model.rightSidebarMenu }
+        ToggleShowRightSidebarMenu ->
+            ( { model | showRightSidebarMenu = not model.showRightSidebarMenu }
             , Cmd.none
             )
 
@@ -682,9 +682,9 @@ view { page, toMsg } model =
           , helpHoverMsg = toMsg ToggleHelpHover
           , helpLeaveMsg = toMsg ToggleHelpLeave
           }
-        , rightSidebarMenu =
-          { rightSidebarMenu = model.rightSidebarMenu
-          , rightSidebarMenuMsg = toMsg ToggleRightSidebarMenu
+        , showRightSidebarMenu =
+          { showRightSidebarMenu = model.showRightSidebarMenu
+          , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
           }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
