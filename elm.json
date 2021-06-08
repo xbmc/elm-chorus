@@ -7,7 +7,7 @@
     "dependencies": {
         "direct": {
             "NoRedInk/elm-json-decode-pipeline": "1.0.0",
-            "PaackEng/elm-ui-dialog": "1.0.0",
+            "PaackEng/elm-ui-dialog": "1.0.1",
             "avh4/elm-color": "1.0.0",
             "carwow/elm-slider": "11.1.6",
             "elm/browser": "1.0.2",
@@ -18,7 +18,7 @@
             "elm/svg": "1.0.1",
             "elm/time": "1.0.0",
             "elm/url": "1.0.0",
-            "elm-community/list-extra": "8.3.0",
+            "elm-community/list-extra": "8.3.1",
             "icidasset/elm-material-icons": "7.0.0",
             "mdgriffith/elm-ui": "1.1.8"
         },
@@ -32,7 +32,7 @@
     },
     "test-dependencies": {
         "direct": {
-            "avh4/elm-program-test": "3.4.0",
+            "avh4/elm-program-test": "3.5.0",
             "elm-explorations/test": "1.2.2"
         },
         "indirect": {
