@@ -29,7 +29,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, LeftSidebarMenuHover(..), Connection(..), FileObj, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -48,8 +48,10 @@ type alias Model =
     , url : Url
     , key : Key
     , connection : Connection
+    , leftSidebarMenuHover : LeftSidebarMenuHover
     , rightSidebarExtended : Bool
     , controlMenu : Bool
+    , showRightSidebarMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
@@ -95,8 +97,10 @@ init flags url key =
       , url = url
       , key = key
       , connection = NotAsked
+      , leftSidebarMenuHover = NoneHover
       , rightSidebarExtended = False
       , controlMenu = False
+      , showRightSidebarMenu = False
       , players = []
       , currentlyPlaying = Nothing
       , playing = False
@@ -192,6 +196,17 @@ type Msg
     | ReceiveResultResponse ResultResponse
     | ToggleRightSidebar
     | ToggleControlMenu
+    | ToggleShowRightSidebarMenu
+    | ToggleLeftSidebarMusicHover
+    | ToggleLeftSidebarMoviesHover
+    | ToggleLeftSidebarPlaylistHover
+    | ToggleLeftSidebarBrowserHover
+    | ToggleLeftSidebarAddonsHover
+    | ToggleLeftSidebarThumbsUpHover
+    | ToggleLeftSidebarSettingsHover
+    | ToggleLeftSidebarTVShowsHover
+    | ToggleLeftSidebarHelpHover
+    | ToggleLeftSidebarNotHover
     | SendTextToKodi
     | ScanVideoLibrary
     | ScanMusicLibrary
@@ -425,6 +440,62 @@ update msg model =
             , Cmd.none
             )
 
+        ToggleLeftSidebarMusicHover ->
+            ( { model | leftSidebarMenuHover = Music }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarMoviesHover ->
+            ( { model | leftSidebarMenuHover = Movies }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarBrowserHover ->
+            ( { model | leftSidebarMenuHover = Browser }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarPlaylistHover ->
+            ( { model | leftSidebarMenuHover = Playlist }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarHelpHover ->
+            ( { model | leftSidebarMenuHover = Help }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarThumbsUpHover ->
+            ( { model | leftSidebarMenuHover = ThumbsUp }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarAddonsHover ->
+            ( { model | leftSidebarMenuHover = Addons }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarSettingsHover ->
+            ( { model | leftSidebarMenuHover = Settings }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarTVShowsHover ->
+            ( { model | leftSidebarMenuHover = TVShow }
+            , Cmd.none
+            )
+
+        ToggleLeftSidebarNotHover->
+            ( { model | leftSidebarMenuHover = NoneHover }
+            , Cmd.none
+            )
+
+
+        ToggleShowRightSidebarMenu ->
+            ( { model | showRightSidebarMenu = not model.showRightSidebarMenu }
+            , Cmd.none
+            )
+
         SendTextToKodi ->
             ( model, Cmd.none )
 
@@ -519,6 +590,23 @@ view { page, toMsg } model =
             , scanMusicLibraryMsg = toMsg ScanMusicLibrary
             , scanVideoLibraryMsg = toMsg ScanVideoLibrary
             }
+        , leftSidebarControl =
+            { leftSidebarMenuHover = model.leftSidebarMenuHover
+            , leftSidebarMusicHoverMsg = toMsg ToggleLeftSidebarMusicHover
+            , leftSidebarMoviesHoverMsg = toMsg ToggleLeftSidebarMoviesHover
+            , leftSidebarTVShowHoverMsg = toMsg ToggleLeftSidebarTVShowsHover
+            , leftSidebarAddonsHoverMsg = toMsg ToggleLeftSidebarAddonsHover
+            , leftSidebarPlaylistHoverMsg = toMsg ToggleLeftSidebarPlaylistHover
+            , leftSidebarBrowserHoverMsg = toMsg ToggleLeftSidebarBrowserHover
+            , leftSidebarSettingsHoverMsg = toMsg ToggleLeftSidebarSettingsHover
+            , leftSidebarHelpHoverMsg = toMsg ToggleLeftSidebarHelpHover
+            , leftSidebarThumbsUpHoverMsg = toMsg ToggleLeftSidebarThumbsUpHover
+            , leftSidebarNotHoverMsg = toMsg ToggleLeftSidebarNotHover
+            }
+        , showRightSidebarMenu =
+          { showRightSidebarMenu = model.showRightSidebarMenu
+          , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
+          }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
             , skipMsg = toMsg SkipForward

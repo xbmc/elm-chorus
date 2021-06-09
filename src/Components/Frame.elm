@@ -37,7 +37,7 @@ layout layoutType =
         }
     , header = Header.view layoutType.searchChanged
     , playerBar = PlayerRow.view layoutType
-    , rightSidebar = RightSidebar.view layoutType.rightSidebarExtended layoutType.rightSidebarMsg (layoutType.windowHeight - PlayerRow.playerHeight) layoutType.connection
-    , leftSidebar = LeftSidebar.view
+    , rightSidebar = RightSidebar.view layoutType.showRightSidebarMenu layoutType.rightSidebarExtended layoutType.rightSidebarMsg (layoutType.windowHeight - PlayerRow.playerHeight) layoutType.connection
+    , leftSidebar = LeftSidebar.view layoutType.leftSidebarControl
     , dialogBox = (Dialog.view dialogConfig)
     }

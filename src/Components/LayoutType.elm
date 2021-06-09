@@ -1,12 +1,14 @@
-module Components.LayoutType exposing (DialogType(..), ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
+module Components.LayoutType exposing (DialogType(..), LeftSidebarControl, ShowRightSidebarMenu, ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
 
 import Element exposing (Element)
 import Spa.Document exposing (Document)
-import WSDecoder exposing (Connection, ItemDetails)
+import WSDecoder exposing (LeftSidebarMenuHover, Connection, ItemDetails)
 
 type alias LayoutType msg =
     { page : Document msg
     , controlMenu : ControlMenu msg
+    , leftSidebarControl : LeftSidebarControl msg
+    , showRightSidebarMenu : ShowRightSidebarMenu msg
     , playerControl : PlayerControl msg
     , currentlyPlaying : CurrentlyPlaying msg
     , volumeAndControls : VolumeAndControls msg
@@ -40,6 +42,19 @@ type alias VolumeAndControls msg =
     , volumeSlider : Element msg
     }
 
+type alias LeftSidebarControl msg =
+    { leftSidebarMenuHover : LeftSidebarMenuHover
+    , leftSidebarMusicHoverMsg : msg
+    , leftSidebarMoviesHoverMsg : msg
+    , leftSidebarTVShowHoverMsg : msg
+    , leftSidebarAddonsHoverMsg : msg
+    , leftSidebarPlaylistHoverMsg : msg
+    , leftSidebarBrowserHoverMsg : msg
+    , leftSidebarSettingsHoverMsg : msg
+    , leftSidebarThumbsUpHoverMsg : msg
+    , leftSidebarHelpHoverMsg : msg
+    , leftSidebarNotHoverMsg : msg
+    }
 
 type alias ControlMenu msg =
     { controlMenu : Bool
@@ -47,6 +62,11 @@ type alias ControlMenu msg =
     , sendTextToKodiMsg : msg
     , scanVideoLibraryMsg : msg
     , scanMusicLibraryMsg : msg
+    }
+
+type alias ShowRightSidebarMenu msg =
+    { showRightSidebarMenu : Bool
+    , showRightSidebarMenuMsg : msg
     }
 
 type alias DialogBox msg =
@@ -58,4 +78,3 @@ type alias DialogBox msg =
     }
 
 type DialogType = ConnectionDialog | TextInputDialog | None
-
