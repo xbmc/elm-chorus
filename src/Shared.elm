@@ -29,7 +29,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, LeftSidebarMenuHover(..), Connection(..), FileObj, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -48,17 +48,9 @@ type alias Model =
     , url : Url
     , key : Key
     , connection : Connection
+    , leftSidebarMenuHover : LeftSidebarMenuHover
     , rightSidebarExtended : Bool
     , controlMenu : Bool
-    , musicHover : Bool
-    , moviesHover : Bool
-    , tvshowHover : Bool
-    , browserHover : Bool
-    , addonsHover : Bool
-    , thumbsupHover : Bool
-    , playlistHover : Bool
-    , settingsHover : Bool
-    , helpHover : Bool
     , showRightSidebarMenu : Bool
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
@@ -105,17 +97,9 @@ init flags url key =
       , url = url
       , key = key
       , connection = NotAsked
+      , leftSidebarMenuHover = NoneHover
       , rightSidebarExtended = False
       , controlMenu = False
-      , musicHover = False
-      , moviesHover = False
-      , tvshowHover = False
-      , browserHover = False
-      , addonsHover = False
-      , thumbsupHover = False
-      , playlistHover = False
-      , settingsHover = False
-      , helpHover = False
       , showRightSidebarMenu = False
       , players = []
       , currentlyPlaying = Nothing
@@ -212,25 +196,17 @@ type Msg
     | ReceiveResultResponse ResultResponse
     | ToggleRightSidebar
     | ToggleControlMenu
-    | ToggleMusicHover
-    | ToggleMusicLeave
-    | ToggleMoviesHover
-    | ToggleMoviesLeave
-    | ToggleTvshowHover
-    | ToggleTvshowLeave
-    | ToggleBrowserHover
-    | ToggleBrowserLeave
-    | ToggleAddonsHover
-    | ToggleAddonsLeave
-    | ToggleThumbsupHover
-    | ToggleThumbsupLeave
-    | TogglePlaylistHover
-    | TogglePlaylistLeave
-    | ToggleSettingsHover
-    | ToggleSettingsLeave
-    | ToggleHelpHover
-    | ToggleHelpLeave
     | ToggleShowRightSidebarMenu
+    | ToggleLeftSidebarMusicHover
+    | ToggleLeftSidebarMoviesHover
+    | ToggleLeftSidebarPlaylistHover
+    | ToggleLeftSidebarBrowserHover
+    | ToggleLeftSidebarAddonsHover
+    | ToggleLeftSidebarThumbsUpHover
+    | ToggleLeftSidebarSettingsHover
+    | ToggleLeftSidebarTVShowsHover
+    | ToggleLeftSidebarHelpHover
+    | ToggleLeftSidebarNotHover
     | SendTextToKodi
     | ScanVideoLibrary
     | ScanMusicLibrary
@@ -464,95 +440,56 @@ update msg model =
             , Cmd.none
             )
 
-        ToggleMusicHover ->
-            ( { model | musicHover = True }
+        ToggleLeftSidebarMusicHover ->
+            ( { model | leftSidebarMenuHover = Music }
             , Cmd.none
             )
 
-        ToggleMusicLeave ->
-            ( { model | musicHover = False }
+        ToggleLeftSidebarMoviesHover ->
+            ( { model | leftSidebarMenuHover = Movies }
             , Cmd.none
             )
 
-        ToggleMoviesHover ->
-              ( { model | moviesHover = True }
-              , Cmd.none
-              )
+        ToggleLeftSidebarBrowserHover ->
+            ( { model | leftSidebarMenuHover = Browser }
+            , Cmd.none
+            )
 
-        ToggleMoviesLeave ->
-              ( { model | moviesHover = False }
-              , Cmd.none
-              )
+        ToggleLeftSidebarPlaylistHover ->
+            ( { model | leftSidebarMenuHover = Playlist }
+            , Cmd.none
+            )
 
-        ToggleTvshowHover ->
-                ( { model | tvshowHover = True }
-                , Cmd.none
-                )
+        ToggleLeftSidebarHelpHover ->
+            ( { model | leftSidebarMenuHover = Help }
+            , Cmd.none
+            )
 
-        ToggleTvshowLeave ->
-                ( { model | tvshowHover = False }
-                , Cmd.none
-                )
+        ToggleLeftSidebarThumbsUpHover ->
+            ( { model | leftSidebarMenuHover = ThumbsUp }
+            , Cmd.none
+            )
 
-        ToggleBrowserHover ->
-                  ( { model | browserHover = True }
-                  , Cmd.none
-                  )
+        ToggleLeftSidebarAddonsHover ->
+            ( { model | leftSidebarMenuHover = Addons }
+            , Cmd.none
+            )
 
-        ToggleBrowserLeave ->
-                  ( { model | browserHover = False }
-                  , Cmd.none
-                  )
+        ToggleLeftSidebarSettingsHover ->
+            ( { model | leftSidebarMenuHover = Settings }
+            , Cmd.none
+            )
 
-        ToggleAddonsHover ->
-                    ( { model | addonsHover = True }
-                    , Cmd.none
-                    )
+        ToggleLeftSidebarTVShowsHover ->
+            ( { model | leftSidebarMenuHover = TVShow }
+            , Cmd.none
+            )
 
-        ToggleAddonsLeave ->
-                    ( { model | addonsHover = False }
-                    , Cmd.none
-                    )
+        ToggleLeftSidebarNotHover->
+            ( { model | leftSidebarMenuHover = NoneHover }
+            , Cmd.none
+            )
 
-        ToggleThumbsupHover ->
-                      ( { model | thumbsupHover = True }
-                      , Cmd.none
-                      )
-
-        ToggleThumbsupLeave ->
-                      ( { model | thumbsupHover = False }
-                      , Cmd.none
-                      )
-
-        TogglePlaylistHover ->
-                        ( { model | playlistHover = True }
-                        , Cmd.none
-                        )
-
-        TogglePlaylistLeave ->
-                        ( { model | playlistHover = False }
-                        , Cmd.none
-                        )
-
-        ToggleSettingsHover ->
-                          ( { model | settingsHover = True }
-                          , Cmd.none
-                          )
-
-        ToggleSettingsLeave ->
-                          ( { model | settingsHover = False }
-                          , Cmd.none
-                          )
-
-        ToggleHelpHover ->
-                            ( { model | helpHover = True }
-                            , Cmd.none
-                            )
-
-        ToggleHelpLeave ->
-                            ( { model | helpHover = False }
-                            , Cmd.none
-                            )
 
         ToggleShowRightSidebarMenu ->
             ( { model | showRightSidebarMenu = not model.showRightSidebarMenu }
@@ -654,34 +591,18 @@ view { page, toMsg } model =
             , scanVideoLibraryMsg = toMsg ScanVideoLibrary
             }
         , leftSidebarControl =
-          { musicHover = model.musicHover
-          , musicHoverMsg = toMsg ToggleMusicHover
-          , musicLeaveMsg = toMsg ToggleMusicLeave
-          , moviesHover = model.moviesHover
-          , moviesHoverMsg = toMsg ToggleMoviesHover
-          , moviesLeaveMsg = toMsg ToggleMoviesLeave
-          , tvshowHover = model.tvshowHover
-          , tvshowHoverMsg = toMsg ToggleTvshowHover
-          , tvshowLeaveMsg = toMsg ToggleTvshowLeave
-          , browserHover = model.browserHover
-          , browserHoverMsg = toMsg ToggleBrowserHover
-          , browserLeaveMsg = toMsg ToggleBrowserLeave
-          , addonsHover = model.addonsHover
-          , addonsHoverMsg = toMsg ToggleAddonsHover
-          , addonsLeaveMsg = toMsg ToggleAddonsLeave
-          , thumbsupHover = model.thumbsupHover
-          , thumbsupHoverMsg = toMsg ToggleThumbsupHover
-          , thumbsupLeaveMsg = toMsg ToggleThumbsupLeave
-          , playlistHover = model.playlistHover
-          , playlistHoverMsg = toMsg TogglePlaylistHover
-          , playlistLeaveMsg = toMsg TogglePlaylistLeave
-          , settingsHover = model.settingsHover
-          , settingsHoverMsg = toMsg ToggleSettingsHover
-          , settingsLeaveMsg = toMsg ToggleSettingsLeave
-          , helpHover = model.helpHover
-          , helpHoverMsg = toMsg ToggleHelpHover
-          , helpLeaveMsg = toMsg ToggleHelpLeave
-          }
+            { leftSidebarMenuHover = model.leftSidebarMenuHover
+            , leftSidebarMusicHoverMsg = toMsg ToggleLeftSidebarMusicHover
+            , leftSidebarMoviesHoverMsg = toMsg ToggleLeftSidebarMoviesHover
+            , leftSidebarTVShowHoverMsg = toMsg ToggleLeftSidebarTVShowsHover
+            , leftSidebarAddonsHoverMsg = toMsg ToggleLeftSidebarAddonsHover
+            , leftSidebarPlaylistHoverMsg = toMsg ToggleLeftSidebarPlaylistHover
+            , leftSidebarBrowserHoverMsg = toMsg ToggleLeftSidebarBrowserHover
+            , leftSidebarSettingsHoverMsg = toMsg ToggleLeftSidebarSettingsHover
+            , leftSidebarHelpHoverMsg = toMsg ToggleLeftSidebarHelpHover
+            , leftSidebarThumbsUpHoverMsg = toMsg ToggleLeftSidebarThumbsUpHover
+            , leftSidebarNotHoverMsg = toMsg ToggleLeftSidebarNotHover
+            }
         , showRightSidebarMenu =
           { showRightSidebarMenu = model.showRightSidebarMenu
           , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu

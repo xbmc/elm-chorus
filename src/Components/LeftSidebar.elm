@@ -10,6 +10,7 @@ import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Coloring(..), Icon)
 import Spa.Generated.Route as Route exposing (Route)
 import Components.LayoutType exposing (LeftSidebarControl)
+import WSDecoder exposing (LeftSidebarMenuHover(..))
 
 
 view : LeftSidebarControl msg -> Element msg
@@ -28,26 +29,24 @@ view  leftSidebarControl =
         ]
 
 
-materialIconLink : Bool -> msg -> msg -> String -> Icon msg -> Route -> Element msg
-materialIconLink  elementHover elementHoverMsg elementLeaveMsg name icon route =
+materialIconLink : LeftSidebarMenuHover -> msg -> msg -> LeftSidebarMenuHover -> String -> Icon msg -> Route -> Element msg
+materialIconLink  elementHover elementHoverMsg elementLeaveMsg iconHoverName name icon route =
     let
       leftSidebarIcon =
-        case elementHover of
-            True ->
+        if elementHover == iconHoverName then
                 row[]
                 [el [paddingXY 7 0] (Element.html (icon 20 Inherit))
                 , el [paddingXY 5 0, Font.size 14] (text name)
                 ]
 
-            False ->
+            else
                 el [paddingXY 7 0] (Element.html (icon 20 Inherit))
 
       leftSidebarIconStyle =
-        case elementHover of
-          True ->
+        if elementHover == iconHoverName then
             [Background.color Colors.brandPrimary, Font.color (rgb255 255 255 255), padding 8]
 
-          False ->
+          else
             [Font.color (rgb255 0 0 0), padding 8]
     in
     el []
@@ -67,44 +66,44 @@ materialIconLink  elementHover elementHoverMsg elementLeaveMsg name icon route =
 
 musicButton : LeftSidebarControl msg -> Element msg
 musicButton leftSidebarControl =
-    materialIconLink leftSidebarControl.musicHover leftSidebarControl.musicHoverMsg leftSidebarControl.musicLeaveMsg "Music" Filled.library_music Route.Music
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarMusicHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Music "Music" Filled.library_music Route.Music
 
 
 movieButton : LeftSidebarControl msg -> Element msg
 movieButton leftSidebarControl =
-    materialIconLink leftSidebarControl.moviesHover leftSidebarControl.moviesHoverMsg leftSidebarControl.moviesLeaveMsg "Movies" Filled.movie Route.Movies__Recent
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarMoviesHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Movies "Movies" Filled.movie Route.Movies__Recent
 
 
 tvshowButton : LeftSidebarControl msg -> Element msg
 tvshowButton leftSidebarControl =
-    materialIconLink leftSidebarControl.tvshowHover leftSidebarControl.tvshowHoverMsg leftSidebarControl.tvshowLeaveMsg "TV shows" Filled.tv Route.Tvshows__Recent
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarTVShowHoverMsg leftSidebarControl.leftSidebarNotHoverMsg TVShow "TV shows" Filled.tv Route.Tvshows__Recent
 
 
 browserButton : LeftSidebarControl msg -> Element msg
 browserButton leftSidebarControl =
-    materialIconLink leftSidebarControl.browserHover leftSidebarControl.browserHoverMsg leftSidebarControl.browserLeaveMsg "Browser" Filled.list Route.Browser
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarBrowserHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Browser "Browser" Filled.list Route.Browser
 
 
 addonsButton : LeftSidebarControl msg -> Element msg
 addonsButton leftSidebarControl =
-    materialIconLink leftSidebarControl.addonsHover leftSidebarControl.addonsHoverMsg leftSidebarControl.addonsLeaveMsg "Add-ons" Filled.extension Route.Addons
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarAddonsHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Addons "Add-ons" Filled.extension Route.Addons
 
 
 thumbsupButton : LeftSidebarControl msg -> Element msg
 thumbsupButton leftSidebarControl =
-    materialIconLink leftSidebarControl.thumbsupHover leftSidebarControl.thumbsupHoverMsg leftSidebarControl.thumbsupLeaveMsg "Thumbs up" Filled.thumb_up Route.Thumbsup
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarThumbsUpHoverMsg leftSidebarControl.leftSidebarNotHoverMsg ThumbsUp "Thumbs up" Filled.thumb_up Route.Thumbsup
 
 
 playlistButton : LeftSidebarControl msg -> Element msg
 playlistButton leftSidebarControl =
-    materialIconLink leftSidebarControl.playlistHover leftSidebarControl.playlistHoverMsg leftSidebarControl.playlistLeaveMsg "Playlists" Filled.assignment Route.Playlists
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarPlaylistHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Playlist "Playlists" Filled.assignment Route.Playlists
 
 
 settingsButton : LeftSidebarControl msg -> Element msg
 settingsButton leftSidebarControl =
-    materialIconLink leftSidebarControl.settingsHover leftSidebarControl.settingsHoverMsg leftSidebarControl.settingsLeaveMsg "Settings" Filled.settings Route.Settings__Web
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarSettingsHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Settings "Settings" Filled.settings Route.Settings__Web
 
 
 helpButton : LeftSidebarControl msg -> Element msg
 helpButton leftSidebarControl =
-    materialIconLink leftSidebarControl.helpHover leftSidebarControl.helpHoverMsg leftSidebarControl.helpLeaveMsg "Help" Filled.help Route.Help
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarHelpHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Help "Help" Filled.help Route.Help
