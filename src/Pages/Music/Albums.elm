@@ -16,6 +16,8 @@ import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import WSDecoder exposing (AlbumObj)
+import Widget
+import Widget.Material as Material
 
 
 page : Page Params Model Msg

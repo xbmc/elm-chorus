@@ -16,6 +16,7 @@ type alias LayoutType msg =
     , volumeAndControls : VolumeAndControls msg
     , rightSidebarExtended : Bool
     , rightSidebarMsg : msg
+    , clearPlaylistMsg : msg
     , connection : Connection
     , windowHeight : Int
     , searchChanged : String -> msg
