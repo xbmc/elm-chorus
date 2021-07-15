@@ -11,15 +11,15 @@ import Material.Icons.Types as MITypes
 import WSDecoder exposing (Connection(..))
 
 
-view : ShowRightSidebarMenu msg -> Bool -> msg -> Int -> Connection -> Element msg
-view { showRightSidebarMenu, showRightSidebarMenuMsg } rightSidebarExtended rightSidebarMsg panelHeight connection =
+view : ShowRightSidebarMenu msg -> msg -> Bool -> msg -> Int -> Connection -> Element msg
+view { showRightSidebarMenu, showRightSidebarMenuMsg} clearPlaylistMsg rightSidebarExtended rightSidebarMsg panelHeight connection =
     if rightSidebarExtended then
         column
             [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
             [ row [ width fill ]
                 [ Input.button [ Background.color Colors.backgroundKodi, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Kodi" }
                 , Input.button [ Background.color Colors.backgroundLocal, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Local" }
-                , el (rightSidebarMenuDropDown showRightSidebarMenu)
+                , el (rightSidebarMenuDropDown showRightSidebarMenu clearPlaylistMsg)
                     (case connection of
                         Connected ->
                             Element.text "Connected"
@@ -30,7 +30,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg } rightSidebarExtended righ
                         NotAsked ->
                             Element.text "Not asked"
                     )
-                , Input.button ( [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight, centerY ])
+                , Input.button [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight, centerY ]
                     { onPress = Just showRightSidebarMenuMsg
                     , label =
                         Element.html
@@ -47,17 +47,18 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg } rightSidebarExtended righ
             [ Input.button [ centerX, height (px 50) ] { onPress = Just rightSidebarMsg, label = Element.text "<" }
             ]
 
-rightSidebarMenuDropDown : Bool -> List (Attribute msg)
-rightSidebarMenuDropDown showRightSidebarMenu =
+
+rightSidebarMenuDropDown : Bool -> msg -> List (Attribute msg)
+rightSidebarMenuDropDown showRightSidebarMenu clearPlaylistMsg =
     if showRightSidebarMenu then
         [ Element.below
             (Element.column [ width (px 150), Background.color Colors.white ]
-                [ Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] {onPress = Nothing, label = el [] (text "Current playlist") }
-                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] {onPress = Nothing, label = el [] (text "Clear playlist") }
-                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] {onPress = Nothing, label = el [] (text "Refresh playlist") }
-                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] {onPress = Nothing, label = el [] (text "Party mode") }
-                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] {onPress = Nothing, label = el [] (text "Kodi") }
-                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] {onPress = Nothing, label = el [] (text "Save Kodi playlist") }
+                [ Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] { onPress = Nothing, label = el [] (text "Current playlist") }
+                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] { onPress = Just clearPlaylistMsg, label = el [] (text "Clear playlist") }
+                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] { onPress = Nothing, label = el [] (text "Refresh playlist") }
+                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] { onPress = Nothing, label = el [] (text "Party mode") }
+                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] { onPress = Nothing, label = el [] (text "Kodi") }
+                , Input.button [ width fill, Element.mouseOver [ Background.color Colors.playerControl ], Element.padding 7 ] { onPress = Nothing, label = el [] (text "Save Kodi playlist") }
                 ]
             )
         ]

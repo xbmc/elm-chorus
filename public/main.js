@@ -1,11 +1,14 @@
 //@ts-check
 import { Elm } from '../src/Main.elm';
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Initial data passed to Elm (should match `Flags` defined in `Shared.elm`)
-  // https://guide.elm-lang.org/interop/flags.html
+// document.addEventListener("DOMContentLoaded", function () {
+//   // Initial data passed to Elm (should match `Flags` defined in `Shared.elm`)
+//   // https://guide.elm-lang.org/interop/flags.html
 
-  var storedData = localStorage.getItem('kodiLocalPlaylists');
+  
+// });
+
+var storedData = localStorage.getItem('kodiLocalPlaylists');
 
   var flags = {
     innerWidth: window.innerWidth,
@@ -15,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Start our Elm application
   var app = Elm.Main.init({
-    node: document.querySelector("main"),
+    node: document.getElementById("main"),
     flags: flags,
   });
 
@@ -56,4 +59,3 @@ document.addEventListener("DOMContentLoaded", function () {
   app.ports.setStorage.subscribe(function (playlists) {
       localStorage.setItem('kodiLocalPlaylists', playlists);
   });
-});

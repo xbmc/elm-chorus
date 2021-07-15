@@ -1,8 +1,9 @@
-module Components.LayoutType exposing (DialogType(..), LeftSidebarControl, ShowRightSidebarMenu, ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
+module Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, DialogType(..), LayoutType, LeftSidebarControl, PlayerControl, ShowRightSidebarMenu, VolumeAndControls)
 
 import Element exposing (Element)
 import Spa.Document exposing (Document)
-import WSDecoder exposing (LeftSidebarMenuHover, Connection, ItemDetails)
+import WSDecoder exposing (Connection, ItemDetails, LeftSidebarMenuHover)
+
 
 type alias LayoutType msg =
     { page : Document msg
@@ -14,6 +15,7 @@ type alias LayoutType msg =
     , volumeAndControls : VolumeAndControls msg
     , rightSidebarExtended : Bool
     , rightSidebarMsg : msg
+    , clearPlaylistMsg : msg
     , connection : Connection
     , windowHeight : Int
     , searchChanged : String -> msg
@@ -42,6 +44,7 @@ type alias VolumeAndControls msg =
     , volumeSlider : Element msg
     }
 
+
 type alias LeftSidebarControl msg =
     { leftSidebarMenuHover : LeftSidebarMenuHover
     , leftSidebarMusicHoverMsg : msg
@@ -56,6 +59,7 @@ type alias LeftSidebarControl msg =
     , leftSidebarNotHoverMsg : msg
     }
 
+
 type alias ControlMenu msg =
     { controlMenu : Bool
     , controlMenuMsg : msg
@@ -64,10 +68,12 @@ type alias ControlMenu msg =
     , scanMusicLibraryMsg : msg
     }
 
+
 type alias ShowRightSidebarMenu msg =
     { showRightSidebarMenu : Bool
     , showRightSidebarMenuMsg : msg
     }
+
 
 type alias DialogBox msg =
     { showDialog : DialogType
@@ -77,4 +83,8 @@ type alias DialogBox msg =
     , playlistName : String
     }
 
-type DialogType = ConnectionDialog | TextInputDialog | None
+
+type DialogType
+    = ConnectionDialog
+    | TextInputDialog
+    | None

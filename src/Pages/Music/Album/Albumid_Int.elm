@@ -43,12 +43,13 @@ type alias Model =
     { albumid : Int
     , album : Maybe AlbumObj
     , song_list : List SongObj
+    
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( { albumid = params.albumid, album = getAlbum params.albumid shared.album_list, song_list = List.filter (\song -> song.albumid == params.albumid) shared.song_list }, Cmd.none )
+    ( { albumid = params.albumid ,album = getAlbum params.albumid shared.album_list, song_list = List.filter (\song -> song.albumid == params.albumid) shared.song_list }, Cmd.none )
 
 
 checkAlbumId : Int -> AlbumObj -> Bool
@@ -121,6 +122,7 @@ view model =
             Nothing ->
                 column [ Element.height fill, Element.width fill ]
                     [ Element.text (String.fromInt model.albumid)
+                    
                     ]
 
             Just album ->

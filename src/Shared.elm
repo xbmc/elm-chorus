@@ -29,7 +29,9 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, LeftSidebarMenuHover(..), Connection(..), FileObj, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (SettingsObj, AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import Material.Icons exposing (settings)
+
 
 
 
@@ -59,6 +61,14 @@ type alias Model =
     , repeat : RepeatType
     , artist_list : List ArtistObj
     , album_list : List AlbumObj
+    , settings_list : List SettingsObj
+    -- , settingsActionList : List SettingsActionObj
+    -- , settingsAddonList : List SettingsAddonObj
+    -- , settingsBoolList : List SettingsBoolObj
+    -- , settingsIntList  : List SettingsIntObj
+    -- , settingsListList  : List SettingsListObj
+    -- , settingsPathList : List SettingsPathObj
+    -- , settingsStringList : List SettingsStringObj
     , song_list : List SongObj
     , genre_list : List String
     , movie_list : List MovieObj
@@ -108,6 +118,14 @@ init flags url key =
       , repeat = Off
       , artist_list = []
       , album_list = []
+      , settings_list = []
+    --   , settingsActionList = []
+    --     , settingsAddonList = []
+    --     , settingsBoolList = []
+    --     , settingsIntList  = []
+    --     , settingsListList  = []
+    --     , settingsPathList = []
+    --     , settingsStringList = []
       , song_list = []
       , genre_list = []
       , movie_list = []
@@ -149,6 +167,7 @@ init flags url key =
         , """{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "music" }, "id": 1 }"""
         , """{"jsonrpc": "2.0", "method": "Player.SetShuffle", "params": { "playerid": 0, "shuffle": false }, "id": 1 }""" --set shuffle to false on init
         , """{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": { "playerid": 0, "repeat": "off" }, "id": 1 }""" --set repeat to off on init
+        , """{"jsonrpc": "2.0", "method": "Settings.GetSettings", "params": {}, "id": 1 }"""
         ]
     )
 
@@ -197,6 +216,7 @@ type Msg
     | ToggleRightSidebar
     | ToggleControlMenu
     | ToggleShowRightSidebarMenu
+    | ClearPlaylistMsg
     | ToggleLeftSidebarMusicHover
     | ToggleLeftSidebarMoviesHover
     | ToggleLeftSidebarPlaylistHover
@@ -430,6 +450,46 @@ update msg model =
                     , Cmd.none
                     )
 
+                ResultL settingsList -> 
+                    ( { model | settings_list = settingsList }
+                    , Cmd.none
+                    )
+
+                -- ResultL settingsList -> 
+                --     ( { model | settingsActionList = settingsList }
+                --     , Cmd.none
+                --     )
+
+                -- ResultM settingsList ->
+                --     ( { model | settingsAddonList = settingsList }
+                --     , Cmd.none
+                --     )
+
+                -- ResultN settingsList ->
+                --     ( { model | settingsBoolList = settingsList }
+                --     , Cmd.none
+                --     ) 
+
+                -- ResultO settingsList ->
+                --     ( { model | settingsIntList = settingsList }
+                --     , Cmd.none
+                --     )
+
+                -- ResultP settingsList ->
+                --     ( { model | settingsListList = settingsList }
+                --     , Cmd.none
+                --     )
+
+                -- ResultQ settingsList ->
+                --     ( { model | settingsPathList = settingsList }
+                --     , Cmd.none
+                --     )
+
+                -- ResultR settingsList ->
+                --     ( { model | settingsStringList = settingsList }
+                --     , Cmd.none
+                --     )
+
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
             , Cmd.none
@@ -485,16 +545,20 @@ update msg model =
             , Cmd.none
             )
 
-        ToggleLeftSidebarNotHover->
+        ToggleLeftSidebarNotHover ->
             ( { model | leftSidebarMenuHover = NoneHover }
             , Cmd.none
             )
-
 
         ToggleShowRightSidebarMenu ->
             ( { model | showRightSidebarMenu = not model.showRightSidebarMenu }
             , Cmd.none
             )
+
+        ClearPlaylistMsg ->
+          ( model
+          , sendAction {- clear the queue -} """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}"""
+          )
 
         SendTextToKodi ->
             ( model, Cmd.none )
@@ -604,9 +668,9 @@ view { page, toMsg } model =
             , leftSidebarNotHoverMsg = toMsg ToggleLeftSidebarNotHover
             }
         , showRightSidebarMenu =
-          { showRightSidebarMenu = model.showRightSidebarMenu
-          , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
-          }
+            { showRightSidebarMenu = model.showRightSidebarMenu
+            , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
+            }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
             , skipMsg = toMsg SkipForward
@@ -625,6 +689,7 @@ view { page, toMsg } model =
             }
         , rightSidebarExtended = model.rightSidebarExtended
         , rightSidebarMsg = toMsg ToggleRightSidebar
+        , clearPlaylistMsg = toMsg ClearPlaylistMsg
         , connection = model.connection
         , windowHeight = model.windowHeight
         , searchChanged = SearchChanged >> toMsg

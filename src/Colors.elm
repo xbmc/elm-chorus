@@ -54,9 +54,12 @@ white : Element.Color
 white =
     Element.rgb255 255 255 255
 
+
 red : Element.Color
 red =
     Element.rgb255 250 0 0
+
+
 
 -- Palette
 
@@ -65,9 +68,10 @@ cerulean : Element.Color
 cerulean =
     Element.rgb255 18 178 231
 
+
 greyCerulean : Element.Color
 greyCerulean =
-    Element.rgb255 51 122 183    
+    Element.rgb255 51 122 183
 
 
 ceriseRed : Element.Color

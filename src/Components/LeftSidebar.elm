@@ -1,22 +1,22 @@
 module Components.LeftSidebar exposing (view)
 
 import Colors
+import Components.LayoutType exposing (LeftSidebarControl)
 import Element exposing (..)
 import Element.Background as Background
-import Element.Font as Font
 import Element.Events as Events
+import Element.Font as Font
 import Html.Attributes
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Coloring(..), Icon)
 import Spa.Generated.Route as Route exposing (Route)
-import Components.LayoutType exposing (LeftSidebarControl)
 import WSDecoder exposing (LeftSidebarMenuHover(..))
 
 
 view : LeftSidebarControl msg -> Element msg
-view  leftSidebarControl =
+view leftSidebarControl =
     column [ height fill, centerX, alignLeft, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
-        [ el [height (px 20)] (text "" )
+        [ el [ height (px 20) ] (text "")
         , musicButton leftSidebarControl
         , movieButton leftSidebarControl
         , tvshowButton leftSidebarControl
@@ -30,30 +30,31 @@ view  leftSidebarControl =
 
 
 materialIconLink : LeftSidebarMenuHover -> msg -> msg -> LeftSidebarMenuHover -> String -> Icon msg -> Route -> Element msg
-materialIconLink  elementHover elementHoverMsg elementLeaveMsg iconHoverName name icon route =
+materialIconLink elementHover elementHoverMsg elementLeaveMsg iconHoverName name icon route =
     let
-      leftSidebarIcon =
-        if elementHover == iconHoverName then
-                row[]
-                [el [paddingXY 7 0] (Element.html (icon 20 Inherit))
-                , el [paddingXY 5 0, Font.size 14] (text name)
-                ]
+        leftSidebarIcon =
+            if elementHover == iconHoverName then
+                row []
+                    [ el [ paddingXY 7 0 ] (Element.html (icon 20 Inherit))
+                    , el [ paddingXY 5 0, Font.size 14 ] (text name)
+                    ]
 
             else
-                el [paddingXY 7 0] (Element.html (icon 20 Inherit))
+                el [ paddingXY 7 0 ] (Element.html (icon 20 Inherit))
 
-      leftSidebarIconStyle =
-        if elementHover == iconHoverName then
-            [Background.color Colors.brandPrimary, Font.color (rgb255 255 255 255), padding 8]
+        leftSidebarIconStyle =
+            if elementHover == iconHoverName then
+                [ Background.color Colors.brandPrimary, Font.color (rgb255 255 255 255), padding 8 ]
 
-          else
-            [Font.color (rgb255 0 0 0), padding 8]
+            else
+                [ Font.color (rgb255 0 0 0), padding 8 ]
     in
     el []
-
-        (Element.link (Events.onMouseEnter elementHoverMsg
-              :: Events.onMouseLeave elementLeaveMsg
-              :: leftSidebarIconStyle)
+        (Element.link
+            (Events.onMouseEnter elementHoverMsg
+                :: Events.onMouseLeave elementLeaveMsg
+                :: leftSidebarIconStyle
+            )
             { url = Route.toString route
             , label = leftSidebarIcon
             }

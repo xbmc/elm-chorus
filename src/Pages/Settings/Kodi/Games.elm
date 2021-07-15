@@ -2,7 +2,7 @@ module Pages.Settings.Kodi.Games exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.VerticalNavSettings
-import Element exposing (column, fill, fillPortion, row, spacingXY)
+import Element exposing (..)
 import Element.Background as Background
 import Spa.Document exposing (Document)
 import Spa.Generated.Route exposing (Route)

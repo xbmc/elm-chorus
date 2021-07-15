@@ -8,7 +8,11 @@ import Element.Border as Border
 import Element.Font as Font
 import Element.Input as Input
 
+
+
 -- DIALOG BOX
+
+
 config : msg -> Config msg
 config closeDialogMsg =
     { closeMessage = Just closeDialogMsg
@@ -29,6 +33,7 @@ config closeDialogMsg =
     , body = Just body
     , footer = Just (footerButtons closeDialogMsg)
     }
+
 
 body : Element msg
 body =
@@ -55,26 +60,30 @@ footerButtons closeDialogMsg =
             }
         ]
 
+
 textInputConfig : String -> msg -> (String -> msg) -> Config msg
 textInputConfig playlistName closeDialogMsg textChangeMsg =
     { closeMessage = Just closeDialogMsg
     , maskAttributes = []
     , containerAttributes =
         [ Background.color Colors.white
+
         -- , Border.rounded 5
         , centerX
+
         -- , centerY
         -- , padding 10
         , spacing 20
         , width (px 600)
         ]
-    , headerAttributes = [Background.color Colors.greyscaleShark, Font.size 14, Font.color Colors.white, paddingXY 15 20 ]
+    , headerAttributes = [ Background.color Colors.greyscaleShark, Font.size 14, Font.color Colors.white, paddingXY 15 20 ]
     , bodyAttributes = [ paddingXY 15 0, Font.size 14, Font.color Colors.grey ]
-    , footerAttributes = [Background.color Colors.navHoverBackground, paddingXY 15 10]
+    , footerAttributes = [ Background.color Colors.navHoverBackground, paddingXY 15 10 ]
     , header = Just (text "Add a new playlist")
     , body = Just (textInputBody playlistName textChangeMsg)
     , footer = Just (textInputFooterButtons closeDialogMsg)
     }
+
 
 textInputBody : String -> (String -> msg) -> Element msg
 textInputBody playlistName textChangeMsg =
@@ -88,6 +97,7 @@ textInputBody playlistName textChangeMsg =
             }
         ]
 
+
 textInputFooterButtons : msg -> Element msg
 textInputFooterButtons closeDialogMsg =
     row [ width fill, padding 2, spacing 5 ]
@@ -98,34 +108,39 @@ textInputFooterButtons closeDialogMsg =
             , paddingXY 30 12
             , alignRight
             , mouseOver
-                [
-                Border.shadow
-                    { offset = ( 4, 4 ), size = 5, blur = 10, color = color.lightGrey
+                [ Border.shadow
+                    { offset = ( 4, 4 )
+                    , size = 5
+                    , blur = 10
+                    , color = color.lightGrey
                     }
                 ]
             ]
             { onPress = Just closeDialogMsg
             , label = text "CLOSE"
-            },
-            Input.button
-                [ Background.color Colors.cerulean
-                , Font.color Colors.white
-                , Border.rounded 3
-                , paddingXY 30 12
-                , alignRight
-                , mouseOver
-                    [
-                    Border.shadow
-                        { offset = ( 4, 4 ), size = 5, blur = 10, color = color.lightGrey
-                        },
-                        Background.color Colors.greyCerulean
-                    ]
+            }
+        , Input.button
+            [ Background.color Colors.cerulean
+            , Font.color Colors.white
+            , Border.rounded 3
+            , paddingXY 30 12
+            , alignRight
+            , mouseOver
+                [ Border.shadow
+                    { offset = ( 4, 4 )
+                    , size = 5
+                    , blur = 10
+                    , color = color.lightGrey
+                    }
+                , Background.color Colors.greyCerulean
                 ]
-                { onPress = Just closeDialogMsg
-                , label = text "OK"
-                }
+            ]
+            { onPress = Just closeDialogMsg
+            , label = text "OK"
+            }
         ]
 
 
-color = { lightGrey = rgb255 0xE0 0xE0 0xE0
-  }
+color =
+    { lightGrey = rgb255 0xE0 0xE0 0xE0
+    }

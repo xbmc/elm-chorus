@@ -1,9 +1,10 @@
-module WSDecoder exposing (AlbumObj, ArtistObj, LeftSidebarMenuHover(..), Connection(..), FileObj, FileType(..), Item, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder)
+module WSDecoder exposing ( SettingsObj, AlbumObj, ArtistObj, Connection(..), FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, MovieObj, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder)
 
-import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, maybe, string)
+import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, maybe, string,nullable)
 import Json.Decode.Pipeline exposing (custom, optional, required)
 import Json.Encode as Encode
 import Method exposing (Method(..), methodToStr, strToMethod)
+import Array exposing (Array)
 
 
 
@@ -163,6 +164,14 @@ type ResultResponse
     | ResultI (List SourceObj)
     | ResultJ Bool Float --muted/volume
     | ResultK (List FileObj)
+    | ResultL (List SettingsObj)
+    -- | ResultL (List SettingsActionObj)
+    -- | ResultM (List SettingsAddonObj)
+    -- | ResultN (List SettingsBoolObj)
+    -- | ResultO (List SettingsIntObj)
+    -- | ResultP (List SettingsListObj)
+    -- | ResultQ (List SettingsPathObj)
+    -- | ResultR (List SettingsStringObj)
 
 
 
@@ -228,8 +237,55 @@ queryDecoder =
         , sourceQueryDecoder
         , volumeDecoder
         , fileQueryDecoder
+        , settingsQueryDecoder
+        -- , settingsActionQueryDecoder
+        -- , settingsAddonQueryDecoder
+        -- , settingsBoolQueryDecoder
+        -- , settingsIntQueryDecoder
+        -- , settingsListQueryDecoder
+        -- , settingsPathQueryDecoder
+        -- , settingsStringQueryDecoder
         ]
 
+settingsQueryDecoder : Decoder ResultResponse 
+settingsQueryDecoder = 
+    Decode.succeed  ResultL
+        |> custom (at [ "result", "settings" ] (list settingsDecoder))
+
+-- settingsActionQueryDecoder : Decoder ResultResponse 
+-- settingsActionQueryDecoder = 
+--     Decode.succeed  ResultL
+--         |> custom (at [ "result", "settings" ] (list settingsActionDecoder))
+
+-- settingsAddonQueryDecoder : Decoder ResultResponse 
+-- settingsAddonQueryDecoder = 
+--     Decode.succeed ResultM
+--         |> custom (at [ "result", "settings" ] (list settingsAddonDecoder))
+
+-- settingsBoolQueryDecoder : Decoder ResultResponse 
+-- settingsBoolQueryDecoder = 
+--     Decode.succeed ResultN
+--         |> custom (at [ "result", "settings" ] (list settingsBoolDecoder))
+
+-- settingsIntQueryDecoder : Decoder ResultResponse 
+-- settingsIntQueryDecoder = 
+--     Decode.succeed ResultO
+--         |> custom (at [ "result", "settings" ] (list settingsIntDecoder))
+
+-- settingsListQueryDecoder : Decoder ResultResponse 
+-- settingsListQueryDecoder = 
+--     Decode.succeed ResultP
+--         |> custom (at [ "result", "settings" ] (list settingsListDecoder))
+
+-- settingsPathQueryDecoder : Decoder ResultResponse 
+-- settingsPathQueryDecoder = 
+--     Decode.succeed ResultQ
+--         |> custom (at [ "result", "settings" ] (list settingsPathDecoder))
+
+-- settingsStringQueryDecoder : Decoder ResultResponse 
+-- settingsStringQueryDecoder = 
+--     Decode.succeed ResultR
+--         |> custom (at [ "result", "settings" ] (list settingsStringDecoder))
 
 songQueryDecoder : Decoder ResultResponse
 songQueryDecoder =
@@ -309,6 +365,537 @@ type alias AlbumObj =
     , dateadded : String
     }
 
+type alias SettingsObj =
+    { control : SettingControl
+    , default : Maybe SettingDefault
+    , enabled : Bool
+    , help : Maybe String
+    , id : String
+    , label : String
+    , level : Level
+    , parent : String
+    , settingType : Elementtype
+    , value : Maybe SettingDefault
+    , addontype : Maybe String
+    , allowempty : Maybe Bool
+    , allownewoption : Maybe Bool
+    , data : Maybe String
+    , options : Maybe (List Option)
+    , maximum : Maybe Int
+    , minimum : Maybe Int
+    , step : Maybe Int
+    , definition : Maybe Definition
+    , delimiter : Maybe String
+    , elementtype : Maybe Elementtype
+    , maximumItems : Maybe Int
+    , minimumItems : Maybe Int
+    , sources : Maybe (List Decode.Value)
+    , writable : Maybe Bool
+    }
+
+type alias SettingControl =
+    { delayed : Bool
+    , format : Elementtype
+    , controlType : Type
+    , multiselect : Maybe Bool
+    , formatlabel : Maybe String
+    , heading : Maybe String
+    , minimumlabel : Maybe String
+    , hidden : Maybe Bool
+    , verifynewvalue : Maybe Bool
+    }
+
+type Type
+    = Button
+    | Edit
+    | Spinner
+    | Toggle
+    | TypeList
+
+type Elementtype
+    = Action
+    | Addon
+    | Boolean
+    | ElementtypeList
+    | ElementtypeString
+    | Integer
+    | Paths
+
+type SettingDefault
+    = BoolInSettingDefault Bool
+    | IntegerInSettingDefault Int
+    | StringInSettingDefault String
+    | UnionArrayInSettingDefault (List DefaultElement)
+
+type DefaultElement
+    = IntegerInDefaultElement Int
+    | StringInDefaultElement String
+
+type alias Definition =
+    { allowempty : Maybe Bool
+    , allownewoption : Maybe Bool
+    , control : DefinitionControl
+    , default : DefaultElement
+    , enabled : Bool
+    , help : String
+    , id : String
+    , label : String
+    , level : Level
+    , options : List Option
+    , parent : String
+    , definitionType : Elementtype
+    , value : DefaultElement
+    }
+
+type alias DefinitionControl =
+    { delayed : Bool
+    , format : Elementtype
+    , multiselect : Bool
+    , controlType : Elementtype
+    }
+
+type Level
+    = Basic
+    | Standard
+
+type alias Option =
+    { label : String
+    , value : DefaultElement
+    }
+
+-- decoders and encoders
+
+settingsDecoder : Decoder SettingsObj
+settingsDecoder =
+    Decode.succeed SettingsObj
+        |> required "control" settingControl
+        |> optional "default" (nullable settingDefault) Nothing
+        |> required "enabled" bool
+        |> optional "help" (nullable string) Nothing
+        |> required "id" string
+        |> required "label" string
+        |> required "level" level
+        |> required "parent" string
+        |> required "type" elementtype
+        |> optional "value" (nullable settingDefault) Nothing
+        |> optional "addontype" (nullable string) Nothing
+        |> optional "allowempty" (nullable bool) Nothing
+        |> optional "allownewoption" (nullable bool) Nothing
+        |> optional "data" (nullable string) Nothing
+        |> optional "options" (nullable (list option)) Nothing
+        |> optional "maximum" (nullable int) Nothing
+        |> optional "minimum" (nullable int) Nothing
+        |> optional "step" (nullable int) Nothing
+        |> optional "definition" (nullable definition) Nothing
+        |> optional "delimiter" (nullable string) Nothing
+        |> optional "elementtype" (nullable elementtype) Nothing
+        |> optional "maximumItems" (nullable int) Nothing
+        |> optional "minimumItems" (nullable int) Nothing
+        |> optional "sources" (nullable (list Decode.value)) Nothing
+        |> optional "writable" (nullable bool) Nothing
+
+settingControl : Decoder SettingControl
+settingControl =
+    Decode.succeed SettingControl
+        |> required "delayed" bool
+        |> required "format" elementtype
+        |> required "type" purpleType
+        |> optional "multiselect" (nullable bool) Nothing
+        |> optional "formatlabel" (nullable string) Nothing
+        |> optional "heading" (nullable string) Nothing
+        |> optional "minimumlabel" (nullable string) Nothing
+        |> optional "hidden" (nullable bool) Nothing
+        |> optional "verifynewvalue" (nullable bool) Nothing
+
+purpleType : Decoder Type
+purpleType =
+    string
+        |> Decode.andThen (\str ->
+            case str of
+                "button" -> Decode.succeed Button
+                "edit" -> Decode.succeed Edit
+                "spinner" -> Decode.succeed Spinner
+                "toggle" -> Decode.succeed Toggle
+                "list" -> Decode.succeed TypeList
+                somethingElse -> Decode.fail <| "Invalid Type: " ++ somethingElse
+        )
+
+elementtype : Decoder Elementtype
+elementtype =
+    string
+        |> Decode.andThen (\str ->
+            case str of
+                "action" -> Decode.succeed Action
+                "addon" -> Decode.succeed Addon
+                "boolean" -> Decode.succeed Boolean
+                "list" -> Decode.succeed ElementtypeList
+                "string" -> Decode.succeed ElementtypeString
+                "integer" -> Decode.succeed Integer
+                "path" -> Decode.succeed Paths
+                somethingElse -> Decode.fail <| "Invalid Elementtype: " ++ somethingElse
+        )
+
+settingDefault : Decoder SettingDefault
+settingDefault =
+    Decode.oneOf
+        [ Decode.map UnionArrayInSettingDefault (list defaultElement)
+        , Decode.map BoolInSettingDefault bool
+        , Decode.map IntegerInSettingDefault int
+        , Decode.map StringInSettingDefault string
+        ]
+
+defaultElement : Decoder DefaultElement
+defaultElement =
+    Decode.oneOf
+        [ Decode.map IntegerInDefaultElement int
+        , Decode.map StringInDefaultElement string
+        ]
+
+definition : Decoder Definition
+definition =
+    Decode.succeed Definition
+        |> optional "allowempty" (nullable bool) Nothing
+        |> optional "allownewoption" (nullable bool) Nothing
+        |> required "control" definitionControl
+        |> required "default" defaultElement
+        |> required "enabled" bool
+        |> required "help" string
+        |> required "id" string
+        |> required "label" string
+        |> required "level" level
+        |> required "options" (list option)
+        |> required "parent" string
+        |> required "type" elementtype
+        |> required "value" defaultElement
+
+definitionControl : Decoder DefinitionControl
+definitionControl =
+    Decode.succeed DefinitionControl
+        |> required "delayed" bool
+        |> required "format" elementtype
+        |> required "multiselect" bool
+        |> required "type" elementtype
+
+level : Decoder Level
+level =
+    string
+        |> Decode.andThen (\str ->
+            case str of
+                "basic" -> Decode.succeed Basic
+                "standard" -> Decode.succeed Standard
+                somethingElse -> Decode.fail <| "Invalid Level: " ++ somethingElse
+        )
+
+option : Decoder Option
+option =
+    Decode.succeed Option
+        |> required "label" string
+        |> required "value" defaultElement
+
+-- settingsStringDecoder : Decoder SettingsStringObj
+-- settingsStringDecoder = 
+--     Decode.succeed SettingsStringObj 
+--         |> required "allowempty" bool
+--         |> required "allownewoption" bool
+--         |> required "control" stringControlDecoder
+--         |> required "default" string
+--         |> required "enabled" bool
+--         |> required "help" string
+--         |> required "id" string
+--         |> required "label" string
+--         |> required "level" string
+--         |> required "parent" string
+--         |> required "type" string
+--         |> required "value" string
+
+-- stringControlDecoder : Decoder StringControl
+-- stringControlDecoder =
+--     Decode.succeed StringControl
+--         |> required "delayed" bool
+--         |> required "format" string
+--         |> required "hidden" bool
+--         |> required "type" string
+--         |> required "verifynewvalue" bool
+
+-- type alias SettingsStringObj =
+--     { allowempty : Bool
+--     , allownewoption : Bool
+--     , control : StringControl
+--     , default : String
+--     , enabled : Bool
+--     , help : String
+--     , id : String
+--     , label : String
+--     , level : String
+--     , parent : String
+--     , settingsModelType : String
+--     , value : String
+--     }
+
+-- type alias StringControl =
+--     { delayed : Bool
+--     , format : String
+--     , hidden : Bool
+--     , controlType : String
+--     , verifynewvalue : Bool
+--     }
+
+
+-- type alias SettingsPathObj =
+--     { allowempty : Bool
+--     , allownewoption : Bool
+--     , control : PathControl
+--     , default : String
+--     , enabled : Bool
+--     , help : String
+--     , id : String
+--     , label : String
+--     , level : String
+--     , parent : String
+--     , sources : List Decode.Value
+--     , settingsModelType : String
+--     , value : String
+--     , writable : Bool
+--     }
+
+-- settingsPathDecoder : Decoder SettingsPathObj
+-- settingsPathDecoder =
+--     Decode.succeed SettingsPathObj
+--         |> required "allowempty" bool
+--         |> required "allownewoption" bool
+--         |> required "control" pathControlDecoder
+--         |> required "default" string
+--         |> required "enabled" bool
+--         |> required "help" string
+--         |> required "id" string
+--         |> required "label" string
+--         |> required "level" string
+--         |> required "parent" string
+--         |> required "sources" (list Decode.value)
+--         |> required "type" string
+--         |> required "value" string
+--         |> required "writable" bool
+
+-- pathControlDecoder : Decoder PathControl
+-- pathControlDecoder =
+--     Decode.succeed PathControl
+--         |> required "delayed" bool
+--         |> required "format" string
+--         |> required "heading" string
+--         |> required "type" string
+
+-- type alias PathControl =
+--     { delayed : Bool
+--     , format : String
+--     , heading : String
+--     , controlType : String
+--     }
+
+-- type alias SettingsBoolObj =
+--     { control : Control
+--     , default : Bool
+--     , enabled : Bool
+--     , help : String
+--     , id : String
+--     , label : String
+--     , level : String
+--     , parent : String
+--     , settingsModelType : String
+--     , value : Bool
+--     }
+
+-- settingsBoolDecoder : Decoder SettingsBoolObj
+-- settingsBoolDecoder =
+--     Decode.succeed SettingsBoolObj
+--         |> required "control" control
+--         |> required "default" bool
+--         |> required "enabled" bool
+--         |> required "help" string
+--         |> required "id" string
+--         |> required "label" string
+--         |> required "level" string
+--         |> required "parent" string
+--         |> required "type" string
+--         |> required "value" bool
+
+-- type alias SettingsActionObj =
+--     { control : Control
+--     , data : String
+--     , enabled : Bool
+--     , help : String
+--     , id : String
+--     , label : String
+--     , level : String
+--     , parent : String
+--     , settingsModelType : String
+--     }
+
+-- settingsActionDecoder : Decoder SettingsActionObj
+-- settingsActionDecoder =
+--     Decode.succeed SettingsActionObj
+--         |> required "control" control
+--         |> required "data" string
+--         |> required "enabled" bool
+--         |> required "help" string
+--         |> required "id" string
+--         |> required "label" string
+--         |> required "level" string
+--         |> required "parent" string
+--         |> required "type" string
+
+-- type alias SettingsAddonObj =
+--     { addontype : String
+--     , allowempty : Bool
+--     , allownewoption : Bool
+--     , control : Control
+--     , default : String
+--     , enabled : Bool
+--     , help : String
+--     , id : String
+--     , label : String
+--     , level : String
+--     , parent : String
+--     , settingsModelType : String
+--     , value : String
+--     }
+
+-- settingsAddonDecoder : Decoder SettingsAddonObj
+-- settingsAddonDecoder =
+--     Decode.succeed SettingsAddonObj
+--         |> required "addontype" string
+--         |> required "allowempty" bool
+--         |> required "allownewoption" bool
+--         |> required "control" control
+--         |> required "default" string
+--         |> required "enabled" bool
+--         |> required "help" string
+--         |> required "id" string
+--         |> required "label" string
+--         |> required "level" string
+--         |> required "parent" string
+--         |> required "type" string
+--         |> required "value" string
+
+-- control : Decoder Control
+-- control =
+--     Decode.succeed Control
+--         |> required "delayed" bool
+--         |> required "format" string
+--         |> required "type" string
+
+-- type alias Control =
+--     { delayed : Bool
+--     , format : String
+--     , controlType : String
+--     }
+
+-- type alias SettingsListObj =
+--     { allowempty : Bool
+--     , allownewoption : Bool
+--     , control : ListControl
+--     , default : String
+--     , enabled : Bool
+--     , help : String
+--     , id : String
+--     , label : String
+--     , level : String
+--     , options : List Option
+--     , parent : String
+--     , settingsModelType : String
+--     , value : String
+--     }
+
+-- settingsListDecoder : Decoder SettingsListObj
+-- settingsListDecoder =
+--     Decode.succeed SettingsListObj
+--         |> required "allowempty" bool
+--         |> required "allownewoption" bool
+--         |> required "control" listControlDecoder
+--         |> required "default" string
+--         |> required "enabled" bool
+--         |> required "help" string
+--         |> required "id" string
+--         |> required "label" string
+--         |> required "level" string
+--         |> required "options" (list option)
+--         |> required "parent" string
+--         |> required "type" string
+--         |> required "value" string
+
+-- type alias ListControl =
+--     { delayed : Bool
+--     , format : String
+--     , multiselect : Bool
+--     , controlType : String
+--     }
+
+-- listControlDecoder : Decoder ListControl
+-- listControlDecoder =
+--     Decode.succeed ListControl
+--         |> required "delayed" bool
+--         |> required "format" string
+--         |> required "multiselect" bool
+--         |> required "type" string
+
+-- type alias Option =
+--     { label : String
+--     , value : String
+--     }
+
+-- option : Decoder Option
+-- option =
+--     Decode.succeed Option
+--         |> required "label" string
+--         |> required "value" string
+
+-- type alias SettingsIntObj =
+--     { control : IntControl
+--     , default : Int
+--     , enabled : Bool
+--     , help : String
+--     , id : String
+--     , label : String
+--     , level : String
+--     , maximum : Int
+--     , minimum : Int
+--     , parent : String
+--     , step : Int
+--     , settingsModelType : String
+--     , value : Int
+--     }
+
+-- settingsIntDecoder : Decoder SettingsIntObj
+-- settingsIntDecoder =
+--     Decode.succeed SettingsIntObj
+--         |> required "control" intControlDecoder
+--         |> required "default" int
+--         |> required "enabled" bool
+--         |> required "help" string
+--         |> required "id" string
+--         |> required "label" string
+--         |> required "level" string
+--         |> required "maximum" int
+--         |> required "minimum" int
+--         |> required "parent" string
+--         |> required "step" int
+--         |> required "type" string
+--         |> required "value" int
+
+        
+-- type alias IntControl =
+--     { delayed : Bool
+--     , format : String
+--     , formatlabel : String
+--     , controlType : String
+--     }
+
+-- intControlDecoder : Decoder IntControl
+-- intControlDecoder =
+--     Decode.succeed IntControl
+--         |> required "delayed" bool
+--         |> required "format" string
+--         |> required "formatlabel" string
+--         |> required "type" string
 
 movieQueryDecoder : Decoder ResultResponse
 movieQueryDecoder =
@@ -420,9 +1007,24 @@ fileTypeDecoder : Decoder FileType
 fileTypeDecoder =
     Decode.string |> Decode.andThen (fromResult << parseFileType)
 
+
+
 -- LeftSidebar Icon Hover type
 
-type LeftSidebarMenuHover = NoneHover | Music | Movies | TVShow | Playlist | Browser | ThumbsUp | Addons | Settings | Help
+
+type LeftSidebarMenuHover
+    = NoneHover
+    | Music
+    | Movies
+    | TVShow
+    | Playlist
+    | Browser
+    | ThumbsUp
+    | Addons
+    | Settings
+    | Help
+
+
 
 --kodi ws connection
 
