@@ -29,7 +29,8 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, LeftSidebarMenuHover(..), Connection(..), FileObj, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import Http exposing (Part)
 
 
 
@@ -52,6 +53,7 @@ type alias Model =
     , rightSidebarExtended : Bool
     , controlMenu : Bool
     , showRightSidebarMenu : Bool
+    , isPartyMode : Bool
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
@@ -99,6 +101,7 @@ init flags url key =
       , connection = NotAsked
       , leftSidebarMenuHover = NoneHover
       , rightSidebarExtended = False
+      , isPartyMode = False
       , controlMenu = False
       , showRightSidebarMenu = False
       , players = []
@@ -216,6 +219,9 @@ type Msg
     | AttemptReconnectionDialog
     | CloseDialog
     | NewPlaylist String
+    | ClearPlaylistMsg
+    | RefreshPlaylistMsg
+    | PartyModeToggleMsg
 
 
 songname : SongObj -> String
@@ -435,6 +441,27 @@ update msg model =
             , Cmd.none
             )
 
+        ClearPlaylistMsg ->
+            (model
+            ,sendActions[
+                """{"jsonrpc":"2.0","method":"Playlist.Clear","params":{"playlistid":0},"id":"0"}"""
+            ]
+            )
+
+        RefreshPlaylistMsg ->
+            (model
+            ,sendActions[
+                """{"jsonrpc":"2.0","method":"Playlist.GetItems","params":{"playlistid":0},"id":"0"}"""
+            ]
+            )
+
+        PartyModeToggleMsg ->
+            ({model | isPartyMode = not model.isPartyMode}
+            ,sendActions[
+                """{"jsonrpc":"2.0","method":"Player.SetPartymode","params":{"playerid":0, "partymode":""" ++ if model.isPartyMode then "true" else "false" ++ """},"id":"0"}"""
+            ]
+             )
+
         ToggleControlMenu ->
             ( { model | controlMenu = not model.controlMenu }
             , Cmd.none
@@ -603,9 +630,13 @@ view { page, toMsg } model =
             , leftSidebarNotHoverMsg = toMsg ToggleLeftSidebarNotHover
             }
         , showRightSidebarMenu =
-            { showRightSidebarMenu = model.showRightSidebarMenu
-            , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
-            }
+          { showRightSidebarMenu = model.showRightSidebarMenu
+          , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
+          , clearPlaylistMsg = toMsg ClearPlaylistMsg
+            , refreshPlaylistMsg = toMsg RefreshPlaylistMsg
+            , isPartyMode = model.isPartyMode
+            , partyModeToggleMsg = toMsg PartyModeToggleMsg
+          }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
             , skipMsg = toMsg SkipForward
