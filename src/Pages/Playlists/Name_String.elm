@@ -1,4 +1,4 @@
-module Pages.Playlists.Name_String exposing (Params, Model, Msg, page)
+module Pages.Playlists.Name_String exposing (Model, Msg, Params, page)
 
 import Shared
 import Spa.Document exposing (Document)

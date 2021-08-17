@@ -29,7 +29,7 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, LeftSidebarMenuHover(..), Connection(..), FileObj, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -485,11 +485,10 @@ update msg model =
             , Cmd.none
             )
 
-        ToggleLeftSidebarNotHover->
+        ToggleLeftSidebarNotHover ->
             ( { model | leftSidebarMenuHover = NoneHover }
             , Cmd.none
             )
-
 
         ToggleShowRightSidebarMenu ->
             ( { model | showRightSidebarMenu = not model.showRightSidebarMenu }
@@ -604,9 +603,9 @@ view { page, toMsg } model =
             , leftSidebarNotHoverMsg = toMsg ToggleLeftSidebarNotHover
             }
         , showRightSidebarMenu =
-          { showRightSidebarMenu = model.showRightSidebarMenu
-          , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
-          }
+            { showRightSidebarMenu = model.showRightSidebarMenu
+            , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
+            }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
             , skipMsg = toMsg SkipForward

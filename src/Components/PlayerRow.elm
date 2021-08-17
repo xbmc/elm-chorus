@@ -113,7 +113,7 @@ controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLib
                     , label = controlMenuRow Nothing "The lab"
                     }
                 , Element.link [ width fill ]
-                    { url = Route.toString Route.Help
+                    { url = Route.toString Route.Help__About
                     , label = controlMenuRow Nothing "About Chorus"
                     }
                 ]

@@ -1,4 +1,4 @@
-module WSDecoder exposing (AlbumObj, ArtistObj, LeftSidebarMenuHover(..), Connection(..), FileObj, FileType(..), Item, ItemDetails, LocalPlaylists, MovieObj, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder)
+module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, MovieObj, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, maybe, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -420,9 +420,24 @@ fileTypeDecoder : Decoder FileType
 fileTypeDecoder =
     Decode.string |> Decode.andThen (fromResult << parseFileType)
 
+
+
 -- LeftSidebar Icon Hover type
 
-type LeftSidebarMenuHover = NoneHover | Music | Movies | TVShow | Playlist | Browser | ThumbsUp | Addons | Settings | Help
+
+type LeftSidebarMenuHover
+    = NoneHover
+    | Music
+    | Movies
+    | TVShow
+    | Playlist
+    | Browser
+    | ThumbsUp
+    | Addons
+    | Settings
+    | Help
+
+
 
 --kodi ws connection
 

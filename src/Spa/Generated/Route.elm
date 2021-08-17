@@ -12,7 +12,6 @@ type Route
     = Top
     | Addons
     | Browser
-    | Help
     | Lab
     | Movies
     | Music
@@ -20,6 +19,14 @@ type Route
     | Playlists
     | Thumbsup
     | Tvshows
+    | Help__About
+    | Help__Addons
+    | Help__Changelog
+    | Help__Developers
+    | Help__Keyboard
+    | Help__License
+    | Help__Readme
+    | Help__Translations
     | Movies__Recent
     | Music__Albums
     | Music__Artists
@@ -57,7 +64,6 @@ routes =
         [ Parser.map Top Parser.top
         , Parser.map Addons (Parser.s "addons")
         , Parser.map Browser (Parser.s "browser")
-        , Parser.map Help (Parser.s "help")
         , Parser.map Lab (Parser.s "lab")
         , Parser.map Movies (Parser.s "movies")
         , Parser.map Music (Parser.s "music")
@@ -65,6 +71,14 @@ routes =
         , Parser.map Playlists (Parser.s "playlists")
         , Parser.map Thumbsup (Parser.s "thumbsup")
         , Parser.map Tvshows (Parser.s "tvshows")
+        , Parser.map Help__About (Parser.s "help" </> Parser.s "about")
+        , Parser.map Help__Addons (Parser.s "help" </> Parser.s "addons")
+        , Parser.map Help__Changelog (Parser.s "help" </> Parser.s "changelog")
+        , Parser.map Help__Developers (Parser.s "help" </> Parser.s "developers")
+        , Parser.map Help__Keyboard (Parser.s "help" </> Parser.s "keyboard")
+        , Parser.map Help__License (Parser.s "help" </> Parser.s "license")
+        , Parser.map Help__Readme (Parser.s "help" </> Parser.s "readme")
+        , Parser.map Help__Translations (Parser.s "help" </> Parser.s "translations")
         , Parser.map Movies__Recent (Parser.s "movies" </> Parser.s "recent")
         , Parser.map Music__Albums (Parser.s "music" </> Parser.s "albums")
         , Parser.map Music__Artists (Parser.s "music" </> Parser.s "artists")
@@ -119,9 +133,6 @@ toString route =
                 Browser ->
                     [ "browser" ]
                 
-                Help ->
-                    [ "help" ]
-                
                 Lab ->
                     [ "lab" ]
                 
@@ -142,6 +153,30 @@ toString route =
                 
                 Tvshows ->
                     [ "tvshows" ]
+                
+                Help__About ->
+                    [ "help", "about" ]
+                
+                Help__Addons ->
+                    [ "help", "addons" ]
+                
+                Help__Changelog ->
+                    [ "help", "changelog" ]
+                
+                Help__Developers ->
+                    [ "help", "developers" ]
+                
+                Help__Keyboard ->
+                    [ "help", "keyboard" ]
+                
+                Help__License ->
+                    [ "help", "license" ]
+                
+                Help__Readme ->
+                    [ "help", "readme" ]
+                
+                Help__Translations ->
+                    [ "help", "translations" ]
                 
                 Movies__Recent ->
                     [ "movies", "recent" ]
