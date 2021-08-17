@@ -19,6 +19,7 @@ import Browser.Navigation exposing (Key, pushUrl)
 import Components.Frame
 import Components.LayoutType exposing (DialogType(..))
 import Element exposing (..)
+import Http exposing (Part)
 import Json.Decode as D
 import Json.Encode as E exposing (Value)
 import List.Extra exposing (unique)
@@ -52,6 +53,7 @@ type alias Model =
     , rightSidebarExtended : Bool
     , controlMenu : Bool
     , showRightSidebarMenu : Bool
+    , isPartyMode : Bool
     , players : List PlayerObj
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
@@ -99,6 +101,7 @@ init flags url key =
       , connection = NotAsked
       , leftSidebarMenuHover = NoneHover
       , rightSidebarExtended = False
+      , isPartyMode = False
       , controlMenu = False
       , showRightSidebarMenu = False
       , players = []
@@ -216,6 +219,9 @@ type Msg
     | AttemptReconnectionDialog
     | CloseDialog
     | NewPlaylist String
+    | ClearPlaylistMsg
+    | RefreshPlaylistMsg
+    | PartyModeToggleMsg
 
 
 songname : SongObj -> String
@@ -435,6 +441,33 @@ update msg model =
             , Cmd.none
             )
 
+        ClearPlaylistMsg ->
+            ( model
+            , sendActions
+                [ """{"jsonrpc":"2.0","method":"Playlist.Clear","params":{"playlistid":0},"id":"0"}"""
+                ]
+            )
+
+        RefreshPlaylistMsg ->
+            ( model
+            , sendActions
+                [ """{"jsonrpc":"2.0","method":"Playlist.GetItems","params":{"playlistid":0},"id":"0"}"""
+                ]
+            )
+
+        PartyModeToggleMsg ->
+            ( { model | isPartyMode = not model.isPartyMode }
+            , sendActions
+                [ """{"jsonrpc":"2.0","method":"Player.SetPartymode","params":{"playerid":0, "partymode":"""
+                    ++ (if model.isPartyMode then
+                            "true"
+
+                        else
+                            "false" ++ """},"id":"0"}"""
+                       )
+                ]
+            )
+
         ToggleControlMenu ->
             ( { model | controlMenu = not model.controlMenu }
             , Cmd.none
@@ -605,6 +638,10 @@ view { page, toMsg } model =
         , showRightSidebarMenu =
             { showRightSidebarMenu = model.showRightSidebarMenu
             , showRightSidebarMenuMsg = toMsg ToggleShowRightSidebarMenu
+            , clearPlaylistMsg = toMsg ClearPlaylistMsg
+            , refreshPlaylistMsg = toMsg RefreshPlaylistMsg
+            , isPartyMode = model.isPartyMode
+            , partyModeToggleMsg = toMsg PartyModeToggleMsg
             }
         , playerControl =
             { playPauseMsg = toMsg PlayPause

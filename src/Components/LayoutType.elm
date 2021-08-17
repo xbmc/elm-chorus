@@ -71,6 +71,10 @@ type alias ControlMenu msg =
 type alias ShowRightSidebarMenu msg =
     { showRightSidebarMenu : Bool
     , showRightSidebarMenuMsg : msg
+    , clearPlaylistMsg : msg
+    , refreshPlaylistMsg : msg
+    , isPartyMode : Bool
+    , partyModeToggleMsg : msg
     }
 
 
