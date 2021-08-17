@@ -11,7 +11,7 @@ import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import Url exposing (percentEncode)
 import Url.Builder exposing (crossOrigin)
-import WSDecoder exposing (Path, ItemDetails, MovieObj, prepareDownloadDecoder)
+import WSDecoder exposing (ItemDetails, MovieObj, Path, prepareDownloadDecoder)
 
 
 page : Page Params Model Msg
@@ -44,7 +44,7 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    case (getMovie params.movieid shared.movie_list) of
+    case getMovie params.movieid shared.movie_list of
         Nothing ->
             ( { movieid = params.movieid
               , movie = getMovie params.movieid shared.movie_list
@@ -53,6 +53,7 @@ init shared { params } =
               }
             , Cmd.none
             )
+
         Just mov ->
             ( { movieid = params.movieid
               , movie = getMovie params.movieid shared.movie_list
@@ -82,7 +83,7 @@ getMovie id movielist =
 
 
 type Msg
-    = GotMovie (Result Http.Error (Path))
+    = GotMovie (Result Http.Error Path)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -92,6 +93,7 @@ update msg model =
             case result of
                 Ok pathObj ->
                     ( { model | prepareDownloadPath = Just pathObj.path }, Cmd.none )
+
                 Err _ ->
                     ( model, Cmd.none )
 
@@ -113,10 +115,12 @@ subscriptions model =
 
 postRequestMovie : String -> Cmd Msg
 postRequestMovie path =
-  Http.get
-    { url = crossOrigin "http://localhost:8080" [ ("""jsonrpc?request={"jsonrpc":"2.0","params":{"path":\"""" ++ path ++ """\"},"method":"Files.PrepareDownload","id":"1"}""") ] []
-    , expect = Http.expectJson GotMovie prepareDownloadDecoder
-    }
+    Http.get
+        { url = crossOrigin "http://localhost:8080" [ """jsonrpc?request={"jsonrpc":"2.0","params":{"path":\"""" ++ path ++ """"},"method":"Files.PrepareDownload","id":"1"}""" ] []
+        , expect = Http.expectJson GotMovie prepareDownloadDecoder
+        }
+
+
 
 -- VIEW
 
@@ -131,12 +135,14 @@ view model =
 
             Just movie ->
                 case model.prepareDownloadPath of
-                    Nothing -> 
+                    Nothing ->
                         Element.text movie.label
+
                     Just path ->
                         Components.Video.view [ Background.color (rgb 0 0 0) ]
                             { poster = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
                             , source = crossOrigin "http://localhost:8080" [ path ] []
+
                             --source = crossOrigin "http://localhost:8080" [ "vfs/%2fUsers%2falex%2fDesktop%2fdesktop%2fFilms%2fSenior%20Project%2fused%2fIMG_2652.m4v"] [] --source = crossOrigin "http://localhost:8080" [ "video", percentEncode movie.file ] [] -- fix url
                             }
         ]

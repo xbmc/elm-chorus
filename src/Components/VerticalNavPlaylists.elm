@@ -7,6 +7,7 @@ import Element.Font as Font exposing (Font)
 import Element.Input as Input
 import Spa.Generated.Route as Route exposing (Route)
 
+
 view :
     String
     -> Route
@@ -37,10 +38,11 @@ view header currentRoute links newPlaylistMsg =
                     [ Background.color Colors.greyscaleOuterSpace
                     ]
                 ]
-                    <| Input.button [ paddingXY 10 10 ]
-                        { onPress = Just newPlaylistMsg
-                        , label = el [Font.color Colors.white] (Element.text "New Playlist")
-                        }
+              <|
+                Input.button [ paddingXY 10 10 ]
+                    { onPress = Just newPlaylistMsg
+                    , label = el [ Font.color Colors.white ] (Element.text "New Playlist")
+                    }
             ]
         ]
 

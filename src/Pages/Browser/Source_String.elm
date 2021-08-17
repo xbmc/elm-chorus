@@ -10,8 +10,9 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
-import Url exposing (percentEncode, percentDecode)
-import WSDecoder exposing (SourceObj, FileObj, FileType(..))
+import Url exposing (percentDecode, percentEncode)
+import WSDecoder exposing (FileObj, FileType(..), SourceObj)
+
 
 page : Page Params Model Msg
 page =
@@ -36,7 +37,7 @@ type alias Params =
 
 type alias Model =
     { source : String
-    , files : List FileObj 
+    , files : List FileObj
     , source_list : List SourceObj
     , route : Route
     }
@@ -45,12 +46,13 @@ type alias Model =
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
     ( { source = parseSource (percentDecode params.source)
-        , files = shared.file_list
-        , source_list = shared.source_list
-        , route = Route.Top
+      , files = shared.file_list
+      , source_list = shared.source_list
+      , route = Route.Top
       }
-      , sendAction 
-            ("""{"jsonrpc":"2.0","method":"Files.GetDirectory","id":"1","params":{"directory":\"""" ++ parseSource (percentDecode params.source) ++ """\","media":"files"}}""") )
+    , sendAction
+        ("""{"jsonrpc":"2.0","method":"Files.GetDirectory","id":"1","params":{"directory":\"""" ++ parseSource (percentDecode params.source) ++ """","media":"files"}}""")
+    )
 
 
 parseSource : Maybe String -> String
@@ -61,6 +63,8 @@ parseSource string =
 
         Just str ->
             str
+
+
 
 -- UPDATE
 
@@ -98,7 +102,7 @@ subscriptions model =
 view : Model -> Document Msg
 view model =
     { title = "Browser.Source_String"
-    , body = 
+    , body =
         [ row [ Element.height fill, Element.width fill ]
             [ Components.VerticalNav.view
                 "sources"
@@ -112,30 +116,32 @@ view model =
                     model.source_list
                 )
                 []
-            , column [Element.width fill, Element.height fill]
+            , column [ Element.width fill, Element.height fill ]
                 (List.map
                     (\file ->
                         case file.filetype of
                             Directory ->
-                                Element.link 
+                                Element.link
                                     [ paddingXY 10 10
                                     , Background.color Colors.greyscaleDustGray
                                     , Element.mouseOver
-                                        [ Background.color Colors.greyscaleOuterSpace]
-                                    , Font.color Colors.white 
+                                        [ Background.color Colors.greyscaleOuterSpace ]
+                                    , Font.color Colors.white
                                     ]
                                     { url = Route.toString (Route.Browser__Source_String { source = percentEncode file.file })
                                     , label = Element.text file.label
                                     }
+
                             File ->
-                                el [paddingXY 10 10
+                                el
+                                    [ paddingXY 10 10
                                     , Background.color Colors.greyscaleDustGray
-                                    , Element.mouseOver [ Background.color Colors.greyscaleOuterSpace]
+                                    , Element.mouseOver [ Background.color Colors.greyscaleOuterSpace ]
                                     , Font.color Colors.white
                                     ]
                                     (Element.text file.label)
                     )
-                model.files
+                    model.files
                 )
             ]
         ]

@@ -12,7 +12,6 @@ module Spa.Generated.Pages exposing
 import Pages.Top
 import Pages.Addons
 import Pages.Browser
-import Pages.Help
 import Pages.Lab
 import Pages.Movies
 import Pages.Music
@@ -20,6 +19,14 @@ import Pages.NotFound
 import Pages.Playlists
 import Pages.Thumbsup
 import Pages.Tvshows
+import Pages.Help.About
+import Pages.Help.Addons
+import Pages.Help.Changelog
+import Pages.Help.Developers
+import Pages.Help.Keyboard
+import Pages.Help.License
+import Pages.Help.Readme
+import Pages.Help.Translations
 import Pages.Movies.Recent
 import Pages.Music.Albums
 import Pages.Music.Artists
@@ -58,7 +65,6 @@ type Model
     = Top__Model Pages.Top.Model
     | Addons__Model Pages.Addons.Model
     | Browser__Model Pages.Browser.Model
-    | Help__Model Pages.Help.Model
     | Lab__Model Pages.Lab.Model
     | Movies__Model Pages.Movies.Model
     | Music__Model Pages.Music.Model
@@ -66,6 +72,14 @@ type Model
     | Playlists__Model Pages.Playlists.Model
     | Thumbsup__Model Pages.Thumbsup.Model
     | Tvshows__Model Pages.Tvshows.Model
+    | Help__About__Model Pages.Help.About.Model
+    | Help__Addons__Model Pages.Help.Addons.Model
+    | Help__Changelog__Model Pages.Help.Changelog.Model
+    | Help__Developers__Model Pages.Help.Developers.Model
+    | Help__Keyboard__Model Pages.Help.Keyboard.Model
+    | Help__License__Model Pages.Help.License.Model
+    | Help__Readme__Model Pages.Help.Readme.Model
+    | Help__Translations__Model Pages.Help.Translations.Model
     | Movies__Recent__Model Pages.Movies.Recent.Model
     | Music__Albums__Model Pages.Music.Albums.Model
     | Music__Artists__Model Pages.Music.Artists.Model
@@ -96,7 +110,6 @@ type Msg
     = Top__Msg Pages.Top.Msg
     | Addons__Msg Pages.Addons.Msg
     | Browser__Msg Pages.Browser.Msg
-    | Help__Msg Pages.Help.Msg
     | Lab__Msg Pages.Lab.Msg
     | Movies__Msg Pages.Movies.Msg
     | Music__Msg Pages.Music.Msg
@@ -104,6 +117,14 @@ type Msg
     | Playlists__Msg Pages.Playlists.Msg
     | Thumbsup__Msg Pages.Thumbsup.Msg
     | Tvshows__Msg Pages.Tvshows.Msg
+    | Help__About__Msg Pages.Help.About.Msg
+    | Help__Addons__Msg Pages.Help.Addons.Msg
+    | Help__Changelog__Msg Pages.Help.Changelog.Msg
+    | Help__Developers__Msg Pages.Help.Developers.Msg
+    | Help__Keyboard__Msg Pages.Help.Keyboard.Msg
+    | Help__License__Msg Pages.Help.License.Msg
+    | Help__Readme__Msg Pages.Help.Readme.Msg
+    | Help__Translations__Msg Pages.Help.Translations.Msg
     | Movies__Recent__Msg Pages.Movies.Recent.Msg
     | Music__Albums__Msg Pages.Music.Albums.Msg
     | Music__Artists__Msg Pages.Music.Artists.Msg
@@ -146,9 +167,6 @@ init route =
         Route.Browser ->
             pages.browser.init ()
         
-        Route.Help ->
-            pages.help.init ()
-        
         Route.Lab ->
             pages.lab.init ()
         
@@ -169,6 +187,30 @@ init route =
         
         Route.Tvshows ->
             pages.tvshows.init ()
+        
+        Route.Help__About ->
+            pages.help__about.init ()
+        
+        Route.Help__Addons ->
+            pages.help__addons.init ()
+        
+        Route.Help__Changelog ->
+            pages.help__changelog.init ()
+        
+        Route.Help__Developers ->
+            pages.help__developers.init ()
+        
+        Route.Help__Keyboard ->
+            pages.help__keyboard.init ()
+        
+        Route.Help__License ->
+            pages.help__license.init ()
+        
+        Route.Help__Readme ->
+            pages.help__readme.init ()
+        
+        Route.Help__Translations ->
+            pages.help__translations.init ()
         
         Route.Movies__Recent ->
             pages.movies__recent.init ()
@@ -259,9 +301,6 @@ update bigMsg bigModel =
         ( Browser__Msg msg, Browser__Model model ) ->
             pages.browser.update msg model
         
-        ( Help__Msg msg, Help__Model model ) ->
-            pages.help.update msg model
-        
         ( Lab__Msg msg, Lab__Model model ) ->
             pages.lab.update msg model
         
@@ -282,6 +321,30 @@ update bigMsg bigModel =
         
         ( Tvshows__Msg msg, Tvshows__Model model ) ->
             pages.tvshows.update msg model
+        
+        ( Help__About__Msg msg, Help__About__Model model ) ->
+            pages.help__about.update msg model
+        
+        ( Help__Addons__Msg msg, Help__Addons__Model model ) ->
+            pages.help__addons.update msg model
+        
+        ( Help__Changelog__Msg msg, Help__Changelog__Model model ) ->
+            pages.help__changelog.update msg model
+        
+        ( Help__Developers__Msg msg, Help__Developers__Model model ) ->
+            pages.help__developers.update msg model
+        
+        ( Help__Keyboard__Msg msg, Help__Keyboard__Model model ) ->
+            pages.help__keyboard.update msg model
+        
+        ( Help__License__Msg msg, Help__License__Model model ) ->
+            pages.help__license.update msg model
+        
+        ( Help__Readme__Msg msg, Help__Readme__Model model ) ->
+            pages.help__readme.update msg model
+        
+        ( Help__Translations__Msg msg, Help__Translations__Model model ) ->
+            pages.help__translations.update msg model
         
         ( Movies__Recent__Msg msg, Movies__Recent__Model model ) ->
             pages.movies__recent.update msg model
@@ -375,9 +438,6 @@ bundle bigModel =
         Browser__Model model ->
             pages.browser.bundle model
         
-        Help__Model model ->
-            pages.help.bundle model
-        
         Lab__Model model ->
             pages.lab.bundle model
         
@@ -398,6 +458,30 @@ bundle bigModel =
         
         Tvshows__Model model ->
             pages.tvshows.bundle model
+        
+        Help__About__Model model ->
+            pages.help__about.bundle model
+        
+        Help__Addons__Model model ->
+            pages.help__addons.bundle model
+        
+        Help__Changelog__Model model ->
+            pages.help__changelog.bundle model
+        
+        Help__Developers__Model model ->
+            pages.help__developers.bundle model
+        
+        Help__Keyboard__Model model ->
+            pages.help__keyboard.bundle model
+        
+        Help__License__Model model ->
+            pages.help__license.bundle model
+        
+        Help__Readme__Model model ->
+            pages.help__readme.bundle model
+        
+        Help__Translations__Model model ->
+            pages.help__translations.bundle model
         
         Movies__Recent__Model model ->
             pages.movies__recent.bundle model
@@ -540,7 +624,6 @@ pages :
     { top : Upgraded Pages.Top.Params Pages.Top.Model Pages.Top.Msg
     , addons : Upgraded Pages.Addons.Params Pages.Addons.Model Pages.Addons.Msg
     , browser : Upgraded Pages.Browser.Params Pages.Browser.Model Pages.Browser.Msg
-    , help : Upgraded Pages.Help.Params Pages.Help.Model Pages.Help.Msg
     , lab : Upgraded Pages.Lab.Params Pages.Lab.Model Pages.Lab.Msg
     , movies : Upgraded Pages.Movies.Params Pages.Movies.Model Pages.Movies.Msg
     , music : Upgraded Pages.Music.Params Pages.Music.Model Pages.Music.Msg
@@ -548,6 +631,14 @@ pages :
     , playlists : Upgraded Pages.Playlists.Params Pages.Playlists.Model Pages.Playlists.Msg
     , thumbsup : Upgraded Pages.Thumbsup.Params Pages.Thumbsup.Model Pages.Thumbsup.Msg
     , tvshows : Upgraded Pages.Tvshows.Params Pages.Tvshows.Model Pages.Tvshows.Msg
+    , help__about : Upgraded Pages.Help.About.Params Pages.Help.About.Model Pages.Help.About.Msg
+    , help__addons : Upgraded Pages.Help.Addons.Params Pages.Help.Addons.Model Pages.Help.Addons.Msg
+    , help__changelog : Upgraded Pages.Help.Changelog.Params Pages.Help.Changelog.Model Pages.Help.Changelog.Msg
+    , help__developers : Upgraded Pages.Help.Developers.Params Pages.Help.Developers.Model Pages.Help.Developers.Msg
+    , help__keyboard : Upgraded Pages.Help.Keyboard.Params Pages.Help.Keyboard.Model Pages.Help.Keyboard.Msg
+    , help__license : Upgraded Pages.Help.License.Params Pages.Help.License.Model Pages.Help.License.Msg
+    , help__readme : Upgraded Pages.Help.Readme.Params Pages.Help.Readme.Model Pages.Help.Readme.Msg
+    , help__translations : Upgraded Pages.Help.Translations.Params Pages.Help.Translations.Model Pages.Help.Translations.Msg
     , movies__recent : Upgraded Pages.Movies.Recent.Params Pages.Movies.Recent.Model Pages.Movies.Recent.Msg
     , music__albums : Upgraded Pages.Music.Albums.Params Pages.Music.Albums.Model Pages.Music.Albums.Msg
     , music__artists : Upgraded Pages.Music.Artists.Params Pages.Music.Artists.Model Pages.Music.Artists.Msg
@@ -577,7 +668,6 @@ pages =
     { top = Pages.Top.page |> upgrade Top__Model Top__Msg
     , addons = Pages.Addons.page |> upgrade Addons__Model Addons__Msg
     , browser = Pages.Browser.page |> upgrade Browser__Model Browser__Msg
-    , help = Pages.Help.page |> upgrade Help__Model Help__Msg
     , lab = Pages.Lab.page |> upgrade Lab__Model Lab__Msg
     , movies = Pages.Movies.page |> upgrade Movies__Model Movies__Msg
     , music = Pages.Music.page |> upgrade Music__Model Music__Msg
@@ -585,6 +675,14 @@ pages =
     , playlists = Pages.Playlists.page |> upgrade Playlists__Model Playlists__Msg
     , thumbsup = Pages.Thumbsup.page |> upgrade Thumbsup__Model Thumbsup__Msg
     , tvshows = Pages.Tvshows.page |> upgrade Tvshows__Model Tvshows__Msg
+    , help__about = Pages.Help.About.page |> upgrade Help__About__Model Help__About__Msg
+    , help__addons = Pages.Help.Addons.page |> upgrade Help__Addons__Model Help__Addons__Msg
+    , help__changelog = Pages.Help.Changelog.page |> upgrade Help__Changelog__Model Help__Changelog__Msg
+    , help__developers = Pages.Help.Developers.page |> upgrade Help__Developers__Model Help__Developers__Msg
+    , help__keyboard = Pages.Help.Keyboard.page |> upgrade Help__Keyboard__Model Help__Keyboard__Msg
+    , help__license = Pages.Help.License.page |> upgrade Help__License__Model Help__License__Msg
+    , help__readme = Pages.Help.Readme.page |> upgrade Help__Readme__Model Help__Readme__Msg
+    , help__translations = Pages.Help.Translations.page |> upgrade Help__Translations__Model Help__Translations__Msg
     , movies__recent = Pages.Movies.Recent.page |> upgrade Movies__Recent__Model Movies__Recent__Msg
     , music__albums = Pages.Music.Albums.page |> upgrade Music__Albums__Model Music__Albums__Msg
     , music__artists = Pages.Music.Artists.page |> upgrade Music__Artists__Model Music__Artists__Msg
