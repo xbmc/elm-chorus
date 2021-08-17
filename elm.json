@@ -6,6 +6,7 @@
     "elm-version": "0.19.1",
     "dependencies": {
         "direct": {
+            "ChristophP/elm-i18next": "4.2.0",
             "NoRedInk/elm-json-decode-pipeline": "1.0.0",
             "PaackEng/elm-ui-dialog": "1.0.1",
             "avh4/elm-color": "1.0.0",

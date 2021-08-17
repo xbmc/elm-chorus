@@ -1,6 +1,7 @@
 module Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, DialogType(..), LayoutType, LeftSidebarControl, PlayerControl, ShowRightSidebarMenu, VolumeAndControls)
 
 import Element exposing (Element)
+import Json.Decode exposing (string)
 import Spa.Document exposing (Document)
 import WSDecoder exposing (Connection, ItemDetails, LeftSidebarMenuHover)
 
@@ -47,14 +48,23 @@ type alias VolumeAndControls msg =
 type alias LeftSidebarControl msg =
     { leftSidebarMenuHover : LeftSidebarMenuHover
     , leftSidebarMusicHoverMsg : msg
+    , leftSidebarMusicTranslation : String
     , leftSidebarMoviesHoverMsg : msg
+    , leftSidebarMoviesTranslation : String
     , leftSidebarTVShowHoverMsg : msg
+    , leftSidebarTVShowTranslation : String
     , leftSidebarAddonsHoverMsg : msg
+    , leftSidebarAddonsTranslation : String
     , leftSidebarPlaylistHoverMsg : msg
+    , leftSidebarPlaylistTranslation : String
     , leftSidebarBrowserHoverMsg : msg
+    , leftSidebarBrowserTranslation : String
     , leftSidebarSettingsHoverMsg : msg
+    , leftSidebarSettingsTranslation : String
     , leftSidebarThumbsUpHoverMsg : msg
+    , leftSidebarThumbsUpTranslation : String
     , leftSidebarHelpHoverMsg : msg
+    , leftSidebarHelpTranslation : String
     , leftSidebarNotHoverMsg : msg
     }
 

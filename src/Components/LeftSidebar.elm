@@ -67,44 +67,44 @@ materialIconLink elementHover elementHoverMsg elementLeaveMsg iconHoverName name
 
 musicButton : LeftSidebarControl msg -> Element msg
 musicButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarMusicHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Music "Music" Filled.library_music Route.Music
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarMusicHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Music leftSidebarControl.leftSidebarMusicTranslation Filled.library_music Route.Music
 
 
 movieButton : LeftSidebarControl msg -> Element msg
 movieButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarMoviesHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Movies "Movies" Filled.movie Route.Movies__Recent
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarMoviesHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Movies leftSidebarControl.leftSidebarMoviesTranslation Filled.movie Route.Movies__Recent
 
 
 tvshowButton : LeftSidebarControl msg -> Element msg
 tvshowButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarTVShowHoverMsg leftSidebarControl.leftSidebarNotHoverMsg TVShow "TV shows" Filled.tv Route.Tvshows__Recent
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarTVShowHoverMsg leftSidebarControl.leftSidebarNotHoverMsg TVShow leftSidebarControl.leftSidebarTVShowTranslation Filled.tv Route.Tvshows__Recent
 
 
 browserButton : LeftSidebarControl msg -> Element msg
 browserButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarBrowserHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Browser "Browser" Filled.list Route.Browser
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarBrowserHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Browser leftSidebarControl.leftSidebarBrowserTranslation Filled.list Route.Browser
 
 
 addonsButton : LeftSidebarControl msg -> Element msg
 addonsButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarAddonsHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Addons "Add-ons" Filled.extension Route.Addons
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarAddonsHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Addons leftSidebarControl.leftSidebarAddonsTranslation Filled.extension Route.Addons
 
 
 thumbsupButton : LeftSidebarControl msg -> Element msg
 thumbsupButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarThumbsUpHoverMsg leftSidebarControl.leftSidebarNotHoverMsg ThumbsUp "Thumbs up" Filled.thumb_up Route.Thumbsup
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarThumbsUpHoverMsg leftSidebarControl.leftSidebarNotHoverMsg ThumbsUp leftSidebarControl.leftSidebarThumbsUpTranslation Filled.thumb_up Route.Thumbsup
 
 
 playlistButton : LeftSidebarControl msg -> Element msg
 playlistButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarPlaylistHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Playlist "Playlists" Filled.assignment Route.Playlists
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarPlaylistHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Playlist leftSidebarControl.leftSidebarPlaylistTranslation Filled.assignment Route.Playlists
 
 
 settingsButton : LeftSidebarControl msg -> Element msg
 settingsButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarSettingsHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Settings "Settings" Filled.settings Route.Settings__Web
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarSettingsHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Settings leftSidebarControl.leftSidebarSettingsTranslation Filled.settings Route.Settings__Web
 
 
 helpButton : LeftSidebarControl msg -> Element msg
 helpButton leftSidebarControl =
-    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarHelpHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Help "Help" Filled.help Route.Help__About
+    materialIconLink leftSidebarControl.leftSidebarMenuHover leftSidebarControl.leftSidebarHelpHoverMsg leftSidebarControl.leftSidebarNotHoverMsg Help leftSidebarControl.leftSidebarHelpTranslation Filled.help Route.Help__About
