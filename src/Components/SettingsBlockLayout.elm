@@ -3,14 +3,90 @@ module Components.SettingsBlockLayout exposing (..)
 import Color
 import Dropdown exposing (OutMsg(..), Placement(..))
 import Element exposing (..)
+import Element.Border as Border
+import Element.Font as Font
+import Element.Input as Input
 import Material.Icons.Types exposing (Coloring(..))
 import WSDecoder exposing (LocalSettings, Option, SettingDefault(..), SettingsObj, stringInDefaultElementToString)
+import Widget
 import Widget.Material as Material
 
 
 type alias Options =
     { name : String
     }
+
+
+settingsInputBlock : String -> (String -> msg) -> String -> String -> Element msg
+settingsInputBlock val msg title description =
+    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
+        [ row [ paddingEach { top = 0, bottom = 20, left = 0, right = 0 } ]
+            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
+            , Input.text [ width (px 400), Font.size 14, Font.color (rgb255 3 3 3), Border.widthEach { top = 0, bottom = 1, left = 0, right = 0 }, Border.rounded 0, Font.medium, Border.color (rgb255 3 3 3), Font.size 13 ]
+                { onChange = msg
+                , text = val
+                , placeholder = Nothing
+                , label = Input.labelHidden ""
+                }
+            ]
+        , row []
+            [ el [ width (px 300) ] (text "")
+            , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
+            ]
+        ]
+
+
+settingsToggleBlock : Bool -> msg -> String -> String -> Element msg
+settingsToggleBlock isToggleActive toggleMsg title description =
+    let
+        descriptionBlock =
+            if description == "" then
+                Element.none
+
+            else
+                row []
+                    [ el [ width (px 300) ] (text "")
+                    , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
+                    ]
+    in
+    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
+        [ row [ paddingEach { top = 0, bottom = 0, left = 0, right = 0 } ]
+            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
+            , Widget.switch (Material.switch customPalette)
+                { description = ""
+                , onPress = Just toggleMsg
+                , active = isToggleActive
+                }
+            ]
+        , descriptionBlock
+        ]
+
+
+stringToBoolValue : String -> Bool
+stringToBoolValue textValue =
+    if textValue == "false" then
+        False
+
+    else
+        True
+
+
+boolToStringValue : Bool -> String
+boolToStringValue boolValue =
+    if boolValue then
+        "true"
+
+    else
+        "false"
+
+
+boolToStringOppositeValue : Bool -> String
+boolToStringOppositeValue boolValue =
+    if boolValue then
+        "false"
+
+    else
+        "true"
 
 
 getVal : Int -> LocalSettings -> String
@@ -152,27 +228,6 @@ getSelectedOptionFromList nth list =
                     Nothing
         )
         x
-
-
-getAddonList : Int -> List SettingsObj -> List Option
-getAddonList nth list =
-    let
-        x =
-            list
-                |> List.drop (nth - 1)
-                |> List.head
-    in
-    case x of
-        Nothing ->
-            []
-
-        Just val ->
-            case val.definition of
-                Nothing ->
-                    []
-
-                Just def ->
-                    def.options
 
 
 customPalette : Material.Palette

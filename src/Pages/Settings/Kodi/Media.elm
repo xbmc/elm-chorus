@@ -17,8 +17,6 @@ import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import WSDecoder exposing (Option, SettingDefault(..), SettingsObj)
-import Widget
-import Widget.Material as Material
 
 
 page : Page Params Model Msg
@@ -148,25 +146,6 @@ init shared url =
     )
 
 
-settingsInputBlock : String -> (String -> msg) -> String -> String -> Element msg
-settingsInputBlock val msg title description =
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 20, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Input.text [ width (px 400), Font.size 14, Font.color (rgb255 3 3 3), Border.widthEach { top = 0, bottom = 1, left = 0, right = 0 }, Border.rounded 0, Font.medium, Border.color (rgb255 3 3 3), Font.size 13 ]
-                { onChange = msg
-                , text = val
-                , placeholder = Nothing
-                , label = Input.labelHidden ""
-                }
-            ]
-        , row []
-            [ el [ width (px 300) ] (text "")
-            , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-            ]
-        ]
-
-
 settingsDropdownBlock : Dropdown Option -> (Dropdown.Msg Option -> Msg) -> String -> String -> Element Msg
 settingsDropdownBlock dropdown msg title description =
     column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
@@ -189,39 +168,12 @@ settingsDropdownBlock dropdown msg title description =
         ]
 
 
-settingsToggleBlock : Bool -> msg -> String -> String -> Element msg
-settingsToggleBlock isToggleActive toggleMsg title description =
-    let
-        descriptionBlock =
-            if description == "" then
-                Element.none
-
-            else
-                row []
-                    [ el [ width (px 300) ] (text "")
-                    , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-                    ]
-    in
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 0, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Widget.switch (Material.switch customPalette)
-                { description = ""
-                , onPress = Just toggleMsg
-                , active = isToggleActive
-                }
-            ]
-        , descriptionBlock
-        ]
-
-
 
 -- UPDATE
 
 
 type Msg
-    = ReplaceMe
-    | ActionDropdownMsg (Dropdown.Msg Option)
+    = ActionDropdownMsg (Dropdown.Msg Option)
     | VideoArtworkDropdownMsg (Dropdown.Msg Option)
     | AlbumInfoDropdownMsg (Dropdown.Msg Option)
     | ArtistInfoDropdownMsg (Dropdown.Msg Option)
@@ -262,203 +214,83 @@ update msg model =
             ( model
             , sendActions
                 [ """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videolibrary.updateonstartup", "value" :"""
-                    ++ (if model.startupVideoToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.startupVideoToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videolibrary.backgroundupdate", "value" :"""
-                    ++ (if model.hideProgressVideoToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.hideProgressVideoToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.updateonstartup", "value" :"""
-                    ++ (if model.startupMusicToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.startupMusicToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.backgroundupdate", "value" :"""
-                    ++ (if model.hideProgressMusicToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.hideProgressMusicToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "filelists.showparentdiritems", "value" :"""
-                    ++ (if model.parentFolderToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.parentFolderToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "filelists.ignorethewhensorting", "value" :"""
-                    ++ (if model.ignoreArticleToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.ignoreArticleToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "filelists.showextensions", "value" :"""
-                    ++ (if model.showFileToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.showFileToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "filelists.showaddsourcebuttons", "value" :"""
-                    ++ (if model.showButtonsToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.showButtonsToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "myvideos.selectaction", "value" :\"""" ++ model.actionSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "myvideos.stackvideos", "value" :"""
-                    ++ (if model.splitVideoToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.splitVideoToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "myvideos.replacelabels", "value" :"""
-                    ++ (if model.replaceFileToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.replaceFileToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videolibrary.groupmoviesets", "value" :"""
-                    ++ (if model.showSetVideoToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.showSetVideoToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videolibrary.groupsingleitemsets", "value" :"""
-                    ++ (if model.includeSingleVideoToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.includeSingleVideoToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videolibrary.moviesetsfolder", "value" :\"""" ++ model.setInfoVideoTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videolibrary.musicvideosallperformers", "value" :"""
-                    ++ (if model.showVideoToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.showVideoToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videolibrary.artworklevel", "value" :\"""" ++ model.videoArtworkSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "myvideos.extractthumb", "value" :"""
-                    ++ (if model.extractToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.extractToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.showcompilationartists", "value" :"""
-                    ++ (if model.showArtistMusicToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.showArtistMusicToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.showdiscs", "value" :"""
-                    ++ (if model.splitAlbumMusicToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.splitAlbumMusicToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.useartistsortname", "value" :"""
-                    ++ (if model.sortnameMusicToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.sortnameMusicToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.artistsfolder", "value" :\"""" ++ model.artistInfoMusicTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.albumsscraper", "value" :\"""" ++ model.albumInfoSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.artistsscraper", "value" :\"""" ++ model.artistInfoSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.overridetags", "value" :"""
-                    ++ (if model.onlineInfoMusicToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.onlineInfoMusicToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.artworklevel", "value" :\"""" ++ model.musicArtworkSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musiclibrary.preferonlinealbumart", "value" :"""
-                    ++ (if model.onlineAlbumMusicToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.onlineAlbumMusicToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musicfiles.selectaction", "value" :"""
-                    ++ (if model.visualToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.visualToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "musicfiles.usetags", "value" :"""
-                    ++ (if model.tagReadingToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.tagReadingToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pictures.usetags", "value" :"""
-                    ++ (if model.exifToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.exifToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "picture.generatethumbs", "value" :"""
-                    ++ (if model.autoThumbnailToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.autoThumbnailToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pictures.showvideos", "value" :"""
-                    ++ (if model.videoListingToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.videoListingToggle
                     ++ """ }, "id": 1 }"""
                 ]
             )
@@ -540,9 +372,6 @@ update msg model =
 
         VideoListingToggleMsg ->
             ( { model | videoListingToggle = not model.videoListingToggle }, Cmd.none )
-
-        ReplaceMe ->
-            ( model, Cmd.none )
 
         ActionDropdownMsg subMsg ->
             let

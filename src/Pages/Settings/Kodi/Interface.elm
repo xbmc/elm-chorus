@@ -17,8 +17,6 @@ import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
 import WSDecoder exposing (Option, SettingDefault(..), SettingsObj)
-import Widget
-import Widget.Material as Material
 
 
 page : Page Params Model Msg
@@ -170,25 +168,6 @@ init shared url =
 -- UPDATE
 
 
-settingsInputBlock : String -> (String -> msg) -> String -> String -> Element msg
-settingsInputBlock val msg title description =
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 20, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Input.text [ width (px 400), Font.size 14, Font.color (rgb255 3 3 3), Border.widthEach { top = 0, bottom = 1, left = 0, right = 0 }, Border.rounded 0, Font.medium, Border.color (rgb255 3 3 3), Font.size 13 ]
-                { onChange = msg
-                , text = val
-                , placeholder = Nothing
-                , label = Input.labelHidden ""
-                }
-            ]
-        , row []
-            [ el [ width (px 300) ] (text "")
-            , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-            ]
-        ]
-
-
 settingsDropdownBlock : Dropdown Option -> (Dropdown.Msg Option -> Msg) -> String -> String -> Element Msg
 settingsDropdownBlock dropdown msg title description =
     column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
@@ -211,35 +190,8 @@ settingsDropdownBlock dropdown msg title description =
         ]
 
 
-settingsToggleBlock : Bool -> msg -> String -> String -> Element msg
-settingsToggleBlock isToggleActive toggleMsg title description =
-    let
-        descriptionBlock =
-            if description == "" then
-                Element.none
-
-            else
-                row []
-                    [ el [ width (px 300) ] (text "")
-                    , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-                    ]
-    in
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 0, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Widget.switch (Material.switch customPalette)
-                { description = ""
-                , onPress = Just toggleMsg
-                , active = isToggleActive
-                }
-            ]
-        , descriptionBlock
-        ]
-
-
 type Msg
-    = ReplaceMe
-    | SkinDropdownMsg (Dropdown.Msg Option)
+    = SkinDropdownMsg (Dropdown.Msg Option)
     | ThemeDropdownMsg (Dropdown.Msg Option)
     | ColorDropdownMsg (Dropdown.Msg Option)
     | FontDropdownMsg (Dropdown.Msg Option)
@@ -273,12 +225,7 @@ update msg model =
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "lookandfeel.font", "value" :\"""" ++ model.fontSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "lookandfeel.skinzoom", "value" :""" ++ model.zoomTextField ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "lookandfeel.enablerssfeeds", "value" :"""
-                    ++ (if model.rssToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.rssToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "lookandfeel.rssedit", "value" :\"""" ++ model.editTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "locale.language", "value" :\"""" ++ model.languageSelected ++ """" }, "id": 1 }"""
@@ -289,28 +236,13 @@ update msg model =
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "screensaver.mode", "value" :\"""" ++ model.screensaverSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "screensaver.time", "value" :\"""" ++ model.waitTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "screensaver.usemusicvisinstead", "value" :"""
-                    ++ (if model.visualToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.visualToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "screensaver.usedimonpause", "value" :"""
-                    ++ (if model.videoToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.videoToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "masterlock.startuplock", "value" :"""
-                    ++ (if model.startupToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.startupToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "lookandfeel.startupaction", "value" :\"""" ++ model.performSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "lookandfeel.startupwindow", "value" :\"""" ++ model.startupSelected ++ """" }, "id": 1 }"""
@@ -337,9 +269,6 @@ update msg model =
 
         StartupToggleMsg ->
             ( { model | startupToggle = not model.startupToggle }, Cmd.none )
-
-        ReplaceMe ->
-            ( model, Cmd.none )
 
         SkinDropdownMsg subMsg ->
             let

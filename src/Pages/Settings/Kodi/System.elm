@@ -17,8 +17,6 @@ import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import WSDecoder exposing (Option, SettingDefault(..), SettingsObj)
-import Widget
-import Widget.Material as Material
 
 
 page : Page Params Model Msg
@@ -164,25 +162,6 @@ init shared url =
     )
 
 
-settingsInputBlock : String -> (String -> msg) -> String -> String -> Element msg
-settingsInputBlock val msg title description =
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 20, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Input.text [ width (px 400), Font.size 14, Font.color (rgb255 3 3 3), Border.widthEach { top = 0, bottom = 1, left = 0, right = 0 }, Border.rounded 0, Font.medium, Border.color (rgb255 3 3 3), Font.size 13 ]
-                { onChange = msg
-                , text = val
-                , placeholder = Nothing
-                , label = Input.labelHidden ""
-                }
-            ]
-        , row []
-            [ el [ width (px 300) ] (text "")
-            , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-            ]
-        ]
-
-
 settingsDropdownBlock : Dropdown Option -> (Dropdown.Msg Option -> Msg) -> String -> String -> Element Msg
 settingsDropdownBlock dropdown msg title description =
     column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
@@ -209,35 +188,8 @@ settingsDropdownBlock dropdown msg title description =
 -- UPDATE
 
 
-settingsToggleBlock : Bool -> msg -> String -> String -> Element msg
-settingsToggleBlock isToggleActive toggleMsg title description =
-    let
-        descriptionBlock =
-            if description == "" then
-                Element.none
-
-            else
-                row []
-                    [ el [ width (px 300) ] (text "")
-                    , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-                    ]
-    in
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 0, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Widget.switch (Material.switch customPalette)
-                { description = ""
-                , onPress = Just toggleMsg
-                , active = isToggleActive
-                }
-            ]
-        , descriptionBlock
-        ]
-
-
 type Msg
-    = ReplaceMe
-    | MonitorDropdownMsg (Dropdown.Msg Option)
+    = MonitorDropdownMsg (Dropdown.Msg Option)
     | DisplayDropdownMsg (Dropdown.Msg Option)
     | ResolutionDropdownMsg (Dropdown.Msg Option)
     | AudioOutputDropdownMsg (Dropdown.Msg Option)
@@ -277,12 +229,7 @@ update msg model =
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videoscreen.screen", "value" :\"""" ++ model.displaySelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videoscreen.resolution", "value" :\"""" ++ model.resolutionSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "videoscreen.blankdisplays", "value" :"""
-                    ++ (if model.blankToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.blankToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "audiooutput.audiodevice", "value" :\"""" ++ model.audioOutputSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "audiooutput.channels", "value" :\"""" ++ model.channelNumberSelected ++ """" }, "id": 1 }"""
@@ -290,12 +237,7 @@ update msg model =
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "audiooutput.guisoundmode", "value" :\"""" ++ model.playGUISelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "lookandfeel.soundskin", "value" :""" ++ model.guiTextField ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "network.usehttpproxy", "value" :"""
-                    ++ (if model.proxyToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.proxyToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "network.httpproxytype", "value" :\"""" ++ model.proxySelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "network.httpproxyserver", "value" :""" ++ model.serverTextField ++ """ }, "id": 1 }"""
@@ -305,63 +247,28 @@ update msg model =
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "network.bandwidth", "value" :\"""" ++ model.internetTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "powermanagement.displaysoff", "value" :""" ++ model.displayTextField ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "powermanagement.wakeonaccess", "value" :"""
-                    ++ (if model.wakeupToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.wakeupToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "general.addonupdates", "value" :\"""" ++ model.updateSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "general.addonnotifications", "value" :"""
-                    ++ (if model.notifToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.notifToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "addons.unknownsources", "value" :"""
-                    ++ (if model.sourcesToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.sourcesToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "addons.updatemode", "value" :\"""" ++ model.officialSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "debug.showloginfo", "value" :"""
-                    ++ (if model.debugToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.debugToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "debug.extralogging", "value" :"""
-                    ++ (if model.componentToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.componentToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "debug.screenshotpath", "value" :\"""" ++ model.screenshotTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "eventlog.enabled", "value" :"""
-                    ++ (if model.eventToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.eventToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "eventlog.enablednotifications", "value" :"""
-                    ++ (if model.notifLoggingToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.notifLoggingToggle
                     ++ """ }, "id": 1 }"""
                 ]
             )
@@ -419,9 +326,6 @@ update msg model =
 
         NotifLoggingToggleMsg ->
             ( { model | notifLoggingToggle = not model.notifLoggingToggle }, Cmd.none )
-
-        ReplaceMe ->
-            ( model, Cmd.none )
 
         MonitorDropdownMsg subMsg ->
             let

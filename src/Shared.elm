@@ -70,14 +70,6 @@ type alias Model =
     , artist_list : List ArtistObj
     , album_list : List AlbumObj
     , settings_list : List SettingsObj
-
-    -- , settingsActionList : List SettingsActionObj
-    -- , settingsAddonList : List SettingsAddonObj
-    -- , settingsBoolList : List SettingsBoolObj
-    -- , settingsIntList  : List SettingsIntObj
-    -- , settingsListList  : List SettingsListObj
-    -- , settingsPathList : List SettingsPathObj
-    -- , settingsStringList : List SettingsStringObj
     , song_list : List SongObj
     , genre_list : List String
     , movie_list : List MovieObj
@@ -287,14 +279,6 @@ init flags url key =
       , artist_list = []
       , album_list = []
       , settings_list = []
-
-      --   , settingsActionList = []
-      --     , settingsAddonList = []
-      --     , settingsBoolList = []
-      --     , settingsIntList  = []
-      --     , settingsListList  = []
-      --     , settingsPathList = []
-      --     , settingsStringList = []
       , song_list = []
       , genre_list = []
       , movie_list = []
@@ -634,34 +618,6 @@ update msg model =
                     , Cmd.none
                     )
 
-        -- ResultL settingsList ->
-        --     ( { model | settingsActionList = settingsList }
-        --     , Cmd.none
-        --     )
-        -- ResultM settingsList ->
-        --     ( { model | settingsAddonList = settingsList }
-        --     , Cmd.none
-        --     )
-        -- ResultN settingsList ->
-        --     ( { model | settingsBoolList = settingsList }
-        --     , Cmd.none
-        --     )
-        -- ResultO settingsList ->
-        --     ( { model | settingsIntList = settingsList }
-        --     , Cmd.none
-        --     )
-        -- ResultP settingsList ->
-        --     ( { model | settingsListList = settingsList }
-        --     , Cmd.none
-        --     )
-        -- ResultQ settingsList ->
-        --     ( { model | settingsPathList = settingsList }
-        --     , Cmd.none
-        --     )
-        -- ResultR settingsList ->
-        --     ( { model | settingsStringList = settingsList }
-        --     , Cmd.none
-        --     )
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
             , Cmd.none

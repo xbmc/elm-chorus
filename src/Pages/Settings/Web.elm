@@ -17,17 +17,6 @@ import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import WSDecoder exposing (LocalSettings, encodeLocalSettings)
-import Widget
-import Widget.Material as Material
-
-
-
--- import PortFunnel.LocalStorage as LocalStorage
---     exposing
---         ( Key
---         , Message
---         , Response(..)
---         )
 
 
 page : Page Params Model Msg
@@ -155,78 +144,14 @@ init shared url =
 
             else
                 getVal 13 shared.interfaceLocalSettings
-      , articleToggle =
-            if getVal 4 shared.interfaceLocalSettings == "" then
-                True
-
-            else if getVal 4 shared.interfaceLocalSettings == "true" then
-                True
-
-            else
-                False
-      , albumToggle =
-            if getVal 5 shared.interfaceLocalSettings == "" then
-                True
-
-            else if getVal 5 shared.interfaceLocalSettings == "true" then
-                True
-
-            else
-                False
-      , playlistToggle =
-            if getVal 6 shared.interfaceLocalSettings == "" then
-                True
-
-            else if getVal 6 shared.interfaceLocalSettings == "true" then
-                True
-
-            else
-                False
-      , headersToggle =
-            if getVal 7 shared.interfaceLocalSettings == "" then
-                True
-
-            else if getVal 7 shared.interfaceLocalSettings == "true" then
-                True
-
-            else
-                False
-      , thumbsUpToggle =
-            if getVal 8 shared.interfaceLocalSettings == "" then
-                True
-
-            else if getVal 8 shared.interfaceLocalSettings == "true" then
-                True
-
-            else
-                False
-      , deviceToggle =
-            if getVal 9 shared.interfaceLocalSettings == "" then
-                True
-
-            else if getVal 9 shared.interfaceLocalSettings == "true" then
-                True
-
-            else
-                False
-      , proxyToggle =
-            if getVal 14 shared.interfaceLocalSettings == "" then
-                True
-
-            else if getVal 14 shared.interfaceLocalSettings == "true" then
-                True
-
-            else
-                False
-      , nfoToggle =
-            if getVal 15 shared.interfaceLocalSettings == "" then
-                True
-
-            else if getVal 15 shared.interfaceLocalSettings == "true" then
-                True
-
-            else
-                False
+      , articleToggle = stringToBoolValue (getVal 4 shared.interfaceLocalSettings)
+      , albumToggle = stringToBoolValue (getVal 5 shared.interfaceLocalSettings)
+      , playlistToggle = stringToBoolValue (getVal 6 shared.interfaceLocalSettings)
+      , headersToggle = stringToBoolValue (getVal 7 shared.interfaceLocalSettings)
+      , thumbsUpToggle = stringToBoolValue (getVal 8 shared.interfaceLocalSettings)
+      , deviceToggle = stringToBoolValue (getVal 9 shared.interfaceLocalSettings)
+      , proxyToggle = stringToBoolValue (getVal 14 shared.interfaceLocalSettings)
+      , nfoToggle = stringToBoolValue (getVal 15 shared.interfaceLocalSettings)
       , portTextField =
             if getVal 10 shared.interfaceLocalSettings == "" then
                 ""
@@ -317,8 +242,7 @@ settingsLevelList =
 
 
 type Msg
-    = ReplaceMe
-    | LanguageDropdownMsg (Dropdown.Msg Options)
+    = LanguageDropdownMsg (Dropdown.Msg Options)
     | DefaultPlayerDropdownMsg (Dropdown.Msg Options)
     | ControlDropdownMsg (Dropdown.Msg Options)
     | PollDropdownMsg (Dropdown.Msg Options)
@@ -337,25 +261,6 @@ type Msg
     | FanartTextFieldMsg String
     | YoutubeTextFieldMsg String
     | SaveSettingsMsg
-
-
-settingsInputBlock : String -> (String -> msg) -> String -> String -> Element msg
-settingsInputBlock val msg title description =
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 20, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Input.text [ width (px 400), Font.size 14, Font.color (rgb255 3 3 3), Border.widthEach { top = 0, bottom = 1, left = 0, right = 0 }, Border.rounded 0, Font.medium, Border.color (rgb255 3 3 3), Font.size 13 ]
-                { onChange = msg
-                , text = val
-                , placeholder = Nothing
-                , label = Input.labelHidden ""
-                }
-            ]
-        , row []
-            [ el [ width (px 300) ] (text "")
-            , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-            ]
-        ]
 
 
 settingsDropdownBlock : Dropdown Options -> (Dropdown.Msg Options -> Msg) -> String -> String -> Element Msg
@@ -377,32 +282,6 @@ settingsDropdownBlock dropdown msg title description =
             [ el [ width (px 300) ] (text "")
             , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
             ]
-        ]
-
-
-settingsToggleBlock : Bool -> msg -> String -> String -> Element msg
-settingsToggleBlock isToggleActive toggleMsg title description =
-    let
-        descriptionBlock =
-            if description == "" then
-                Element.none
-
-            else
-                row []
-                    [ el [ width (px 300) ] (text "")
-                    , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-                    ]
-    in
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 0, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Widget.switch (Material.switch customPalette)
-                { description = ""
-                , onPress = Just toggleMsg
-                , active = isToggleActive
-                }
-            ]
-        , descriptionBlock
         ]
 
 
@@ -431,12 +310,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "Ignore article"
-                        (if model.articleToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.articleToggle)
                         model.localSettingsList
                 , articleToggle = not model.articleToggle
               }
@@ -447,12 +321,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "Album artists"
-                        (if model.albumToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.albumToggle)
                         model.localSettingsList
                 , albumToggle = not model.albumToggle
               }
@@ -463,12 +332,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "Focus playlist"
-                        (if model.playlistToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.playlistToggle)
                         model.localSettingsList
                 , playlistToggle = not model.playlistToggle
               }
@@ -479,12 +343,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "headers"
-                        (if model.headersToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.headersToggle)
                         model.localSettingsList
                 , headersToggle = not model.headersToggle
               }
@@ -495,12 +354,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "thumbs Up"
-                        (if model.thumbsUpToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.thumbsUpToggle)
                         model.localSettingsList
                 , thumbsUpToggle = not model.thumbsUpToggle
               }
@@ -511,12 +365,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "device name"
-                        (if model.deviceToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.deviceToggle)
                         model.localSettingsList
                 , deviceToggle = not model.deviceToggle
               }
@@ -527,12 +376,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "proxy"
-                        (if model.proxyToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.proxyToggle)
                         model.localSettingsList
                 , proxyToggle = not model.proxyToggle
               }
@@ -543,20 +387,12 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "nfo"
-                        (if model.nfoToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.nfoToggle)
                         model.localSettingsList
                 , nfoToggle = not model.nfoToggle
               }
             , Cmd.none
             )
-
-        ReplaceMe ->
-            ( model, Cmd.none )
 
         LanguageDropdownMsg subMsg ->
             let

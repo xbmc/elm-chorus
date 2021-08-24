@@ -17,8 +17,6 @@ import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import WSDecoder exposing (Option, SettingDefault(..), SettingsObj)
-import Widget
-import Widget.Material as Material
 
 
 page : Page Params Model Msg
@@ -106,25 +104,6 @@ init shared url =
     )
 
 
-settingsInputBlock : String -> (String -> msg) -> String -> String -> Element msg
-settingsInputBlock val msg title description =
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 20, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Input.text [ width (px 400), Font.size 14, Font.color (rgb255 3 3 3), Border.widthEach { top = 0, bottom = 1, left = 0, right = 0 }, Border.rounded 0, Font.medium, Border.color (rgb255 3 3 3), Font.size 13 ]
-                { onChange = msg
-                , text = val
-                , placeholder = Nothing
-                , label = Input.labelHidden ""
-                }
-            ]
-        , row []
-            [ el [ width (px 300) ] (text "")
-            , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-            ]
-        ]
-
-
 settingsDropdownBlock : Dropdown Option -> (Dropdown.Msg Option -> Msg) -> String -> String -> Element Msg
 settingsDropdownBlock dropdown msg title description =
     column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
@@ -147,39 +126,12 @@ settingsDropdownBlock dropdown msg title description =
         ]
 
 
-settingsToggleBlock : Bool -> msg -> String -> String -> Element msg
-settingsToggleBlock isToggleActive toggleMsg title description =
-    let
-        descriptionBlock =
-            if description == "" then
-                Element.none
-
-            else
-                row []
-                    [ el [ width (px 300) ] (text "")
-                    , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-                    ]
-    in
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 0, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Widget.switch (Material.switch customPalette)
-                { description = ""
-                , onPress = Just toggleMsg
-                , active = isToggleActive
-                }
-            ]
-        , descriptionBlock
-        ]
-
-
 
 -- UPDATE
 
 
 type Msg
-    = ReplaceMe
-    | DefaultActionDropdownMsg (Dropdown.Msg Option)
+    = DefaultActionDropdownMsg (Dropdown.Msg Option)
     | FramerateDropdownMsg (Dropdown.Msg Option)
     | FullScreenDropdownMsg (Dropdown.Msg Option)
     | RecordingActionDropdownMsg (Dropdown.Msg Option)
@@ -202,66 +154,31 @@ update msg model =
             ( model
             , sendActions
                 [ """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrmanager.preselectplayingchannel", "value" :"""
-                    ++ (if model.channelListToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.channelListToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrmanager.syncchannelgroups", "value" :"""
-                    ++ (if model.channelGroupToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.channelGroupToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "epg.selectaction", "value" :\"""" ++ model.defaultActionSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrplayback.switchtofullscreenchanneltypes", "value" :\"""" ++ model.fullScreenSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrplayback.confirmchannelswitch", "value" :"""
-                    ++ (if model.channelSwitchToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.channelSwitchToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrplayback.fps", "value" :\"""" ++ model.framerateSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrplayback.enableradiords", "value" :"""
-                    ++ (if model.radioToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.radioToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrplayback.trafficadvisory", "value" :"""
-                    ++ (if model.trafficToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.trafficToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrrecord.instantrecordaction", "value" :\"""" ++ model.recordingActionSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrrecord.instantrecordtime", "value" :""" ++ model.recordingTextField ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrreminders.autoclosedelay", "value" :""" ++ model.closePopupTextFeild ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrreminders.autorecord", "value" :"""
-                    ++ (if model.recordingToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.recordingToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "pvrreminders.autoswitch", "value" :"""
-                    ++ (if model.channelCloseToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.channelCloseToggle
                     ++ """ }, "id": 1 }"""
                 ]
             )
@@ -292,9 +209,6 @@ update msg model =
 
         ChannelCloseToggleMsg ->
             ( { model | channelCloseToggle = not model.channelCloseToggle }, Cmd.none )
-
-        ReplaceMe ->
-            ( model, Cmd.none )
 
         DefaultActionDropdownMsg subMsg ->
             let

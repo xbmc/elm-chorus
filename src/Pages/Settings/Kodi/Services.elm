@@ -17,8 +17,6 @@ import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import WSDecoder exposing (Option, SettingDefault(..), SettingsObj)
-import Widget
-import Widget.Material as Material
 
 
 page : Page Params Model Msg
@@ -96,25 +94,6 @@ init shared url =
     )
 
 
-settingsInputBlock : String -> (String -> msg) -> String -> String -> Element msg
-settingsInputBlock val msg title description =
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 20, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Input.text [ width (px 400), Font.size 14, Font.color (rgb255 3 3 3), Border.widthEach { top = 0, bottom = 1, left = 0, right = 0 }, Border.rounded 0, Font.medium, Border.color (rgb255 3 3 3), Font.size 13 ]
-                { onChange = msg
-                , text = val
-                , placeholder = Nothing
-                , label = Input.labelHidden ""
-                }
-            ]
-        , row []
-            [ el [ width (px 300) ] (text "")
-            , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-            ]
-        ]
-
-
 settingsDropdownBlock : Dropdown Option -> (Dropdown.Msg Option -> Msg) -> String -> String -> Element Msg
 settingsDropdownBlock dropdown msg title description =
     column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
@@ -141,35 +120,8 @@ settingsDropdownBlock dropdown msg title description =
 -- UPDATE
 
 
-settingsToggleBlock : Bool -> msg -> String -> String -> Element msg
-settingsToggleBlock isToggleActive toggleMsg title description =
-    let
-        descriptionBlock =
-            if description == "" then
-                Element.none
-
-            else
-                row []
-                    [ el [ width (px 300) ] (text "")
-                    , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-                    ]
-    in
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 0, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Widget.switch (Material.switch customPalette)
-                { description = ""
-                , onPress = Just toggleMsg
-                , active = isToggleActive
-                }
-            ]
-        , descriptionBlock
-        ]
-
-
 type Msg
-    = ReplaceMe
-    | WebInterfaceDropdownMsg (Dropdown.Msg Option)
+    = WebInterfaceDropdownMsg (Dropdown.Msg Option)
     | ServicesToggleMsg
     | RemoteHTTPToggleMsg
     | AuthToggleMsg
@@ -197,96 +149,41 @@ update msg model =
             , sendActions
                 [ """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.devicename", "value" :\"""" ++ model.deviceNameTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.zeroconf", "value" :"""
-                    ++ (if model.servicesToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.servicesToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "servecis.webserver", "value" :"""
-                    ++ (if model.remoteHTTPToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.remoteHTTPToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.webserverport", "value" :""" ++ model.portTextField ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.webserverauthentication", "value" :"""
-                    ++ (if model.authToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.authToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.webserverusername", "value" :\"""" ++ model.usernameTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.webserverpassword", "value" :\"""" ++ model.passwordTextField ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.webserverssl", "value" :"""
-                    ++ (if model.sslToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.sslToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.webskin", "value" :\"""" ++ model.webInterfaceSelected ++ """" }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.esenabled", "value" :"""
-                    ++ (if model.remoteThisSystemToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.remoteThisSystemToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.esallinterfaces", "value" :"""
-                    ++ (if model.remoteOtherSystemToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.remoteOtherSystemToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.upnp", "value" :"""
-                    ++ (if model.upnpToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.upnpToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.upnpserver", "value" :"""
-                    ++ (if model.shareLibToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.shareLibToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.upnprenderer", "value" :"""
-                    ++ (if model.remoteUPNPToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.remoteUPNPToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.airplay", "value" :"""
-                    ++ (if model.airplayToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.airplayToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.useairplaypassword", "value" :"""
-                    ++ (if model.passwordToggle then
-                            "true"
-
-                        else
-                            "false"
-                       )
+                    ++ boolToStringValue model.passwordToggle
                     ++ """ }, "id": 1 }"""
                 , """{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": { "setting" : "services.airplaypassword", "value" :\"""" ++ model.airplayPasswordTextField ++ """" }, "id": 1 }"""
                 ]
@@ -339,9 +236,6 @@ update msg model =
 
         PasswordToggleMsg ->
             ( { model | passwordToggle = not model.passwordToggle }, Cmd.none )
-
-        ReplaceMe ->
-            ( model, Cmd.none )
 
         WebInterfaceDropdownMsg subMsg ->
             let

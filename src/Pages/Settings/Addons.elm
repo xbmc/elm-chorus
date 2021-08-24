@@ -14,8 +14,6 @@ import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import WSDecoder exposing (LocalSettings, encodeLocalSettings)
-import Widget
-import Widget.Material as Material
 
 
 page : Page Params Model Msg
@@ -99,375 +97,47 @@ init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
     ( { route = url.route
       , localSettingsList = shared.addonLocalSettings
-      , aacToggle =
-            if getVal 1 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 1 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , wmaToggle =
-            if getVal 2 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 2 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , defaultToggle =
-            if getVal 3 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 3 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , sensToggle =
-            if getVal 4 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 4 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , inputToggle =
-            if getVal 5 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 5 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , rtmpToggle =
-            if getVal 6 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 6 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , universalAlbumToggle =
-            if getVal 7 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 7 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , genericAlbumToggle =
-            if getVal 8 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 8 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , localToggle =
-            if getVal 9 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 9 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , universalArtistToggle =
-            if getVal 10 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 10 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , genericArtistToggle =
-            if getVal 11 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 11 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , musicToggle =
-            if getVal 12 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 12 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , fanartToggle =
-            if getVal 13 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 13 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , imdbToggle =
-            if getVal 14 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 14 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , musicBrainzToggle =
-            if getVal 15 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 15 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , audioToggle =
-            if getVal 16 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 16 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , movieScraperToggle =
-            if getVal 17 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 17 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , movieDatabaseToggle =
-            if getVal 18 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 18 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , movieDatabsePythonToggle =
-            if getVal 19 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 19 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , movieDatabseTVToggle =
-            if getVal 20 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 20 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , tmdbToggle =
-            if getVal 21 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 21 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , joystickToggle =
-            if getVal 22 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 22 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , youtubeToggle =
-            if getVal 23 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 23 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , addonToggle =
-            if getVal 24 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 24 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , weatherToggle =
-            if getVal 25 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 25 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , englishToggle =
-            if getVal 26 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 26 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , uiToggle =
-            if getVal 27 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 27 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , blackToggle =
-            if getVal 28 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 28 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , dimToggle =
-            if getVal 29 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 29 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , certifiToggle =
-            if getVal 30 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 30 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , chardetToggle =
-            if getVal 31 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 31 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , idnaToggle =
-            if getVal 32 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 32 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , pythonImageToggle =
-            if getVal 33 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 33 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , pythonCryptoToggle =
-            if getVal 34 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 34 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , requestsToggle =
-            if getVal 35 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 35 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , sixToggle =
-            if getVal 36 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 36 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , urllibToggle =
-            if getVal 37 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 37 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , versionToggle =
-            if getVal 38 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 38 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , estouchyToggle =
-            if getVal 39 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 39 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , estuaryToggle =
-            if getVal 40 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 40 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
-      , chorusToggle =
-            if getVal 41 shared.addonLocalSettings == "" then
-                True
-
-            else if getVal 41 shared.addonLocalSettings == "true" then
-                True
-
-            else
-                False
+      , aacToggle = stringToBoolValue (getVal 1 shared.addonLocalSettings)
+      , wmaToggle = stringToBoolValue (getVal 2 shared.addonLocalSettings)
+      , defaultToggle = stringToBoolValue (getVal 3 shared.addonLocalSettings)
+      , sensToggle = stringToBoolValue (getVal 4 shared.addonLocalSettings)
+      , inputToggle = stringToBoolValue (getVal 5 shared.addonLocalSettings)
+      , rtmpToggle = stringToBoolValue (getVal 6 shared.addonLocalSettings)
+      , universalAlbumToggle = stringToBoolValue (getVal 7 shared.addonLocalSettings)
+      , genericAlbumToggle = stringToBoolValue (getVal 8 shared.addonLocalSettings)
+      , localToggle = stringToBoolValue (getVal 9 shared.addonLocalSettings)
+      , universalArtistToggle = stringToBoolValue (getVal 10 shared.addonLocalSettings)
+      , genericArtistToggle = stringToBoolValue (getVal 11 shared.addonLocalSettings)
+      , musicToggle = stringToBoolValue (getVal 12 shared.addonLocalSettings)
+      , fanartToggle = stringToBoolValue (getVal 13 shared.addonLocalSettings)
+      , imdbToggle = stringToBoolValue (getVal 14 shared.addonLocalSettings)
+      , musicBrainzToggle = stringToBoolValue (getVal 15 shared.addonLocalSettings)
+      , audioToggle = stringToBoolValue (getVal 16 shared.addonLocalSettings)
+      , movieScraperToggle = stringToBoolValue (getVal 17 shared.addonLocalSettings)
+      , movieDatabaseToggle = stringToBoolValue (getVal 18 shared.addonLocalSettings)
+      , movieDatabsePythonToggle = stringToBoolValue (getVal 19 shared.addonLocalSettings)
+      , movieDatabseTVToggle = stringToBoolValue (getVal 20 shared.addonLocalSettings)
+      , tmdbToggle = stringToBoolValue (getVal 21 shared.addonLocalSettings)
+      , joystickToggle = stringToBoolValue (getVal 22 shared.addonLocalSettings)
+      , youtubeToggle = stringToBoolValue (getVal 23 shared.addonLocalSettings)
+      , addonToggle = stringToBoolValue (getVal 24 shared.addonLocalSettings)
+      , weatherToggle = stringToBoolValue (getVal 25 shared.addonLocalSettings)
+      , englishToggle = stringToBoolValue (getVal 26 shared.addonLocalSettings)
+      , uiToggle = stringToBoolValue (getVal 27 shared.addonLocalSettings)
+      , blackToggle = stringToBoolValue (getVal 28 shared.addonLocalSettings)
+      , dimToggle = stringToBoolValue (getVal 29 shared.addonLocalSettings)
+      , certifiToggle = stringToBoolValue (getVal 30 shared.addonLocalSettings)
+      , chardetToggle = stringToBoolValue (getVal 31 shared.addonLocalSettings)
+      , idnaToggle = stringToBoolValue (getVal 32 shared.addonLocalSettings)
+      , pythonImageToggle = stringToBoolValue (getVal 33 shared.addonLocalSettings)
+      , pythonCryptoToggle = stringToBoolValue (getVal 34 shared.addonLocalSettings)
+      , requestsToggle = stringToBoolValue (getVal 35 shared.addonLocalSettings)
+      , sixToggle = stringToBoolValue (getVal 36 shared.addonLocalSettings)
+      , urllibToggle = stringToBoolValue (getVal 37 shared.addonLocalSettings)
+      , versionToggle = stringToBoolValue (getVal 38 shared.addonLocalSettings)
+      , estouchyToggle = stringToBoolValue (getVal 39 shared.addonLocalSettings)
+      , estuaryToggle = stringToBoolValue (getVal 40 shared.addonLocalSettings)
+      , chorusToggle = stringToBoolValue (getVal 41 shared.addonLocalSettings)
       }
     , Cmd.none
     )
@@ -478,8 +148,7 @@ init shared url =
 
 
 type Msg
-    = ReplaceMe
-    | AACToggleMsg
+    = AACToggleMsg
     | WMAToggleMsg
     | DefaultToggleMsg
     | SensToggleMsg
@@ -533,12 +202,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "aac"
-                        (if model.aacToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.aacToggle)
                         model.localSettingsList
                 , aacToggle = not model.aacToggle
               }
@@ -549,12 +213,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "wma"
-                        (if model.wmaToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.wmaToggle)
                         model.localSettingsList
                 , wmaToggle = not model.wmaToggle
               }
@@ -565,12 +224,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "default"
-                        (if model.defaultToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.defaultToggle)
                         model.localSettingsList
                 , defaultToggle = not model.defaultToggle
               }
@@ -581,12 +235,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "sens"
-                        (if model.sensToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.sensToggle)
                         model.localSettingsList
                 , sensToggle = not model.sensToggle
               }
@@ -597,12 +246,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "input"
-                        (if model.inputToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.inputToggle)
                         model.localSettingsList
                 , inputToggle = not model.inputToggle
               }
@@ -613,12 +257,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "rtmp"
-                        (if model.rtmpToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.rtmpToggle)
                         model.localSettingsList
                 , rtmpToggle = not model.rtmpToggle
               }
@@ -629,12 +268,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "universal album"
-                        (if model.universalAlbumToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.universalAlbumToggle)
                         model.localSettingsList
                 , universalAlbumToggle = not model.universalAlbumToggle
               }
@@ -645,12 +279,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "generic album"
-                        (if model.genericAlbumToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.genericAlbumToggle)
                         model.localSettingsList
                 , genericAlbumToggle = not model.genericAlbumToggle
               }
@@ -661,12 +290,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "local"
-                        (if model.localToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.localToggle)
                         model.localSettingsList
                 , localToggle = not model.localToggle
               }
@@ -677,12 +301,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "universal artist"
-                        (if model.universalArtistToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.universalArtistToggle)
                         model.localSettingsList
                 , universalArtistToggle = not model.universalArtistToggle
               }
@@ -693,12 +312,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "generic artist"
-                        (if model.genericArtistToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.genericArtistToggle)
                         model.localSettingsList
                 , genericArtistToggle = not model.genericArtistToggle
               }
@@ -709,12 +323,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "music"
-                        (if model.musicToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.musicToggle)
                         model.localSettingsList
                 , musicToggle = not model.musicToggle
               }
@@ -725,12 +334,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "fanart"
-                        (if model.fanartToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.fanartToggle)
                         model.localSettingsList
                 , fanartToggle = not model.fanartToggle
               }
@@ -741,12 +345,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "imdb"
-                        (if model.imdbToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.imdbToggle)
                         model.localSettingsList
                 , imdbToggle = not model.imdbToggle
               }
@@ -757,12 +356,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "music brainz"
-                        (if model.musicBrainzToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.musicBrainzToggle)
                         model.localSettingsList
                 , musicBrainzToggle = not model.musicBrainzToggle
               }
@@ -773,12 +367,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "audio"
-                        (if model.audioToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.audioToggle)
                         model.localSettingsList
                 , audioToggle = not model.audioToggle
               }
@@ -789,12 +378,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "movie scraper"
-                        (if model.movieScraperToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.movieScraperToggle)
                         model.localSettingsList
                 , movieScraperToggle = not model.movieScraperToggle
               }
@@ -805,12 +389,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "movie database"
-                        (if model.movieDatabaseToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.movieDatabaseToggle)
                         model.localSettingsList
                 , movieDatabaseToggle = not model.movieDatabaseToggle
               }
@@ -821,12 +400,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "movie database python"
-                        (if model.movieDatabsePythonToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.movieDatabsePythonToggle)
                         model.localSettingsList
                 , movieDatabsePythonToggle = not model.movieDatabsePythonToggle
               }
@@ -837,12 +411,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "movie database tv"
-                        (if model.movieDatabseTVToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.movieDatabseTVToggle)
                         model.localSettingsList
                 , movieDatabseTVToggle = not model.movieDatabseTVToggle
               }
@@ -853,12 +422,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "tmdb"
-                        (if model.tmdbToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.tmdbToggle)
                         model.localSettingsList
                 , tmdbToggle = not model.tmdbToggle
               }
@@ -869,12 +433,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "joystick"
-                        (if model.joystickToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.joystickToggle)
                         model.localSettingsList
                 , joystickToggle = not model.joystickToggle
               }
@@ -885,12 +444,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "youtube"
-                        (if model.youtubeToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.youtubeToggle)
                         model.localSettingsList
                 , youtubeToggle = not model.youtubeToggle
               }
@@ -901,12 +455,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "addon"
-                        (if model.addonToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.addonToggle)
                         model.localSettingsList
                 , addonToggle = not model.addonToggle
               }
@@ -917,12 +466,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "weather"
-                        (if model.weatherToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.weatherToggle)
                         model.localSettingsList
                 , weatherToggle = not model.weatherToggle
               }
@@ -933,12 +477,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "english"
-                        (if model.englishToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.englishToggle)
                         model.localSettingsList
                 , englishToggle = not model.englishToggle
               }
@@ -949,12 +488,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "ui"
-                        (if model.uiToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.uiToggle)
                         model.localSettingsList
                 , uiToggle = not model.uiToggle
               }
@@ -965,12 +499,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "black"
-                        (if model.blackToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.blackToggle)
                         model.localSettingsList
                 , blackToggle = not model.blackToggle
               }
@@ -981,12 +510,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "dim"
-                        (if model.dimToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.dimToggle)
                         model.localSettingsList
                 , dimToggle = not model.dimToggle
               }
@@ -997,12 +521,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "certifi"
-                        (if model.certifiToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.certifiToggle)
                         model.localSettingsList
                 , certifiToggle = not model.certifiToggle
               }
@@ -1013,12 +532,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "chardet"
-                        (if model.chardetToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.chardetToggle)
                         model.localSettingsList
                 , chardetToggle = not model.chardetToggle
               }
@@ -1029,12 +543,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "idna"
-                        (if model.idnaToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.idnaToggle)
                         model.localSettingsList
                 , idnaToggle = not model.idnaToggle
               }
@@ -1045,12 +554,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "python image"
-                        (if model.pythonImageToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.pythonImageToggle)
                         model.localSettingsList
                 , pythonImageToggle = not model.pythonImageToggle
               }
@@ -1061,12 +565,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "python crypto"
-                        (if model.pythonCryptoToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.pythonCryptoToggle)
                         model.localSettingsList
                 , pythonCryptoToggle = not model.pythonCryptoToggle
               }
@@ -1077,12 +576,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "requests"
-                        (if model.requestsToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.requestsToggle)
                         model.localSettingsList
                 , requestsToggle = not model.requestsToggle
               }
@@ -1093,12 +587,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "six"
-                        (if model.sixToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.sixToggle)
                         model.localSettingsList
                 , sixToggle = not model.sixToggle
               }
@@ -1109,12 +598,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "url lib"
-                        (if model.urllibToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.urllibToggle)
                         model.localSettingsList
                 , urllibToggle = not model.urllibToggle
               }
@@ -1125,12 +609,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "version"
-                        (if model.versionToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.versionToggle)
                         model.localSettingsList
                 , versionToggle = not model.versionToggle
               }
@@ -1141,12 +620,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "estouchy"
-                        (if model.estouchyToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.estouchyToggle)
                         model.localSettingsList
                 , estouchyToggle = not model.estouchyToggle
               }
@@ -1157,12 +631,7 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "estuary"
-                        (if model.estuaryToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.estuaryToggle)
                         model.localSettingsList
                 , estuaryToggle = not model.estuaryToggle
               }
@@ -1173,51 +642,17 @@ update msg model =
             ( { model
                 | localSettingsList =
                     setVal "chorus"
-                        (if model.chorusToggle then
-                            "false"
-
-                         else
-                            "true"
-                        )
+                        (boolToStringOppositeValue model.chorusToggle)
                         model.localSettingsList
                 , chorusToggle = not model.chorusToggle
               }
             , Cmd.none
             )
 
-        ReplaceMe ->
-            ( model, Cmd.none )
-
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
-
-
-settingsToggleBlock : Bool -> msg -> String -> String -> Element msg
-settingsToggleBlock isToggleActive toggleMsg title description =
-    let
-        descriptionBlock =
-            if description == "" then
-                Element.none
-
-            else
-                row []
-                    [ el [ width (px 300) ] (text "")
-                    , paragraph [ width (px 400), Font.size 12, Font.color (rgb255 142 142 142) ] [ text description ]
-                    ]
-    in
-    column [ paddingEach { top = 0, bottom = 30, left = 20, right = 20 } ]
-        [ row [ paddingEach { top = 0, bottom = 0, left = 0, right = 0 } ]
-            [ paragraph [ width (px 300), Font.size 14, Font.color (rgb255 3 3 3), Font.medium ] [ text title ]
-            , Widget.switch (Material.switch customPalette)
-                { description = ""
-                , onPress = Just toggleMsg
-                , active = isToggleActive
-                }
-            ]
-        , descriptionBlock
-        ]
 
 
 
