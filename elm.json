@@ -24,7 +24,7 @@
             "elm-community/list-extra": "8.3.1",
             "icidasset/elm-material-icons": "7.0.0",
             "mdgriffith/elm-ui": "1.1.8",
-            "phollyer/elm-ui-dropdown": "1.8.1"
+            "phollyer/elm-ui-dropdown": "2.2.1"
         },
         "indirect": {
             "Janiczek/cmd-extra": "1.1.0",
@@ -37,6 +37,7 @@
             "elm-community/dict-extra": "2.4.0",
             "elm-community/intdict": "3.0.0",
             "fredcy/elm-parseint": "2.0.1",
+            "mpizenberg/elm-pointer-events": "4.0.2",
             "myrho/elm-round": "1.0.4",
             "noahzgordon/elm-color-extra": "1.0.2",
             "phollyer/elm-cursor": "1.0.1",
