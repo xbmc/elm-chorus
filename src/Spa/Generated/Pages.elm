@@ -9,16 +9,9 @@ module Spa.Generated.Pages exposing
     , view
     )
 
-import Pages.Top
 import Pages.Addons
 import Pages.Browser
-import Pages.Lab
-import Pages.Movies
-import Pages.Music
-import Pages.NotFound
-import Pages.Playlists
-import Pages.Thumbsup
-import Pages.Tvshows
+import Pages.Browser.Source_String
 import Pages.Help.About
 import Pages.Help.Addons
 import Pages.Help.Changelog
@@ -27,20 +20,22 @@ import Pages.Help.Keyboard
 import Pages.Help.License
 import Pages.Help.Readme
 import Pages.Help.Translations
+import Pages.Lab
+import Pages.Movies
 import Pages.Movies.Recent
+import Pages.Music
+import Pages.Music.Album.Albumid_Int
 import Pages.Music.Albums
+import Pages.Music.Artist.Artistid_Int
 import Pages.Music.Artists
+import Pages.Music.Genre.Genre_String
 import Pages.Music.Genres
-import Pages.Music.Videos
-import Pages.Settings.Addons
-import Pages.Settings.Nav
-import Pages.Settings.Search
-import Pages.Settings.Web
-import Pages.Tvshows.Recent
-import Pages.Browser.Source_String
-import Pages.Playlists.Name_String
-import Pages.Videoplayer.Movieid_Int
 import Pages.Music.Top.Top
+import Pages.Music.Videos
+import Pages.NotFound
+import Pages.Playlists
+import Pages.Playlists.Name_String
+import Pages.Settings.Addons
 import Pages.Settings.Kodi.Games
 import Pages.Settings.Kodi.Interface
 import Pages.Settings.Kodi.Media
@@ -48,14 +43,20 @@ import Pages.Settings.Kodi.Player
 import Pages.Settings.Kodi.Pvr
 import Pages.Settings.Kodi.Services
 import Pages.Settings.Kodi.System
-import Pages.Music.Album.Albumid_Int
-import Pages.Music.Artist.Artistid_Int
-import Pages.Music.Genre.Genre_String
+import Pages.Settings.Nav
+import Pages.Settings.Search
+import Pages.Settings.Web
+import Pages.Thumbsup
+import Pages.Top
+import Pages.Tvshows
+import Pages.Tvshows.Recent
+import Pages.Videoplayer.Movieid_Int
 import Shared
 import Spa.Document as Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page exposing (Page)
 import Spa.Url as Url
+
 
 
 -- TYPES
@@ -160,127 +161,127 @@ init route =
     case route of
         Route.Top ->
             pages.top.init ()
-        
+
         Route.Addons ->
             pages.addons.init ()
-        
+
         Route.Browser ->
             pages.browser.init ()
-        
+
         Route.Lab ->
             pages.lab.init ()
-        
+
         Route.Movies ->
             pages.movies.init ()
-        
+
         Route.Music ->
             pages.music.init ()
-        
+
         Route.NotFound ->
             pages.notFound.init ()
-        
+
         Route.Playlists ->
             pages.playlists.init ()
-        
+
         Route.Thumbsup ->
             pages.thumbsup.init ()
-        
+
         Route.Tvshows ->
             pages.tvshows.init ()
-        
+
         Route.Help__About ->
             pages.help__about.init ()
-        
+
         Route.Help__Addons ->
             pages.help__addons.init ()
-        
+
         Route.Help__Changelog ->
             pages.help__changelog.init ()
-        
+
         Route.Help__Developers ->
             pages.help__developers.init ()
-        
+
         Route.Help__Keyboard ->
             pages.help__keyboard.init ()
-        
+
         Route.Help__License ->
             pages.help__license.init ()
-        
+
         Route.Help__Readme ->
             pages.help__readme.init ()
-        
+
         Route.Help__Translations ->
             pages.help__translations.init ()
-        
+
         Route.Movies__Recent ->
             pages.movies__recent.init ()
-        
+
         Route.Music__Albums ->
             pages.music__albums.init ()
-        
+
         Route.Music__Artists ->
             pages.music__artists.init ()
-        
+
         Route.Music__Genres ->
             pages.music__genres.init ()
-        
+
         Route.Music__Videos ->
             pages.music__videos.init ()
-        
+
         Route.Settings__Addons ->
             pages.settings__addons.init ()
-        
+
         Route.Settings__Nav ->
             pages.settings__nav.init ()
-        
+
         Route.Settings__Search ->
             pages.settings__search.init ()
-        
+
         Route.Settings__Web ->
             pages.settings__web.init ()
-        
+
         Route.Tvshows__Recent ->
             pages.tvshows__recent.init ()
-        
+
         Route.Browser__Source_String params ->
             pages.browser__source_string.init params
-        
+
         Route.Playlists__Name_String params ->
             pages.playlists__name_string.init params
-        
+
         Route.Videoplayer__Movieid_Int params ->
             pages.videoplayer__movieid_int.init params
-        
+
         Route.Music__Top__Top ->
             pages.music__top__top.init ()
-        
+
         Route.Settings__Kodi__Games ->
             pages.settings__kodi__games.init ()
-        
+
         Route.Settings__Kodi__Interface ->
             pages.settings__kodi__interface.init ()
-        
+
         Route.Settings__Kodi__Media ->
             pages.settings__kodi__media.init ()
-        
+
         Route.Settings__Kodi__Player ->
             pages.settings__kodi__player.init ()
-        
+
         Route.Settings__Kodi__Pvr ->
             pages.settings__kodi__pvr.init ()
-        
+
         Route.Settings__Kodi__Services ->
             pages.settings__kodi__services.init ()
-        
+
         Route.Settings__Kodi__System ->
             pages.settings__kodi__system.init ()
-        
+
         Route.Music__Album__Albumid_Int params ->
             pages.music__album__albumid_int.init params
-        
+
         Route.Music__Artist__Artistid_Int params ->
             pages.music__artist__artistid_int.init params
-        
+
         Route.Music__Genre__Genre_String params ->
             pages.music__genre__genre_string.init params
 
@@ -294,130 +295,130 @@ update bigMsg bigModel =
     case ( bigMsg, bigModel ) of
         ( Top__Msg msg, Top__Model model ) ->
             pages.top.update msg model
-        
+
         ( Addons__Msg msg, Addons__Model model ) ->
             pages.addons.update msg model
-        
+
         ( Browser__Msg msg, Browser__Model model ) ->
             pages.browser.update msg model
-        
+
         ( Lab__Msg msg, Lab__Model model ) ->
             pages.lab.update msg model
-        
+
         ( Movies__Msg msg, Movies__Model model ) ->
             pages.movies.update msg model
-        
+
         ( Music__Msg msg, Music__Model model ) ->
             pages.music.update msg model
-        
+
         ( NotFound__Msg msg, NotFound__Model model ) ->
             pages.notFound.update msg model
-        
+
         ( Playlists__Msg msg, Playlists__Model model ) ->
             pages.playlists.update msg model
-        
+
         ( Thumbsup__Msg msg, Thumbsup__Model model ) ->
             pages.thumbsup.update msg model
-        
+
         ( Tvshows__Msg msg, Tvshows__Model model ) ->
             pages.tvshows.update msg model
-        
+
         ( Help__About__Msg msg, Help__About__Model model ) ->
             pages.help__about.update msg model
-        
+
         ( Help__Addons__Msg msg, Help__Addons__Model model ) ->
             pages.help__addons.update msg model
-        
+
         ( Help__Changelog__Msg msg, Help__Changelog__Model model ) ->
             pages.help__changelog.update msg model
-        
+
         ( Help__Developers__Msg msg, Help__Developers__Model model ) ->
             pages.help__developers.update msg model
-        
+
         ( Help__Keyboard__Msg msg, Help__Keyboard__Model model ) ->
             pages.help__keyboard.update msg model
-        
+
         ( Help__License__Msg msg, Help__License__Model model ) ->
             pages.help__license.update msg model
-        
+
         ( Help__Readme__Msg msg, Help__Readme__Model model ) ->
             pages.help__readme.update msg model
-        
+
         ( Help__Translations__Msg msg, Help__Translations__Model model ) ->
             pages.help__translations.update msg model
-        
+
         ( Movies__Recent__Msg msg, Movies__Recent__Model model ) ->
             pages.movies__recent.update msg model
-        
+
         ( Music__Albums__Msg msg, Music__Albums__Model model ) ->
             pages.music__albums.update msg model
-        
+
         ( Music__Artists__Msg msg, Music__Artists__Model model ) ->
             pages.music__artists.update msg model
-        
+
         ( Music__Genres__Msg msg, Music__Genres__Model model ) ->
             pages.music__genres.update msg model
-        
+
         ( Music__Videos__Msg msg, Music__Videos__Model model ) ->
             pages.music__videos.update msg model
-        
+
         ( Settings__Addons__Msg msg, Settings__Addons__Model model ) ->
             pages.settings__addons.update msg model
-        
+
         ( Settings__Nav__Msg msg, Settings__Nav__Model model ) ->
             pages.settings__nav.update msg model
-        
+
         ( Settings__Search__Msg msg, Settings__Search__Model model ) ->
             pages.settings__search.update msg model
-        
+
         ( Settings__Web__Msg msg, Settings__Web__Model model ) ->
             pages.settings__web.update msg model
-        
+
         ( Tvshows__Recent__Msg msg, Tvshows__Recent__Model model ) ->
             pages.tvshows__recent.update msg model
-        
+
         ( Browser__Source_String__Msg msg, Browser__Source_String__Model model ) ->
             pages.browser__source_string.update msg model
-        
+
         ( Playlists__Name_String__Msg msg, Playlists__Name_String__Model model ) ->
             pages.playlists__name_string.update msg model
-        
+
         ( Videoplayer__Movieid_Int__Msg msg, Videoplayer__Movieid_Int__Model model ) ->
             pages.videoplayer__movieid_int.update msg model
-        
+
         ( Music__Top__Top__Msg msg, Music__Top__Top__Model model ) ->
             pages.music__top__top.update msg model
-        
+
         ( Settings__Kodi__Games__Msg msg, Settings__Kodi__Games__Model model ) ->
             pages.settings__kodi__games.update msg model
-        
+
         ( Settings__Kodi__Interface__Msg msg, Settings__Kodi__Interface__Model model ) ->
             pages.settings__kodi__interface.update msg model
-        
+
         ( Settings__Kodi__Media__Msg msg, Settings__Kodi__Media__Model model ) ->
             pages.settings__kodi__media.update msg model
-        
+
         ( Settings__Kodi__Player__Msg msg, Settings__Kodi__Player__Model model ) ->
             pages.settings__kodi__player.update msg model
-        
+
         ( Settings__Kodi__Pvr__Msg msg, Settings__Kodi__Pvr__Model model ) ->
             pages.settings__kodi__pvr.update msg model
-        
+
         ( Settings__Kodi__Services__Msg msg, Settings__Kodi__Services__Model model ) ->
             pages.settings__kodi__services.update msg model
-        
+
         ( Settings__Kodi__System__Msg msg, Settings__Kodi__System__Model model ) ->
             pages.settings__kodi__system.update msg model
-        
+
         ( Music__Album__Albumid_Int__Msg msg, Music__Album__Albumid_Int__Model model ) ->
             pages.music__album__albumid_int.update msg model
-        
+
         ( Music__Artist__Artistid_Int__Msg msg, Music__Artist__Artistid_Int__Model model ) ->
             pages.music__artist__artistid_int.update msg model
-        
+
         ( Music__Genre__Genre_String__Msg msg, Music__Genre__Genre_String__Model model ) ->
             pages.music__genre__genre_string.update msg model
-        
+
         _ ->
             ( bigModel, Cmd.none )
 
@@ -431,127 +432,127 @@ bundle bigModel =
     case bigModel of
         Top__Model model ->
             pages.top.bundle model
-        
+
         Addons__Model model ->
             pages.addons.bundle model
-        
+
         Browser__Model model ->
             pages.browser.bundle model
-        
+
         Lab__Model model ->
             pages.lab.bundle model
-        
+
         Movies__Model model ->
             pages.movies.bundle model
-        
+
         Music__Model model ->
             pages.music.bundle model
-        
+
         NotFound__Model model ->
             pages.notFound.bundle model
-        
+
         Playlists__Model model ->
             pages.playlists.bundle model
-        
+
         Thumbsup__Model model ->
             pages.thumbsup.bundle model
-        
+
         Tvshows__Model model ->
             pages.tvshows.bundle model
-        
+
         Help__About__Model model ->
             pages.help__about.bundle model
-        
+
         Help__Addons__Model model ->
             pages.help__addons.bundle model
-        
+
         Help__Changelog__Model model ->
             pages.help__changelog.bundle model
-        
+
         Help__Developers__Model model ->
             pages.help__developers.bundle model
-        
+
         Help__Keyboard__Model model ->
             pages.help__keyboard.bundle model
-        
+
         Help__License__Model model ->
             pages.help__license.bundle model
-        
+
         Help__Readme__Model model ->
             pages.help__readme.bundle model
-        
+
         Help__Translations__Model model ->
             pages.help__translations.bundle model
-        
+
         Movies__Recent__Model model ->
             pages.movies__recent.bundle model
-        
+
         Music__Albums__Model model ->
             pages.music__albums.bundle model
-        
+
         Music__Artists__Model model ->
             pages.music__artists.bundle model
-        
+
         Music__Genres__Model model ->
             pages.music__genres.bundle model
-        
+
         Music__Videos__Model model ->
             pages.music__videos.bundle model
-        
+
         Settings__Addons__Model model ->
             pages.settings__addons.bundle model
-        
+
         Settings__Nav__Model model ->
             pages.settings__nav.bundle model
-        
+
         Settings__Search__Model model ->
             pages.settings__search.bundle model
-        
+
         Settings__Web__Model model ->
             pages.settings__web.bundle model
-        
+
         Tvshows__Recent__Model model ->
             pages.tvshows__recent.bundle model
-        
+
         Browser__Source_String__Model model ->
             pages.browser__source_string.bundle model
-        
+
         Playlists__Name_String__Model model ->
             pages.playlists__name_string.bundle model
-        
+
         Videoplayer__Movieid_Int__Model model ->
             pages.videoplayer__movieid_int.bundle model
-        
+
         Music__Top__Top__Model model ->
             pages.music__top__top.bundle model
-        
+
         Settings__Kodi__Games__Model model ->
             pages.settings__kodi__games.bundle model
-        
+
         Settings__Kodi__Interface__Model model ->
             pages.settings__kodi__interface.bundle model
-        
+
         Settings__Kodi__Media__Model model ->
             pages.settings__kodi__media.bundle model
-        
+
         Settings__Kodi__Player__Model model ->
             pages.settings__kodi__player.bundle model
-        
+
         Settings__Kodi__Pvr__Model model ->
             pages.settings__kodi__pvr.bundle model
-        
+
         Settings__Kodi__Services__Model model ->
             pages.settings__kodi__services.bundle model
-        
+
         Settings__Kodi__System__Model model ->
             pages.settings__kodi__system.bundle model
-        
+
         Music__Album__Albumid_Int__Model model ->
             pages.music__album__albumid_int.bundle model
-        
+
         Music__Artist__Artistid_Int__Model model ->
             pages.music__artist__artistid_int.bundle model
-        
+
         Music__Genre__Genre_String__Model model ->
             pages.music__genre__genre_string.bundle model
 
