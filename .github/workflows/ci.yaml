@@ -11,7 +11,6 @@ jobs:
           elm-version: 0.19.1
       - run: node -v
       - run: npm install
-      - run: elm-format src/ --validate
       - run: npm run-script build
 
   format:
