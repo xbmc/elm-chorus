@@ -2,7 +2,7 @@ name: "continuous-integration"
 on: [push, pull_request]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -13,3 +13,12 @@ jobs:
       - run: npm install
       - run: elm-format src/ --validate
       - run: npm run-script build
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jorelali/setup-elm@v2
+        with:
+          elm-version: 0.19.1
+      - run: npx elm-format src/ --validate
