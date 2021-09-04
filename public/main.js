@@ -11,12 +11,16 @@ document.addEventListener("DOMContentLoaded", function () {
       // https://guide.elm-lang.org/interop/flags.html
 
       var storedData = localStorage.getItem("kodiLocalPlaylists");
+      var interfaceSettings = localStorage.getItem('interfaceLocalSettings');
+      var addonSettings = localStorage.getItem('addonLocalSettings');
 
       var flags = {
         innerWidth: window.innerWidth,
         innerHeight: window.innerHeight,
         localPlaylists: storedData ? storedData : null,
         translations,
+        interfaceLocalSettings: interfaceSettings ? interfaceSettings : null,
+        addonLocalSettings: addonSettings ? addonSettings : null 
       };
 
       // Start our Elm application
@@ -62,5 +66,14 @@ document.addEventListener("DOMContentLoaded", function () {
       app.ports.setStorage.subscribe(function (playlists) {
         localStorage.setItem("kodiLocalPlaylists", playlists);
       });
+
+      app.ports.storeInterfaceSettings.subscribe( function(settings){
+        localStorage.setItem('interfaceLocalSettings',settings);
+      });
+  
+      app.ports.storeAddonSettings.subscribe( function(settings){
+        localStorage.setItem('addonLocalSettings',settings);
+      });
+
     });
 });

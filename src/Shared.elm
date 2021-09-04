@@ -8,6 +8,8 @@ port module Shared exposing
     , sendAction
     , sendActions
     , setStorage
+    , storeAddonSettings
+    , storeInterfaceSettings
     , subscriptions
     , update
     , view
@@ -24,6 +26,7 @@ import I18Next
 import Json.Decode as D
 import Json.Encode as E exposing (Value)
 import List.Extra exposing (unique)
+import Material.Icons exposing (settings)
 import Method exposing (Method(..))
 import Request exposing (Params, Property(..), request)
 import SingleSlider exposing (SingleSlider)
@@ -32,7 +35,7 @@ import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Translations
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SongObj, SourceObj, TvshowObj, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingsObj, SongObj, SourceObj, TvshowObj, decodeLocalSettings, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -44,6 +47,8 @@ type alias Flags =
     , innerHeight : Int
     , localPlaylists : Maybe String
     , translations : E.Value
+    , interfaceLocalSettings : Maybe String
+    , addonLocalSettings : Maybe String
     }
 
 
@@ -64,6 +69,7 @@ type alias Model =
     , repeat : RepeatType
     , artist_list : List ArtistObj
     , album_list : List AlbumObj
+    , settings_list : List SettingsObj
     , song_list : List SongObj
     , genre_list : List String
     , movie_list : List MovieObj
@@ -80,6 +86,8 @@ type alias Model =
     , playlistName : String
     , playlists : LocalPlaylists
     , translations : I18Next.Translations
+    , interfaceLocalSettings : LocalSettings
+    , addonLocalSettings : LocalSettings
     }
 
 
@@ -101,6 +109,158 @@ init flags url key =
 
         decodedTranslations =
             D.decodeValue I18Next.translationsDecoder flags.translations |> Result.withDefault I18Next.initialTranslations
+
+        decodedInterfaceSettings =
+            case flags.interfaceLocalSettings of
+                Nothing ->
+                    { localSettingsList =
+                        [ { name = "language", value = "English" }
+                        , { name = "player", value = "Auto" }
+                        , { name = "controls", value = "Kodi" }
+                        , { name = "Ignore article", value = "true" }
+                        , { name = "Album artists", value = "true" }
+                        , { name = "Focus playlist", value = "true" }
+                        , { name = "headers", value = "true" }
+                        , { name = "thumbs Up", value = "false" }
+                        , { name = "device name", value = "false" }
+                        , { name = "port", value = "9090" }
+                        , { name = "host", value = "localhost" }
+                        , { name = "Poll interval", value = "10 sec" }
+                        , { name = "settings level", value = "Standard" }
+                        , { name = "proxy", value = "false" }
+                        , { name = "nfo", value = "true" }
+                        , { name = "movie db", value = "" }
+                        , { name = "fanart tv", value = "" }
+                        , { name = "youtube", value = "" }
+                        ]
+                    }
+
+                Just localSettings ->
+                    case D.decodeString decodeLocalSettings localSettings of
+                        Ok playlists ->
+                            playlists
+
+                        Err _ ->
+                            { localSettingsList =
+                                [ { name = "language", value = "English" }
+                                , { name = "player", value = "Auto" }
+                                , { name = "controls", value = "Kodi" }
+                                , { name = "Ignore article", value = "true" }
+                                , { name = "Album artists", value = "true" }
+                                , { name = "Focus playlist", value = "true" }
+                                , { name = "headers", value = "true" }
+                                , { name = "thumbs Up", value = "false" }
+                                , { name = "device name", value = "false" }
+                                , { name = "port", value = "9090" }
+                                , { name = "host", value = "localhost" }
+                                , { name = "Poll interval", value = "10 sec" }
+                                , { name = "settings level", value = "Standard" }
+                                , { name = "proxy", value = "false" }
+                                , { name = "nfo", value = "true" }
+                                , { name = "movie db", value = "" }
+                                , { name = "fanart tv", value = "" }
+                                , { name = "youtube", value = "" }
+                                ]
+                            }
+
+        decodedAddonSettings =
+            case flags.addonLocalSettings of
+                Nothing ->
+                    { localSettingsList =
+                        [ { name = "aac", value = "true" }
+                        , { name = "wma", value = "true" }
+                        , { name = "default", value = "true" }
+                        , { name = "sens", value = "true" }
+                        , { name = "input", value = "true" }
+                        , { name = "rtmp", value = "false" }
+                        , { name = "universal album", value = "true" }
+                        , { name = "genric album", value = "true" }
+                        , { name = "local", value = "true" }
+                        , { name = "universal artist", value = "true" }
+                        , { name = "genric artist", value = "true" }
+                        , { name = "music", value = "true" }
+                        , { name = "fanart", value = "true" }
+                        , { name = "imdb", value = "true" }
+                        , { name = "music brainz", value = "true" }
+                        , { name = "audio", value = "true" }
+                        , { name = "movie scraper", value = "true" }
+                        , { name = "movie database", value = "true" }
+                        , { name = "movie database python", value = "true" }
+                        , { name = "movie database tv", value = "true" }
+                        , { name = "tmdb", value = "true" }
+                        , { name = "joystick", value = "true" }
+                        , { name = "youtube", value = "true" }
+                        , { name = "addon", value = "true" }
+                        , { name = "weather", value = "true" }
+                        , { name = "english", value = "true" }
+                        , { name = "ui", value = "true" }
+                        , { name = "black", value = "true" }
+                        , { name = "dim", value = "true" }
+                        , { name = "certifi", value = "true" }
+                        , { name = "chardet", value = "true" }
+                        , { name = "idna", value = "true" }
+                        , { name = "python image", value = "true" }
+                        , { name = "python crypto", value = "true" }
+                        , { name = "requests", value = "true" }
+                        , { name = "six", value = "true" }
+                        , { name = "url lib", value = "true" }
+                        , { name = "version", value = "true" }
+                        , { name = "estouchy", value = "true" }
+                        , { name = "estuary", value = "true" }
+                        , { name = "chorus", value = "true" }
+                        ]
+                    }
+
+                Just localSettings ->
+                    case D.decodeString decodeLocalSettings localSettings of
+                        Ok playlists ->
+                            playlists
+
+                        Err _ ->
+                            { localSettingsList =
+                                [ { name = "aac", value = "true" }
+                                , { name = "wma", value = "true" }
+                                , { name = "default", value = "true" }
+                                , { name = "sens", value = "true" }
+                                , { name = "input", value = "true" }
+                                , { name = "rtmp", value = "false" }
+                                , { name = "universal album", value = "true" }
+                                , { name = "genric album", value = "true" }
+                                , { name = "local", value = "true" }
+                                , { name = "universal artist", value = "true" }
+                                , { name = "genric artist", value = "true" }
+                                , { name = "music", value = "true" }
+                                , { name = "fanart", value = "true" }
+                                , { name = "imdb", value = "true" }
+                                , { name = "music brainz", value = "true" }
+                                , { name = "audio", value = "true" }
+                                , { name = "movie scraper", value = "true" }
+                                , { name = "movie database", value = "true" }
+                                , { name = "movie database python", value = "true" }
+                                , { name = "movie database tv", value = "true" }
+                                , { name = "tmdb", value = "true" }
+                                , { name = "joystick", value = "true" }
+                                , { name = "youtube", value = "true" }
+                                , { name = "addon", value = "true" }
+                                , { name = "weather", value = "true" }
+                                , { name = "english", value = "true" }
+                                , { name = "ui", value = "true" }
+                                , { name = "black", value = "true" }
+                                , { name = "dim", value = "true" }
+                                , { name = "certifi", value = "true" }
+                                , { name = "chardet", value = "true" }
+                                , { name = "idna", value = "true" }
+                                , { name = "python image", value = "true" }
+                                , { name = "python crypto", value = "true" }
+                                , { name = "requests", value = "true" }
+                                , { name = "six", value = "true" }
+                                , { name = "url lib", value = "true" }
+                                , { name = "version", value = "true" }
+                                , { name = "estouchy", value = "true" }
+                                , { name = "estuary", value = "true" }
+                                , { name = "chorus", value = "true" }
+                                ]
+                            }
     in
     ( { flags = flags
       , url = url
@@ -118,6 +278,7 @@ init flags url key =
       , repeat = Off
       , artist_list = []
       , album_list = []
+      , settings_list = []
       , song_list = []
       , genre_list = []
       , movie_list = []
@@ -148,6 +309,8 @@ init flags url key =
       , playlistName = ""
       , playlists = decodedlocalPlaylists
       , translations = decodedTranslations
+      , interfaceLocalSettings = decodedInterfaceSettings
+      , addonLocalSettings = decodedAddonSettings
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
@@ -188,6 +351,12 @@ port connection : (String -> msg) -> Sub msg
 port setStorage : String -> Cmd msg
 
 
+port storeInterfaceSettings : String -> Cmd msg
+
+
+port storeAddonSettings : String -> Cmd msg
+
+
 
 -- UPDATE
 
@@ -208,6 +377,7 @@ type Msg
     | ToggleRightSidebar
     | ToggleControlMenu
     | ToggleShowRightSidebarMenu
+    | ClearPlaylistMsg
     | ToggleLeftSidebarMusicHover
     | ToggleLeftSidebarMoviesHover
     | ToggleLeftSidebarPlaylistHover
@@ -227,7 +397,6 @@ type Msg
     | AttemptReconnectionDialog
     | CloseDialog
     | NewPlaylist String
-    | ClearPlaylistMsg
     | RefreshPlaylistMsg
     | PartyModeToggleMsg
 
@@ -441,6 +610,11 @@ update msg model =
 
                 ResultK filelist ->
                     ( { model | file_list = filelist }
+                    , Cmd.none
+                    )
+
+                ResultL settingsList ->
+                    ( { model | settings_list = settingsList }
                     , Cmd.none
                     )
 
@@ -678,6 +852,7 @@ view { page, toMsg } model =
             }
         , rightSidebarExtended = model.rightSidebarExtended
         , rightSidebarMsg = toMsg ToggleRightSidebar
+        , clearPlaylistMsg = toMsg ClearPlaylistMsg
         , connection = model.connection
         , windowHeight = model.windowHeight
         , searchChanged = SearchChanged >> toMsg

@@ -20,7 +20,7 @@ view currentRoute =
           , label = "Add-ons"
           }
         , { route = Route.Settings__Search
-          , label = "Serach"
+          , label = "Search"
           }
         ]
         []
