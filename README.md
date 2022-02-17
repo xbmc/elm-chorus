@@ -39,7 +39,7 @@ To develop elm-chorus, you must have the following:
 
 To run it: 
 1. start Kodi 
-2. `git clone https://github.com/ionif/elm-chorus.git`
+2. `git clone https://github.com/xbmc/elm-chorus.git`
 3. `cd elm-chorus/`
 4. `npm start` 
 
