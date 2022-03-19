@@ -7,11 +7,11 @@
     "dependencies": {
         "direct": {
             "ChristophP/elm-i18next": "4.2.0",
-            "NoRedInk/elm-json-decode-pipeline": "1.0.0",
-            "Orasund/elm-ui-widgets": "3.1.0",
+            "NoRedInk/elm-json-decode-pipeline": "1.0.1",
+            "Orasund/elm-ui-widgets": "3.2.0",
             "PaackEng/elm-ui-dialog": "1.0.1",
             "avh4/elm-color": "1.0.0",
-            "billstclair/elm-localstorage": "7.2.0",
+            "billstclair/elm-localstorage": "7.3.1",
             "carwow/elm-slider": "11.1.6",
             "elm/browser": "1.0.2",
             "elm/core": "1.0.5",
@@ -21,10 +21,10 @@
             "elm/svg": "1.0.1",
             "elm/time": "1.0.0",
             "elm/url": "1.0.0",
-            "elm-community/list-extra": "8.3.1",
+            "elm-community/list-extra": "8.5.2",
             "icidasset/elm-material-icons": "7.0.0",
             "mdgriffith/elm-ui": "1.1.8",
-            "phollyer/elm-ui-dropdown": "2.2.1"
+            "phollyer/elm-ui-dropdown": "2.2.2"
         },
         "indirect": {
             "Janiczek/cmd-extra": "1.1.0",
@@ -37,22 +37,27 @@
             "elm-community/dict-extra": "2.4.0",
             "elm-community/intdict": "3.0.0",
             "fredcy/elm-parseint": "2.0.1",
+            "miniBill/elm-ui-with-context": "1.1.0",
             "mpizenberg/elm-pointer-events": "4.0.2",
             "myrho/elm-round": "1.0.4",
             "noahzgordon/elm-color-extra": "1.0.2",
-            "phollyer/elm-cursor": "1.0.1",
+            "phollyer/elm-cursor": "1.1.1",
             "pzp1997/assoc-list": "1.0.0",
             "turboMaCk/queue": "1.1.0"
         }
     },
     "test-dependencies": {
         "direct": {
-            "avh4/elm-program-test": "3.5.0",
+            "avh4/elm-program-test": "3.6.3",
             "elm-explorations/test": "1.2.2"
         },
         "indirect": {
             "avh4/elm-fifo": "1.0.4",
-            "elm/random": "1.0.0"
+            "elm/parser": "1.1.0",
+            "elm/random": "1.0.0",
+            "hecrj/html-parser": "2.4.0",
+            "mgold/elm-nonempty-list": "4.2.0",
+            "rtfeldman/elm-hex": "1.0.0"
         }
     }
 }
