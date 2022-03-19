@@ -179,11 +179,13 @@ skipButton skipMsg =
 
 volumeButton : Bool -> msg -> Element msg
 volumeButton mute muteMsg =
-    case mute of 
+    case mute of
         False ->
             materialButton ( Filled.volume_up, muteMsg )
+
         True ->
             materialButton ( Filled.volume_off, muteMsg )
+
 
 repeatButton : msg -> Element msg
 repeatButton repeatMsg =
@@ -195,8 +197,10 @@ shuffleButton shuffle shuffleMsg =
     case shuffle of
         False ->
             materialButton ( Filled.shuffle, shuffleMsg )
+
         True ->
             materialButton ( Filled.shuffle_on, shuffleMsg )
+
 
 controlButton : msg -> Element msg
 controlButton controlMenuMsg =
