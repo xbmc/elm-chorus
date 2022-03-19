@@ -88,13 +88,13 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
 
 
 volumesAndControlsColumn : VolumeAndControls msg -> ControlMenu msg -> Element msg
-volumesAndControlsColumn { muteMsg, repeatMsg, shuffleMsg, volumeSlider } { controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
+volumesAndControlsColumn { muteMsg, mute, repeatMsg, shuffleMsg, shuffle, volumeSlider } { controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     column [ height fill, width (px 300) ]
         [ row (controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg ++ [ width fill, height (px 20) ]) [ volumeSlider ]
         , row [ width fill, height fill, Background.color Colors.greyscaleShark ]
-            [ el [ centerX ] (volumeButton muteMsg)
+            [ el [ centerX ] (volumeButton mute muteMsg)
             , el [ centerX ] (repeatButton repeatMsg)
-            , el [ centerX ] (shuffleButton shuffleMsg)
+            , el [ centerX ] (shuffleButton shuffle shuffleMsg)
             , el [ centerX ] (controlButton controlMenuMsg)
             ]
         ]
@@ -177,20 +177,26 @@ skipButton skipMsg =
 -}
 
 
-volumeButton : msg -> Element msg
-volumeButton muteMsg =
-    materialButton ( Filled.volume_up, muteMsg )
-
+volumeButton : Bool -> msg -> Element msg
+volumeButton mute muteMsg =
+    case mute of 
+        False ->
+            materialButton ( Filled.volume_up, muteMsg )
+        True ->
+            materialButton ( Filled.volume_off, muteMsg )
 
 repeatButton : msg -> Element msg
 repeatButton repeatMsg =
     materialButton ( Filled.repeat, repeatMsg )
 
 
-shuffleButton : msg -> Element msg
-shuffleButton shuffleMsg =
-    materialButton ( Filled.shuffle, shuffleMsg )
-
+shuffleButton : Bool -> msg -> Element msg
+shuffleButton shuffle shuffleMsg =
+    case shuffle of
+        False ->
+            materialButton ( Filled.shuffle, shuffleMsg )
+        True ->
+            materialButton ( Filled.shuffle_on, shuffleMsg )
 
 controlButton : msg -> Element msg
 controlButton controlMenuMsg =

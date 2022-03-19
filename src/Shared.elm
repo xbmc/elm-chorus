@@ -66,6 +66,7 @@ type alias Model =
     , currentlyPlaying : Maybe ItemDetails
     , playing : Bool
     , shuffle : Bool
+    , mute : Bool
     , repeat : RepeatType
     , artist_list : List ArtistObj
     , album_list : List AlbumObj
@@ -276,6 +277,7 @@ init flags url key =
       , playing = False
       , shuffle = False
       , repeat = Off
+      , mute = False
       , artist_list = []
       , album_list = []
       , settings_list = []
@@ -450,9 +452,15 @@ update msg model =
                     )
 
         PlayPause ->
-            ( model
-            , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
-            )
+            case model.playing of
+                False ->
+                    ( {model | playing = True}
+                    , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
+                    )
+                True->
+                    ( {model | playing = False}
+                    , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
+                    )
 
         SkipForward ->
             ( model
@@ -465,10 +473,15 @@ update msg model =
             )
 
         ToggleMute ->
-            ( model
-            , sendAction """{"jsonrpc": "2.0","method": "Application.SetMute","params": { "mute": "toggle" },"id": 1}"""
-            )
-
+            case model.mute of 
+                False ->
+                    ( {model | mute = True }
+                    , sendAction """{"jsonrpc": "2.0","method": "Application.SetMute","params": { "mute": "toggle" },"id": 1}"""
+                    )
+                True ->
+                     ( {model | mute = False }
+                    , sendAction """{"jsonrpc": "2.0","method": "Application.SetMute","params": { "mute": "toggle" },"id": 1}"""
+                    )
         ToggleShuffle ->
             case model.shuffle of
                 False ->
@@ -849,6 +862,8 @@ view { page, toMsg } model =
             , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
             , shuffleMsg = toMsg ToggleShuffle
             , volumeSlider = Element.map toMsg (slider model.volumeSlider)
+            , shuffle = model.shuffle
+            , mute = model.mute
             }
         , rightSidebarExtended = model.rightSidebarExtended
         , rightSidebarMsg = toMsg ToggleRightSidebar

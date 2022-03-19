@@ -42,7 +42,9 @@ type alias VolumeAndControls msg =
     { muteMsg : msg
     , repeatMsg : msg
     , shuffleMsg : msg
+    , shuffle : Bool
     , volumeSlider : Element msg
+    , mute : Bool
     }
 
 
