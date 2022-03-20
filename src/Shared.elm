@@ -452,16 +452,9 @@ update msg model =
                     )
 
         PlayPause ->
-            case model.playing of
-                False ->
-                    ( { model | playing = True }
-                    , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
-                    )
-
-                True ->
-                    ( { model | playing = False }
-                    , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
-                    )
+            ( { model | playing = not model.playing }
+            , sendAction """{ "jsonrpc": "2.0", "method": "Input.ExecuteAction", "params": { "action": "playpause" }, "id": 1 }"""
+            )
 
         SkipForward ->
             ( model
@@ -474,16 +467,9 @@ update msg model =
             )
 
         ToggleMute ->
-            case model.mute of
-                False ->
-                    ( { model | mute = True }
-                    , sendAction """{"jsonrpc": "2.0","method": "Application.SetMute","params": { "mute": "toggle" },"id": 1}"""
-                    )
-
-                True ->
-                    ( { model | mute = False }
-                    , sendAction """{"jsonrpc": "2.0","method": "Application.SetMute","params": { "mute": "toggle" },"id": 1}"""
-                    )
+            ( { model | mute = not model.mute }
+            , sendAction """{"jsonrpc": "2.0","method": "Application.SetMute","params": { "mute": "toggle" },"id": 1}"""
+            )
 
         ToggleShuffle ->
             case model.shuffle of
