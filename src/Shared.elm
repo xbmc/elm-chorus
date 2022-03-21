@@ -29,6 +29,7 @@ import List.Extra exposing (unique)
 import Material.Icons exposing (settings)
 import Method exposing (Method(..))
 import Request exposing (Params, Property(..), request)
+import SharedType exposing (..)
 import SingleSlider exposing (SingleSlider)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
@@ -404,12 +405,6 @@ type Msg
 songname : SongObj -> String
 songname song =
     song.label
-
-
-type RepeatType
-    = Off
-    | One
-    | All
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -846,9 +841,10 @@ view { page, toMsg } model =
             }
         , volumeAndControls =
             { muteMsg = toMsg ToggleMute
-            , repeatMsg = toMsg (Request Player_SetRepeat (Just (Params (Just 0) Nothing Nothing)))
+            , repeatMsg = toMsg ToggleRepeat
             , shuffleMsg = toMsg ToggleShuffle
             , volumeSlider = Element.map toMsg (slider model.volumeSlider)
+            , repeat = model.repeat
             }
         , rightSidebarExtended = model.rightSidebarExtended
         , rightSidebarMsg = toMsg ToggleRightSidebar

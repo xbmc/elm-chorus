@@ -10,6 +10,7 @@ import Helper exposing (durationToString)
 import Html.Attributes
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
+import SharedType exposing (..)
 import Spa.Generated.Route as Route
 import Url exposing (percentEncode)
 import Url.Builder exposing (crossOrigin)
@@ -88,12 +89,12 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
 
 
 volumesAndControlsColumn : VolumeAndControls msg -> ControlMenu msg -> Element msg
-volumesAndControlsColumn { muteMsg, repeatMsg, shuffleMsg, volumeSlider } { controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
+volumesAndControlsColumn { muteMsg, repeat, repeatMsg, shuffleMsg, volumeSlider } { controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     column [ height fill, width (px 300) ]
         [ row (controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg ++ [ width fill, height (px 20) ]) [ volumeSlider ]
         , row [ width fill, height fill, Background.color Colors.greyscaleShark ]
             [ el [ centerX ] (volumeButton muteMsg)
-            , el [ centerX ] (repeatButton repeatMsg)
+            , el [ centerX ] (repeatButton repeat repeatMsg)
             , el [ centerX ] (shuffleButton shuffleMsg)
             , el [ centerX ] (controlButton controlMenuMsg)
             ]
@@ -182,9 +183,17 @@ volumeButton muteMsg =
     materialButton ( Filled.volume_up, muteMsg )
 
 
-repeatButton : msg -> Element msg
-repeatButton repeatMsg =
-    materialButton ( Filled.repeat, repeatMsg )
+repeatButton : RepeatType -> msg -> Element msg
+repeatButton repeat repeatMsg =
+    case repeat of
+        Off ->
+            materialButton ( Filled.repeat, repeatMsg )
+
+        One ->
+            materialButton ( Filled.repeat_one, repeatMsg )
+
+        All ->
+            materialButton ( Filled.repeat_one_on, repeatMsg )
 
 
 shuffleButton : msg -> Element msg

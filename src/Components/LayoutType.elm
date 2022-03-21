@@ -2,6 +2,7 @@ module Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, DialogType
 
 import Element exposing (Element)
 import Json.Decode exposing (string)
+import SharedType exposing (RepeatType)
 import Spa.Document exposing (Document)
 import WSDecoder exposing (Connection, ItemDetails, LeftSidebarMenuHover)
 
@@ -43,6 +44,7 @@ type alias VolumeAndControls msg =
     , repeatMsg : msg
     , shuffleMsg : msg
     , volumeSlider : Element msg
+    , repeat : RepeatType
     }
 
 
