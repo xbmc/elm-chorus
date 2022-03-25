@@ -1,4 +1,4 @@
-module Pages.Help.Translations exposing (..)
+module Pages.Help.Translations exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.VerticalNavHelp

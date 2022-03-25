@@ -1,4 +1,4 @@
-module Pages.Settings.Web exposing (..)
+module Pages.Settings.Web exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.SettingsBlockLayout exposing (..)
