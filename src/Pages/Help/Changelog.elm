@@ -1,4 +1,4 @@
-module Pages.Help.Changelog exposing (..)
+module Pages.Help.Changelog exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.VerticalNavHelp

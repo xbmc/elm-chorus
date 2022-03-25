@@ -1,4 +1,4 @@
-module Pages.Help.Readme exposing (..)
+module Pages.Help.Readme exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.VerticalNavHelp
