@@ -1,4 +1,4 @@
-module Pages.Help.Addons exposing (..)
+module Pages.Help.Addons exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.VerticalNavHelp
