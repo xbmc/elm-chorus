@@ -1,4 +1,4 @@
-module Pages.Help.License exposing (..)
+module Pages.Help.License exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.VerticalNavHelp

@@ -1,4 +1,4 @@
-module Pages.Help.Keyboard exposing (..)
+module Pages.Help.Keyboard exposing (Model, Msg, Params, page)
 
 import Colors
 import Components.VerticalNavHelp
