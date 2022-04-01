@@ -18,7 +18,15 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
             [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
             [ row [ width fill ]
                 [ Input.button [ Background.color Colors.backgroundKodi, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Kodi" }
-                , Input.button [ Background.color Colors.backgroundLocal, height (px 50), width (px 100), padding 8 ] { onPress = Just rightSidebarMsg, label = Element.text "Local" }
+                , Input.button [ Background.color Colors.backgroundLocal, height (px 50), width (px 100), padding 8 ]
+                    { onPress = Just rightSidebarMsg
+                    , label =
+                        Element.row []
+                            [ Element.html
+                                (Filled.headphones 14 (MITypes.Color <| greyIcon))
+                            , text " Local"
+                            ]
+                    }
                 , el (rightSidebarMenuDropDown showRightSidebarMenu clearPlaylistMsg refreshPlaylistMsg partyModeToggleMsg)
                     (case connection of
                         Connected ->
@@ -30,13 +38,18 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                         NotAsked ->
                             Element.text "Not asked"
                     )
-                , Input.button [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight, centerY ]
+                , Input.button [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight, centerY, paddingXY 5 12 ]
                     { onPress = Just showRightSidebarMenuMsg
                     , label =
                         Element.html
-                            (Filled.more_vert 32 (MITypes.Color <| greyIcon))
+                            (Filled.more_vert 22 (MITypes.Color <| greyIcon))
                     }
-                , Input.button [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight ] { onPress = Just rightSidebarMsg, label = Element.text ">" }
+                , Input.button [ Background.color Colors.playlistHeaderBackground, height (px 50), width (px 50), centerX, alignRight, paddingXY 5 12 ]
+                    { onPress = Just rightSidebarMsg
+                    , label =
+                        Element.html
+                            (Filled.chevron_right 22 (MITypes.Color <| greyIcon))
+                    }
                 ]
             , el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Test")
             ]
@@ -44,7 +57,12 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
     else
         column
             [ height (px panelHeight), width (px 50), Background.color Colors.playlistBackground, alignRight, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
-            [ Input.button [ centerX, height (px 50) ] { onPress = Just rightSidebarMsg, label = Element.text "<" }
+            [ Input.button [ centerX, height (px 50), paddingXY 5 12 ]
+                { onPress = Just rightSidebarMsg
+                , label =
+                    Element.html
+                        (Filled.chevron_left 22 (MITypes.Color <| greyIcon))
+                }
             ]
 
 
