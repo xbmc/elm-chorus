@@ -168,6 +168,12 @@
 
 .input-range__progress {
   background-color: rgb(51, 51, 51);
+  border-right: 7px solid rgba(0,0,0,0);
+  transition: border-color 0.2s linear; 
+}
+
+.input-range__progress:hover{
+  border-right: 7px solid rgb(99, 97, 97); 
 }
 
 .input-range-labels-container {
