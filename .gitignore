@@ -5,4 +5,5 @@ public/dist
 .idea
 dist
 .cache
-
+.elm-spa
+.parcel-cache
