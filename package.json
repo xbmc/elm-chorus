@@ -2,7 +2,6 @@
   "name": "elm-chorus",
   "version": "1.0.0",
   "description": "A web interface for Kodi written in Elm",
-  "main": "public/main.js",
   "scripts": {
     "start": "npm install && npm run build:dev && npm run dev",
     "test": "elm-test",
@@ -22,6 +21,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@parcel/transformer-elm": "^2.4.1",
     "chokidar-cli": "2.1.0",
     "cpy": "^8.1.2",
     "cpy-cli": "^3.1.1",
@@ -32,6 +32,6 @@
     "elm-test": "0.19.1-revision6",
     "node-elm-compiler": "^5.0.6",
     "npm-run-all": "4.1.5",
-    "parcel-bundler": "^1.12.5"
+    "parcel": "^2.0.0"
   }
 }

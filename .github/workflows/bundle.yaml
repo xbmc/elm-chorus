@@ -1,0 +1,19 @@
+name: "release"
+on: [push, pull_request]
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jorelali/setup-elm@v2
+        with:
+          elm-version: 0.19.1
+      - run: node -v
+      - run: npm install
+      - run: npm run-script build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: elm-chorus
+          path: dist*
