@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="webinterface.elm"
+  version="1.0.0"
+  name="Elm-Chorus web interface"
+  provider-name="ionif, razzeee, priyanshu">
+  <requires>
+    <import addon="xbmc.json" version="6.0.0" />
+  </requires>
+  <extension point="xbmc.webinterface"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Default web interface</summary>
+    <description lang="en">Browse and interact with your Music, Movies, TV Shows and more on a web browser. Stream music and videos to your browser. Edit and manage your Kodi media library.</description>
+    <platform>all</platform>
+    <language>en</language>
+    <source>https://github.com/xbmc/elm-chorus</source>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
+  </extension>
+</addon>
