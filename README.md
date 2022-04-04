@@ -1,6 +1,6 @@
 # elm-chorus
 
-![demo](https://github.com/ionif/elm-chorus/blob/master/demo.gif)
+![demo](https://github.com/xbmc/elm-chorus/blob/main/demo.gif)
 
 a web interface for Kodi written in Elm for GSoC 2020\
 based on chorus2 by jez500
