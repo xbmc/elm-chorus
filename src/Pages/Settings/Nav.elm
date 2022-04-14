@@ -67,9 +67,19 @@ view : Model -> Document Msg
 view model =
     { title = "Settings.Nav"
     , body =
-        Components.VerticalNavSettings.view
-            model.route
-            ++ [ column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7, Background.color Colors.background ]
-                    []
-               ]
+        [ row [ Element.height fill, Element.width fill ]
+            [ column [ Element.height fill, Element.width fill, scrollbarY ] (Components.VerticalNavSettings.view model.route)
+            , column [ Element.height fill, Element.width (fillPortion 5), spacingXY 5 7, Background.color Colors.white, padding 40, Font.size 24, Font.light ]
+                [ el [ Font.color (rgb255 18 178 231), Font.size 24, Font.light, paddingEach { top = 0, bottom = 30, left = 0, right = 0 } ] (text "Main Menu Structure")
+                , paragraph [ width (px 750), Font.size 14, Font.color (rgb255 3 3 3), paddingEach { top = 0, bottom = 30, left = 20, right = 20 }, Font.medium ]
+                    [ text "Here you can change the title, url and icons  "
+                    , link [ Font.color (rgb255 18 178 231), Font.medium ]
+                        { url = "https://mui.com/components/material-icons/"
+                        , label = el [ Font.medium, mouseOver [ Font.color Colors.headerBackground ] ] (text "icons ")
+                        }
+                    , text "for menu items. You can also remove, re-order and add new items. Click here restore defaults"
+                    ]
+                ]
+            ]
+        ]
     }
