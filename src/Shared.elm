@@ -36,7 +36,7 @@ import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Translations
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingsObj, SongObj, SourceObj, TvshowObj, decodeLocalSettings, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -71,6 +71,7 @@ type alias Model =
     , repeat : RepeatType
     , artist_list : List ArtistObj
     , album_list : List AlbumObj
+    , video_list : List VideoObj
     , settings_list : List SettingsObj
     , song_list : List SongObj
     , genre_list : List String
@@ -281,6 +282,7 @@ init flags url key =
       , mute = False
       , artist_list = []
       , album_list = []
+      , video_list = []
       , settings_list = []
       , song_list = []
       , genre_list = []
@@ -612,6 +614,11 @@ update msg model =
 
                 ResultL settingsList ->
                     ( { model | settings_list = settingsList }
+                    , Cmd.none
+                    )
+
+                ResultM videosList ->
+                    ( { model | video_list = videosList }
                     , Cmd.none
                     )
 
