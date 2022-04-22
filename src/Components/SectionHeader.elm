@@ -74,11 +74,11 @@ artistLabel artist =
         }
 
 
-videosLabel : VideoObj -> Element msg
-videosLabel videos =
+videoLabel : VideoObj -> Element msg
+videoLabel video =
     Element.link [ Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
-        { url = Route.toString (Route.Music__Videos__Videoid_Int { videoid = videos.videoid })
-        , label = Element.text videos.label
+        { url = Route.toString (Route.Music__Videos__Videoid_Int { videoid = video.videoid })
+        , label = Element.text video.label
         }
 
 
@@ -121,7 +121,7 @@ viewVideos : List VideoObj -> Element msg
 viewVideos videoslist =
     wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
         (List.map
-            (\videos ->
+            (\video ->
                 column
                     [ paddingXY 5 5
                     , Background.color (rgb 1 1 1)
@@ -131,21 +131,21 @@ viewVideos videoslist =
                     , Border.rounded 3
                     , clipX
 
-                    --, Element.below (videosLabel videos)
+                    --, Element.below (videoLabel video)
                     ]
-                    [ case videos.thumbnail of
+                    [ case video.thumbnail of
                         "" ->
-                            image [ width fill, height fill, Element.inFront (videosLabel videos) ]
+                            image [ width fill, height fill, Element.inFront (videoLabel video) ]
                                 { src = "https://via.placeholder.com/170"
                                 , description = "Hero Image"
                                 }
 
                         _ ->
-                            image [ width fill, height fill, Element.inFront (videosLabel videos) ]
-                                { src = crossOrigin "http://localhost:8080" [ "image", percentEncode videos.thumbnail ] []
+                            image [ width fill, height fill, Element.inFront (videoLabel video) ]
+                                { src = crossOrigin "http://localhost:8080" [ "image", percentEncode video.thumbnail ] []
                                 , description = "Thumbnail"
                                 }
-                    , videosLabel videos
+                    , videoLabel video
                     ]
             )
             videoslist

@@ -293,11 +293,11 @@ type alias ArtistObj =
 videoQueryDecoder : Decoder ResultResponse
 videoQueryDecoder =
     Decode.succeed ResultM
-        |> custom (at [ "result", "videos" ] (list videosDecoder))
+        |> custom (at [ "result", "videos" ] (list videoDecoder))
 
 
-videosDecoder : Decoder VideoObj
-videosDecoder =
+videoDecoder : Decoder VideoObj
+videoDecoder =
     Decode.succeed VideoObj
         |> required "label" string
         |> required "artist" (list string)
