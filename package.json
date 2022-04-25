@@ -33,5 +33,12 @@
     "node-elm-compiler": "^5.0.6",
     "npm-run-all": "4.1.5",
     "parcel-bundler": "^1.12.5"
+  },
+  "dependencies": {
+    "parcel-plugin-static-files-copy": "^2.6.0"
   }
+  ,
+  "staticFiles": {
+        "staticPath": "public"
+    }
 }
