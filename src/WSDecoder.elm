@@ -1,4 +1,4 @@
-module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, decodeLocalSettings, encodeLocalSettings, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
+module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, encodeLocalSettings, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, nullable, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -164,6 +164,7 @@ type ResultResponse
     | ResultJ Bool Float --muted/volume
     | ResultK (List FileObj)
     | ResultL (List SettingsObj)
+    | ResultM (List VideoObj)
 
 
 
@@ -284,6 +285,35 @@ artistDecoder =
 type alias ArtistObj =
     { label : String
     , artistid : Int
+    , thumbnail : String
+    , genre : List String
+    }
+
+
+videoQueryDecoder : Decoder ResultResponse
+videoQueryDecoder =
+    Decode.succeed ResultM
+        |> custom (at [ "result", "videos" ] (list videoDecoder))
+
+
+videoDecoder : Decoder VideoObj
+videoDecoder =
+    Decode.succeed VideoObj
+        |> required "label" string
+        |> required "artist" (list string)
+        |> required "albumid" int
+        |> required "duration" int
+        |> required "videoid" int
+        |> required "thumbnail" string
+        |> required "genre" (list string)
+
+
+type alias VideoObj =
+    { label : String
+    , artistid : List String
+    , albumid : Int
+    , duration : Int
+    , videoid : Int
     , thumbnail : String
     , genre : List String
     }

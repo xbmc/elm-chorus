@@ -32,6 +32,7 @@ import Pages.Music.Genre.Genre_String
 import Pages.Music.Genres
 import Pages.Music.Top.Top
 import Pages.Music.Videos
+import Pages.Music.Videos.Videoid_Int
 import Pages.NotFound
 import Pages.Playlists
 import Pages.Playlists.Name_String
@@ -104,6 +105,7 @@ type Model
     | Settings__Kodi__System__Model Pages.Settings.Kodi.System.Model
     | Music__Album__Albumid_Int__Model Pages.Music.Album.Albumid_Int.Model
     | Music__Artist__Artistid_Int__Model Pages.Music.Artist.Artistid_Int.Model
+    | Music__Videos__Videoid_Int__Model Pages.Music.Videos.Videoid_Int.Model
     | Music__Genre__Genre_String__Model Pages.Music.Genre.Genre_String.Model
 
 
@@ -149,6 +151,7 @@ type Msg
     | Settings__Kodi__System__Msg Pages.Settings.Kodi.System.Msg
     | Music__Album__Albumid_Int__Msg Pages.Music.Album.Albumid_Int.Msg
     | Music__Artist__Artistid_Int__Msg Pages.Music.Artist.Artistid_Int.Msg
+    | Music__Videos__Videoid_Int__Msg Pages.Music.Videos.Videoid_Int.Msg
     | Music__Genre__Genre_String__Msg Pages.Music.Genre.Genre_String.Msg
 
 
@@ -281,6 +284,9 @@ init route =
 
         Route.Music__Artist__Artistid_Int params ->
             pages.music__artist__artistid_int.init params
+
+        Route.Music__Videos__Videoid_Int params ->
+            pages.music__videos__videoid_int.init params
 
         Route.Music__Genre__Genre_String params ->
             pages.music__genre__genre_string.init params
@@ -553,6 +559,9 @@ bundle bigModel =
         Music__Artist__Artistid_Int__Model model ->
             pages.music__artist__artistid_int.bundle model
 
+        Music__Videos__Videoid_Int__Model model ->
+            pages.music__videos__videoid_int.bundle model
+
         Music__Genre__Genre_String__Model model ->
             pages.music__genre__genre_string.bundle model
 
@@ -663,6 +672,7 @@ pages :
     , settings__kodi__system : Upgraded Pages.Settings.Kodi.System.Params Pages.Settings.Kodi.System.Model Pages.Settings.Kodi.System.Msg
     , music__album__albumid_int : Upgraded Pages.Music.Album.Albumid_Int.Params Pages.Music.Album.Albumid_Int.Model Pages.Music.Album.Albumid_Int.Msg
     , music__artist__artistid_int : Upgraded Pages.Music.Artist.Artistid_Int.Params Pages.Music.Artist.Artistid_Int.Model Pages.Music.Artist.Artistid_Int.Msg
+    , music__videos__videoid_int : Upgraded Pages.Music.Videos.Videoid_Int.Params Pages.Music.Videos.Videoid_Int.Model Pages.Music.Videos.Videoid_Int.Msg
     , music__genre__genre_string : Upgraded Pages.Music.Genre.Genre_String.Params Pages.Music.Genre.Genre_String.Model Pages.Music.Genre.Genre_String.Msg
     }
 pages =
@@ -707,5 +717,6 @@ pages =
     , settings__kodi__system = Pages.Settings.Kodi.System.page |> upgrade Settings__Kodi__System__Model Settings__Kodi__System__Msg
     , music__album__albumid_int = Pages.Music.Album.Albumid_Int.page |> upgrade Music__Album__Albumid_Int__Model Music__Album__Albumid_Int__Msg
     , music__artist__artistid_int = Pages.Music.Artist.Artistid_Int.page |> upgrade Music__Artist__Artistid_Int__Model Music__Artist__Artistid_Int__Msg
+    , music__videos__videoid_int = Pages.Music.Videos.Videoid_Int.page |> upgrade Music__Videos__Videoid_Int__Model Music__Videos__Videoid_Int__Msg
     , music__genre__genre_string = Pages.Music.Genre.Genre_String.page |> upgrade Music__Genre__Genre_String__Model Music__Genre__Genre_String__Msg
     }

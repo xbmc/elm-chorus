@@ -50,6 +50,7 @@ type Route
     | Settings__Kodi__System
     | Music__Album__Albumid_Int { albumid : Int }
     | Music__Artist__Artistid_Int { artistid : Int }
+    | Music__Videos__Videoid_Int { videoid : Int }
     | Music__Genre__Genre_String { genre : String }
 
 
@@ -246,6 +247,9 @@ toString route =
 
                 Music__Artist__Artistid_Int { artistid } ->
                     [ "music", "artist", String.fromInt artistid ]
+
+                Music__Videos__Videoid_Int { videoid } ->
+                    [ "music", "videos", String.fromInt videoid ]
 
                 Music__Genre__Genre_String { genre } ->
                     [ "music", "genre", genre ]
