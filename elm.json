@@ -22,6 +22,7 @@
             "elm/time": "1.0.0",
             "elm/url": "1.0.0",
             "elm-community/list-extra": "8.5.2",
+            "elm-explorations/markdown": "1.0.0",
             "icidasset/elm-material-icons": "7.0.0",
             "mdgriffith/elm-ui": "1.1.8",
             "phollyer/elm-ui-dropdown": "2.2.2",
