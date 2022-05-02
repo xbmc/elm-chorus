@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Open Sans";
+  src: url("./opensans.woff") format("woff");
+}
+
 .input-range-container {
 }
 
@@ -191,4 +196,34 @@
 
 .input-range-label:last-child {
   text-align: right;
+}
+
+.markdown h1,
+h2 {
+  font-family: "Open Sans", sans-serif;
+}
+
+.markdown h1 {
+  font-weight: 300;
+  font-size: 2.7em;
+}
+
+.markdown p {
+  padding: 0;
+  margin: 0;
+}
+
+.markdown h2 {
+  font-size: 1.5em;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f6f6f6;
+}
+
+.markdown a {
+  text-decoration: none;
+  color: #12b2e7;
+}
+
+.markdown a:hover {
+  color: #337ab7;
 }
