@@ -219,6 +219,13 @@ h2 {
   border-bottom: 2px solid #f6f6f6;
 }
 
+.markdown h3 {
+  font-weight: 300;
+  font-size: 1.3em;
+  color: #666;
+  margin-bottom: 0;
+}
+
 .markdown a {
   text-decoration: none;
   color: #12b2e7;
