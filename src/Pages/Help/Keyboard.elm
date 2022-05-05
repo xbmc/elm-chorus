@@ -119,19 +119,18 @@ Key "" = Full screen
 
 Browser
 ---------
-The keyboard controls the browser only. When the [remote] is open the keys will control only Kodi.
+The keyboard controls the browser only. When the remote is open the keys will control only Kodi.
 
 Both
 ---------
-Keyboard commands are executed in Kodi and in the browser. When the [remote] is open the keys will control only 
+Keyboard commands are executed in Kodi and in the browser. When the remote is open the keys will control only 
 
 Kodi. NOTE: Many commands are shared by both the browser and Kodi. Eg. Backspace.
 
 ** **       
 
-[remote]: http://localhost:1234/#remote
 [settings page]: http://localhost:1234/settings/web
-[Got improvements to add? click here]:https://github.com/xbmc/chorus2/blob/master/src/js/apps/input/input_app.js.coffee
+[Got improvements to add? click here]:https://github.com/xbmc/elm-chorus
 """
 
 
