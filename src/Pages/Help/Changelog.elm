@@ -70,10 +70,9 @@ content =
     Markdown.toHtml [ class "markdown" ] """
 
 ## Version 1.0.0
-- Majority of the build. See: [https://github.com/xbmc/elm-chorus/commits/main]
+- Majority of the build. See: https://github.com/xbmc/elm-chorus/commits/main
 - Many features from Chorus 2 have been incorporated.
 
-[https://github.com/xbmc/elm-chorus/commits/main]:https://github.com/xbmc/elm-chorus/commits/main
 
 """
 
