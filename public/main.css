@@ -3,8 +3,7 @@
   src: url("./opensans.woff") format("woff");
 }
 
-.input-range-container {
-}
+.input-range-container {}
 
 /* In the case of the double slider, each individual slider has it's width set to 100% of the parent element. Therefore, in order to set a fixed width, it is recommended to set it on the parent element and not override the width of the range slider. This is to ensure the flexibility of the component. */
 .input-range-container,
@@ -108,14 +107,14 @@
   cursor: not-allowed;
 }
 
-.input-range:disabled ~ .input-range__track,
-.input-range:disabled:hover ~ .input-range__track {
+.input-range:disabled~.input-range__track,
+.input-range:disabled:hover~.input-range__track {
   cursor: not-allowed;
   background-color: rgb(42, 43, 44);
 }
 
-.input-range:disabled ~ .input-range__progress,
-.input-range:disabled:hover ~ .input-range__progress {
+.input-range:disabled~.input-range__progress,
+.input-range:disabled:hover~.input-range__progress {
   cursor: not-allowed;
   background-color: #dcdee1;
 }
@@ -173,6 +172,12 @@
 
 .input-range__progress {
   background-color: rgb(51, 51, 51);
+  border-right: 7px solid rgba(0, 0, 0, 0);
+  transition: border-color 0.2s linear;
+}
+
+.input-range__progress:hover {
+  border-right: 7px solid rgb(99, 97, 97);
 }
 
 .input-range-labels-container {
