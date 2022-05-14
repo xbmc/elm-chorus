@@ -24,7 +24,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                         Element.row []
                             [ image [ width (px 15), height (px 15), paddingXY 15 0 ]
                                 { description = ""
-                                , src = "http://localhost:1234/logo.png"
+                                , src = "logo.png"
                                 }
                             , el [ Font.color (Element.rgb255 18 178 231) ] (text " Kodi")
                             ]
