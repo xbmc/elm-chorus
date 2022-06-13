@@ -40,6 +40,11 @@ blackIcon =
     Color.rgba 0 0 0 0.9
 
 
+ceriseIcon : Color.Color
+ceriseIcon =
+    fromElementColorToColor ceriseRed
+
+
 grey : Element.Color
 grey =
     Element.rgb255 51 51 51

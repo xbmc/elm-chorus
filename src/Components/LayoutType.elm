@@ -90,6 +90,9 @@ type alias ShowRightSidebarMenu msg =
     , refreshPlaylistMsg : msg
     , isPartyMode : Bool
     , partyModeToggleMsg : msg
+    , tabSwitch : Bool
+    , kodiMsg : msg
+    , localMsg : msg
     }
 
 

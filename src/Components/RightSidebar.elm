@@ -1,6 +1,6 @@
 module Components.RightSidebar exposing (view)
 
-import Colors exposing (greyIcon)
+import Colors exposing (..)
 import Components.LayoutType exposing (ShowRightSidebarMenu)
 import Element exposing (Attribute, Element, alignRight, centerX, centerY, column, el, fill, height, htmlAttribute, image, padding, paddingXY, px, rgb, row, spacing, text, width)
 import Element.Background as Background
@@ -13,38 +13,83 @@ import WSDecoder exposing (Connection(..))
 
 
 view : ShowRightSidebarMenu msg -> Bool -> msg -> Int -> Connection -> Element msg
-view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshPlaylistMsg, partyModeToggleMsg } rightSidebarExtended rightSidebarMsg panelHeight connection =
+view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshPlaylistMsg, partyModeToggleMsg, kodiMsg, localMsg, tabSwitch } rightSidebarExtended rightSidebarMsg panelHeight connection =
     if rightSidebarExtended then
         column
             [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
             [ row [ width fill ]
-                [ Input.button [ Background.color Colors.backgroundKodi, height (px 50), width (px 100), padding 8 ]
-                    { onPress = Just rightSidebarMsg
+                [ Input.button
+                    [ if tabSwitch then
+                        Background.color Colors.backgroundKodi
+
+                      else
+                        Background.color Colors.backgroundLocal
+                    , height (px 50)
+                    , width (px 100)
+                    , padding 8
+                    ]
+                    { onPress = Just kodiMsg
                     , label =
                         Element.row []
                             [ image [ width (px 15), height (px 15), paddingXY 15 0 ]
                                 { description = ""
-                                , src = "logo.png"
+                                , src =
+                                    if tabSwitch then
+                                        "logo.png"
+
+                                    else
+                                        "greylogo.png"
                                 }
-                            , el [ Font.color (Element.rgb255 18 178 231) ] (text " Kodi")
+                            , el
+                                (if tabSwitch then
+                                    [ Font.color Colors.kodi ]
+
+                                 else
+                                    []
+                                )
+                                (text " Kodi")
                             ]
                     }
-                , Input.button [ Background.color Colors.backgroundLocal, height (px 50), width (px 100), padding 8 ]
-                    { onPress = Just rightSidebarMsg
+                , Input.button
+                    [ if not tabSwitch then
+                        Background.color Colors.backgroundKodi
+
+                      else
+                        Background.color Colors.backgroundLocal
+                    , height (px 50)
+                    , width (px 100)
+                    , padding 8
+                    ]
+                    { onPress = Just localMsg
                     , label =
                         Element.row []
                             [ Element.html
-                                (Filled.headphones 14 (MITypes.Color <| greyIcon))
-                            , text " Local"
+                                (Filled.headphones 14
+                                    (MITypes.Color <|
+                                        if not tabSwitch then
+                                            ceriseIcon
+
+                                        else
+                                            greyIcon
+                                    )
+                                )
+                            , el
+                                (if not tabSwitch then
+                                    [ Font.color Colors.local ]
+
+                                 else
+                                    []
+                                )
+                                (text " Local")
                             ]
                     }
                 , el (rightSidebarMenuDropDown showRightSidebarMenu clearPlaylistMsg refreshPlaylistMsg partyModeToggleMsg)
                     (case connection of
                         Connected ->
-                            Element.text "Connected"
+                            Element.text " Connected"
 
                         Disconnected ->
-                            Element.text "Disconnected"
+                            Element.text " Disconnected"
 
                         NotAsked ->
                             Element.text "Not asked"
@@ -62,7 +107,11 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                             (Filled.chevron_right 22 (MITypes.Color <| greyIcon))
                     }
                 ]
-            , el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Test")
+            , if tabSwitch then
+                kodiTab
+
+              else
+                localTab
             ]
 
     else
@@ -75,6 +124,16 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                         (Filled.chevron_left 22 (MITypes.Color <| greyIcon))
                 }
             ]
+
+
+kodiTab : Element msg
+kodiTab =
+    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Kodi Tab")
+
+
+localTab : Element msg
+localTab =
+    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Local Tab")
 
 
 rightSidebarMenuDropDown : Bool -> msg -> msg -> msg -> List (Attribute msg)
