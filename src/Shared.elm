@@ -91,7 +91,7 @@ type alias Model =
     , translations : I18Next.Translations
     , interfaceLocalSettings : LocalSettings
     , addonLocalSettings : LocalSettings
-    , tabSwitch : Bool
+    , tabSwitch : Tabs
     }
 
 
@@ -317,7 +317,7 @@ init flags url key =
       , translations = decodedTranslations
       , interfaceLocalSettings = decodedInterfaceSettings
       , addonLocalSettings = decodedAddonSettings
-      , tabSwitch = True
+      , tabSwitch = Kodi
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
@@ -719,12 +719,12 @@ update msg model =
             )
 
         KodiMsg ->
-            ( { model | tabSwitch = True }
+            ( { model | tabSwitch = Kodi }
             , Cmd.none
             )
 
         LocalMsg ->
-            ( { model | tabSwitch = False }
+            ( { model | tabSwitch = Local }
             , Cmd.none
             )
 

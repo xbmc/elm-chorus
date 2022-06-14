@@ -9,6 +9,7 @@ import Element.Input as Input
 import Html.Attributes
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes
+import SharedType exposing (..)
 import WSDecoder exposing (Connection(..))
 
 
@@ -19,11 +20,12 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
             [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
             [ row [ width fill ]
                 [ Input.button
-                    [ if tabSwitch then
-                        Background.color Colors.backgroundKodi
+                    [ case tabSwitch of
+                        Kodi ->
+                            Background.color Colors.backgroundKodi
 
-                      else
-                        Background.color Colors.backgroundLocal
+                        Local ->
+                            Background.color Colors.backgroundLocal
                     , height (px 50)
                     , width (px 100)
                     , padding 8
@@ -34,28 +36,31 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                             [ image [ width (px 15), height (px 15), paddingXY 15 0 ]
                                 { description = ""
                                 , src =
-                                    if tabSwitch then
-                                        "logo.png"
+                                    case tabSwitch of
+                                        Kodi ->
+                                            "logo.png"
 
-                                    else
-                                        "greylogo.png"
+                                        Local ->
+                                            "greylogo.png"
                                 }
                             , el
-                                (if tabSwitch then
-                                    [ Font.color Colors.kodi ]
+                                (case tabSwitch of
+                                    Kodi ->
+                                        [ Font.color Colors.kodi ]
 
-                                 else
-                                    []
+                                    Local ->
+                                        []
                                 )
                                 (text " Kodi")
                             ]
                     }
                 , Input.button
-                    [ if not tabSwitch then
-                        Background.color Colors.backgroundKodi
+                    [ case tabSwitch of
+                        Kodi ->
+                            Background.color Colors.backgroundKodi
 
-                      else
-                        Background.color Colors.backgroundLocal
+                        Local ->
+                            Background.color Colors.backgroundLocal
                     , height (px 50)
                     , width (px 100)
                     , padding 8
@@ -66,19 +71,21 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                             [ Element.html
                                 (Filled.headphones 14
                                     (MITypes.Color <|
-                                        if not tabSwitch then
-                                            ceriseIcon
+                                        case tabSwitch of
+                                            Kodi ->
+                                                ceriseIcon
 
-                                        else
-                                            greyIcon
+                                            Local ->
+                                                greyIcon
                                     )
                                 )
                             , el
-                                (if not tabSwitch then
-                                    [ Font.color Colors.local ]
+                                (case tabSwitch of
+                                    Kodi ->
+                                        [ Font.color Colors.local ]
 
-                                 else
-                                    []
+                                    Local ->
+                                        []
                                 )
                                 (text " Local")
                             ]
@@ -107,11 +114,12 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                             (Filled.chevron_right 22 (MITypes.Color <| greyIcon))
                     }
                 ]
-            , if tabSwitch then
-                kodiTab
+            , case tabSwitch of
+                Kodi ->
+                    kodiTab
 
-              else
-                localTab
+                Local ->
+                    localTab
             ]
 
     else

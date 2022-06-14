@@ -2,7 +2,7 @@ module Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, DialogType
 
 import Element exposing (Element)
 import Json.Decode exposing (string)
-import SharedType exposing (RepeatType)
+import SharedType exposing (RepeatType, Tabs)
 import Spa.Document exposing (Document)
 import WSDecoder exposing (Connection, ItemDetails, LeftSidebarMenuHover)
 
@@ -90,7 +90,7 @@ type alias ShowRightSidebarMenu msg =
     , refreshPlaylistMsg : msg
     , isPartyMode : Bool
     , partyModeToggleMsg : msg
-    , tabSwitch : Bool
+    , tabSwitch : Tabs
     , kodiMsg : msg
     , localMsg : msg
     }
