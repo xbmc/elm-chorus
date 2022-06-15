@@ -57,10 +57,10 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                 , Input.button
                     [ case tabSwitch of
                         Kodi ->
-                            Background.color Colors.backgroundKodi
+                            Background.color Colors.backgroundLocal
 
                         Local ->
-                            Background.color Colors.backgroundLocal
+                            Background.color Colors.backgroundKodi
                     , height (px 50)
                     , width (px 100)
                     , padding 8
@@ -73,19 +73,19 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                                     (MITypes.Color <|
                                         case tabSwitch of
                                             Kodi ->
-                                                ceriseIcon
+                                                greyIcon
 
                                             Local ->
-                                                greyIcon
+                                                ceriseIcon
                                     )
                                 )
                             , el
                                 (case tabSwitch of
                                     Kodi ->
-                                        [ Font.color Colors.local ]
+                                        []
 
                                     Local ->
-                                        []
+                                        [ Font.color Colors.local ]
                                 )
                                 (text " Local")
                             ]
