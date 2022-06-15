@@ -65,6 +65,11 @@ red =
     Element.rgb255 250 0 0
 
 
+darkGrey : Element.Color
+darkGrey =
+    Element.rgb255 36 37 38
+
+
 
 -- Palette
 
