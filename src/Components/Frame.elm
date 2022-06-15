@@ -38,9 +38,9 @@ layout layoutType =
                 ]
             ]
         }
-    , header = Header.view layoutType.searchChanged
+    , header = Header.view layoutType.showRightSidebarMenu layoutType.searchChanged
     , playerBar = PlayerRow.view layoutType
     , rightSidebar = RightSidebar.view layoutType.showRightSidebarMenu layoutType.rightSidebarExtended layoutType.rightSidebarMsg (layoutType.windowHeight - PlayerRow.playerHeight) layoutType.connection
-    , leftSidebar = LeftSidebar.view layoutType.leftSidebarControl
+    , leftSidebar = LeftSidebar.view layoutType.showRightSidebarMenu layoutType.leftSidebarControl
     , dialogBox = Dialog.view dialogConfig
     }

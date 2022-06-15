@@ -1,7 +1,7 @@
 module Components.PlayerRow exposing (playerHeight, view)
 
 import Colors exposing (greyIcon)
-import Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, VolumeAndControls)
+import Components.LayoutType exposing (ControlMenu, CurrentlyPlaying, LayoutType, PlayerControl, ShowRightSidebarMenu, VolumeAndControls)
 import Element exposing (Attribute, Element, alignBottom, alignLeft, alignRight, centerX, column, el, fill, height, htmlAttribute, image, padding, paddingXY, px, rgb, row, spaceEvenly, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font exposing (center)
@@ -24,7 +24,7 @@ playerHeight =
 view : LayoutType msg -> Element msg
 view layoutType =
     row [ height (px playerHeight), width fill, alignBottom, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
-        [ playControlRow layoutType.playerControl
+        [ playControlRow layoutType.showRightSidebarMenu layoutType.playerControl
         , column [ width (px playerHeight) ]
             [ case layoutType.currentlyPlaying.currentlyPlaying of
                 Nothing ->
@@ -39,27 +39,49 @@ view layoutType =
                         , description = "Thumbnail"
                         }
             ]
-        , currentlyPlayingColumn layoutType.currentlyPlaying
-        , volumesAndControlsColumn layoutType.volumeAndControls layoutType.controlMenu
+        , currentlyPlayingColumn layoutType.showRightSidebarMenu layoutType.currentlyPlaying
+        , volumesAndControlsColumn layoutType.showRightSidebarMenu layoutType.volumeAndControls layoutType.controlMenu
         ]
 
 
-playControlRow : PlayerControl msg -> Element msg
-playControlRow { reverseMsg, playPauseMsg, skipMsg, playing } =
-    row [ height fill, width (px 300), Background.color Colors.greyscaleShark, alignBottom, center, spaceEvenly ]
+playControlRow : ShowRightSidebarMenu msg -> PlayerControl msg -> Element msg
+playControlRow { tabSwitch } { reverseMsg, playPauseMsg, skipMsg, playing } =
+    row
+        [ height fill
+        , width (px 300)
+        , case tabSwitch of
+            Kodi ->
+                Background.color Colors.darkGrey
+
+            Local ->
+                Background.color Colors.greyscaleShark
+        , alignBottom
+        , center
+        , spaceEvenly
+        ]
         [ el [ padding 10 ] (reverseButton reverseMsg)
         , el [] (playButton playing playPauseMsg)
         , el [ padding 10 ] (skipButton skipMsg)
         ]
 
 
-currentlyPlayingColumn : CurrentlyPlaying msg -> Element msg
-currentlyPlayingColumn { currentlyPlaying, progressSlider } =
+currentlyPlayingColumn : ShowRightSidebarMenu msg -> CurrentlyPlaying msg -> Element msg
+currentlyPlayingColumn { tabSwitch } { currentlyPlaying, progressSlider } =
     column [ height fill, width fill ]
         [ row [ width fill, height (px 20) ]
             [ progressSlider ]
         , row
-            [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
+            [ height (px 25)
+            , width fill
+            , case tabSwitch of
+                Kodi ->
+                    Background.color Colors.playerBackground
+
+                Local ->
+                    Background.color Colors.greyscaleOuterSpace
+            , alignBottom
+            , padding 8
+            ]
             (case currentlyPlaying of
                 Nothing ->
                     [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (text "Nothing playing")
@@ -72,7 +94,17 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
                     ]
             )
         , row
-            [ height (px 25), width fill, Background.color Colors.greyscaleOuterSpace, alignBottom, padding 8 ]
+            [ height (px 25)
+            , width fill
+            , case tabSwitch of
+                Kodi ->
+                    Background.color Colors.playerBackground
+
+                Local ->
+                    Background.color Colors.greyscaleOuterSpace
+            , alignBottom
+            , padding 8
+            ]
             (case currentlyPlaying of
                 Nothing ->
                     [ el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13 ] (text "Nothing playing")
@@ -88,11 +120,20 @@ currentlyPlayingColumn { currentlyPlaying, progressSlider } =
         ]
 
 
-volumesAndControlsColumn : VolumeAndControls msg -> ControlMenu msg -> Element msg
-volumesAndControlsColumn { muteMsg, mute, repeat, repeatMsg, shuffleMsg, shuffle, volumeSlider } { controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
+volumesAndControlsColumn : ShowRightSidebarMenu msg -> VolumeAndControls msg -> ControlMenu msg -> Element msg
+volumesAndControlsColumn { tabSwitch } { muteMsg, mute, repeat, repeatMsg, shuffleMsg, shuffle, volumeSlider } { controlMenu, controlMenuMsg, sendTextToKodiMsg, scanVideoLibraryMsg, scanMusicLibraryMsg } =
     column [ height fill, width (px 300) ]
         [ row (controlMenuDropUp controlMenu sendTextToKodiMsg scanVideoLibraryMsg scanMusicLibraryMsg ++ [ width fill, height (px 20) ]) [ volumeSlider ]
-        , row [ width fill, height fill, Background.color Colors.greyscaleShark ]
+        , row
+            [ width fill
+            , height fill
+            , case tabSwitch of
+                Kodi ->
+                    Background.color Colors.darkGrey
+
+                Local ->
+                    Background.color Colors.greyscaleShark
+            ]
             [ el [ centerX ] (volumeButton mute muteMsg)
             , el [ centerX ] (repeatButton repeat repeatMsg)
             , el [ centerX ] (shuffleButton shuffle shuffleMsg)
