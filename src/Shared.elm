@@ -91,6 +91,7 @@ type alias Model =
     , translations : I18Next.Translations
     , interfaceLocalSettings : LocalSettings
     , addonLocalSettings : LocalSettings
+    , tabSwitch : Tabs
     }
 
 
@@ -316,6 +317,7 @@ init flags url key =
       , translations = decodedTranslations
       , interfaceLocalSettings = decodedInterfaceSettings
       , addonLocalSettings = decodedAddonSettings
+      , tabSwitch = Kodi
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
@@ -404,6 +406,8 @@ type Msg
     | NewPlaylist String
     | RefreshPlaylistMsg
     | PartyModeToggleMsg
+    | KodiMsg
+    | LocalMsg
 
 
 songname : SongObj -> String
@@ -714,6 +718,16 @@ update msg model =
             , Cmd.none
             )
 
+        KodiMsg ->
+            ( { model | tabSwitch = Kodi }
+            , Cmd.none
+            )
+
+        LocalMsg ->
+            ( { model | tabSwitch = Local }
+            , Cmd.none
+            )
+
         SendTextToKodi ->
             ( model, Cmd.none )
 
@@ -837,6 +851,9 @@ view { page, toMsg } model =
             , refreshPlaylistMsg = toMsg RefreshPlaylistMsg
             , isPartyMode = model.isPartyMode
             , partyModeToggleMsg = toMsg PartyModeToggleMsg
+            , kodiMsg = toMsg KodiMsg
+            , localMsg = toMsg LocalMsg
+            , tabSwitch = model.tabSwitch
             }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
