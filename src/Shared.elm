@@ -91,7 +91,7 @@ type alias Model =
     , translations : I18Next.Translations
     , interfaceLocalSettings : LocalSettings
     , addonLocalSettings : LocalSettings
-    , tabSwitch : Tabs
+    , tabSwitch : SharedType.Tabs
     }
 
 
@@ -317,7 +317,7 @@ init flags url key =
       , translations = decodedTranslations
       , interfaceLocalSettings = decodedInterfaceSettings
       , addonLocalSettings = decodedAddonSettings
-      , tabSwitch = Kodi AudTab
+      , tabSwitch = Kodi SharedType.Audio
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
@@ -533,10 +533,10 @@ update msg model =
 
                                     PlayerB playerid playertype ptype ->
                                         case ptype of
-                                            Video ->
+                                            WSDecoder.Video ->
                                                 """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "season", "episode", "duration", "showtitle", "tvshowid", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt playerid ++ """ }, "id": "VideoGetItem"}"""
 
-                                            Audio ->
+                                            WSDecoder.Audio ->
                                                 """{"jsonrpc": "2.0", "method": "Player.GetItem", "params": { "properties": ["title", "album", "artist", "duration", "genre", "thumbnail", "file", "fanart", "streamdetails"], "playerid": """ ++ String.fromInt playerid ++ """ }, "id": "AudioGetItem"}"""
                             )
                             model.players
@@ -721,7 +721,7 @@ update msg model =
             )
 
         KodiMsg ->
-            ( { model | tabSwitch = Kodi AudTab }
+            ( { model | tabSwitch = Kodi SharedType.Audio }
             , Cmd.none
             )
 
@@ -731,12 +731,12 @@ update msg model =
             )
 
         VideoMsg ->
-            ( { model | tabSwitch = Kodi VidTab }
+            ( { model | tabSwitch = Kodi SharedType.Video }
             , Cmd.none
             )
 
         AudioMsg ->
-            ( { model | tabSwitch = Kodi AudTab }
+            ( { model | tabSwitch = Kodi SharedType.Audio }
             , Cmd.none
             )
 

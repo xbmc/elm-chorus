@@ -13,5 +13,5 @@ type Tabs
 
 
 type KodiTabs
-    = AudTab
-    | VidTab
+    = Audio
+    | Video

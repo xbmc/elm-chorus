@@ -141,10 +141,10 @@ kodiTab tabSwitch audioMsg videoMsg =
             [ row [ width fill, height (px 30), Background.color Colors.backgroundLocal ]
                 [ Input.button
                     [ case tabSwitch of
-                        Kodi AudTab ->
+                        Kodi Audio ->
                             Background.color Colors.innertab
 
-                        Kodi VidTab ->
+                        Kodi Video ->
                             Background.color Colors.backgroundLocal
 
                         _ ->
@@ -155,10 +155,10 @@ kodiTab tabSwitch audioMsg videoMsg =
                     , label =
                         el
                             (case tabSwitch of
-                                Kodi AudTab ->
+                                Kodi Audio ->
                                     [ Font.color Colors.white ]
 
-                                Kodi VidTab ->
+                                Kodi Video ->
                                     []
 
                                 _ ->
@@ -168,10 +168,10 @@ kodiTab tabSwitch audioMsg videoMsg =
                     }
                 , Input.button
                     [ case tabSwitch of
-                        Kodi AudTab ->
+                        Kodi Audio ->
                             Background.color Colors.backgroundLocal
 
-                        Kodi VidTab ->
+                        Kodi Video ->
                             Background.color Colors.innertab
 
                         _ ->
@@ -182,10 +182,10 @@ kodiTab tabSwitch audioMsg videoMsg =
                     , label =
                         el
                             (case tabSwitch of
-                                Kodi AudTab ->
+                                Kodi Audio ->
                                     []
 
-                                Kodi VidTab ->
+                                Kodi Video ->
                                     [ Font.color Colors.white ]
 
                                 _ ->
@@ -195,10 +195,10 @@ kodiTab tabSwitch audioMsg videoMsg =
                     }
                 ]
             , case tabSwitch of
-                Kodi AudTab ->
+                Kodi Audio ->
                     audioTab
 
-                Kodi VidTab ->
+                Kodi Video ->
                     videoTab
 
                 _ ->
