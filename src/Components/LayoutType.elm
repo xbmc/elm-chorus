@@ -93,6 +93,8 @@ type alias ShowRightSidebarMenu msg =
     , tabSwitch : Tabs
     , kodiMsg : msg
     , localMsg : msg
+    , audioMsg : msg
+    , videoMsg : msg
     }
 
 

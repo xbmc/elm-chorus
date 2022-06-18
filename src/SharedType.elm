@@ -10,3 +10,5 @@ type RepeatType
 type Tabs
     = Kodi
     | Local
+    | Audiot
+    | Videot

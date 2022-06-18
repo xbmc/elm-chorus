@@ -408,6 +408,8 @@ type Msg
     | PartyModeToggleMsg
     | KodiMsg
     | LocalMsg
+    | AudioMsg
+    | VideoMsg
 
 
 songname : SongObj -> String
@@ -728,6 +730,16 @@ update msg model =
             , Cmd.none
             )
 
+        VideoMsg ->
+            ( { model | tabSwitch = Videot }
+            , Cmd.none
+            )
+
+        AudioMsg ->
+            ( { model | tabSwitch = Audiot }
+            , Cmd.none
+            )
+
         SendTextToKodi ->
             ( model, Cmd.none )
 
@@ -854,6 +866,8 @@ view { page, toMsg } model =
             , kodiMsg = toMsg KodiMsg
             , localMsg = toMsg LocalMsg
             , tabSwitch = model.tabSwitch
+            , audioMsg = toMsg AudioMsg
+            , videoMsg = toMsg VideoMsg
             }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
