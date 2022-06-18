@@ -8,7 +8,10 @@ type RepeatType
 
 
 type Tabs
-    = Kodi
+    = Kodi KodiTabs
     | Local
-    | Audiot
-    | Videot
+
+
+type KodiTabs
+    = AudTab
+    | VidTab

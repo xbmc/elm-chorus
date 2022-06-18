@@ -21,14 +21,11 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
             [ row [ width fill ]
                 [ Input.button
                     [ case tabSwitch of
-                        Kodi ->
+                        Kodi _ ->
                             Background.color Colors.backgroundKodi
 
                         Local ->
                             Background.color Colors.backgroundLocal
-
-                        _ ->
-                            Background.color Colors.backgroundKodi
                     , height (px 50)
                     , width (px 100)
                     , padding 8
@@ -40,39 +37,30 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                                 { description = ""
                                 , src =
                                     case tabSwitch of
-                                        Kodi ->
+                                        Kodi _ ->
                                             "logo.png"
 
                                         Local ->
                                             "greylogo.png"
-
-                                        _ ->
-                                            "logo.png"
                                 }
                             , el
                                 (case tabSwitch of
-                                    Kodi ->
+                                    Kodi _ ->
                                         [ Font.color Colors.kodi ]
 
                                     Local ->
                                         []
-
-                                    _ ->
-                                        [ Font.color Colors.kodi ]
                                 )
                                 (text " Kodi")
                             ]
                     }
                 , Input.button
                     [ case tabSwitch of
-                        Kodi ->
+                        Kodi _ ->
                             Background.color Colors.backgroundLocal
 
                         Local ->
                             Background.color Colors.backgroundKodi
-
-                        _ ->
-                            Background.color Colors.backgroundLocal
                     , height (px 50)
                     , width (px 100)
                     , padding 8
@@ -84,26 +72,20 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                                 (Filled.headphones 14
                                     (MITypes.Color <|
                                         case tabSwitch of
-                                            Kodi ->
+                                            Kodi _ ->
                                                 greyIcon
 
                                             Local ->
                                                 ceriseIcon
-
-                                            _ ->
-                                                greyIcon
                                     )
                                 )
                             , el
                                 (case tabSwitch of
-                                    Kodi ->
+                                    Kodi _ ->
                                         []
 
                                     Local ->
                                         [ Font.color Colors.local ]
-
-                                    _ ->
-                                        []
                                 )
                                 (text " Local")
                             ]
@@ -133,14 +115,11 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                     }
                 ]
             , case tabSwitch of
-                Kodi ->
+                Kodi _ ->
                     kodiTab tabSwitch audioMsg videoMsg
 
                 Local ->
                     localTab
-
-                _ ->
-                    kodiTab tabSwitch audioMsg videoMsg
             ]
 
     else
@@ -162,10 +141,10 @@ kodiTab tabSwitch audioMsg videoMsg =
             [ row [ width fill, height (px 30), Background.color Colors.backgroundLocal ]
                 [ Input.button
                     [ case tabSwitch of
-                        Audiot ->
+                        Kodi AudTab ->
                             Background.color Colors.innertab
 
-                        Videot ->
+                        Kodi VidTab ->
                             Background.color Colors.backgroundLocal
 
                         _ ->
@@ -176,23 +155,23 @@ kodiTab tabSwitch audioMsg videoMsg =
                     , label =
                         el
                             (case tabSwitch of
-                                Audiot ->
+                                Kodi AudTab ->
                                     [ Font.color Colors.white ]
 
-                                Videot ->
+                                Kodi VidTab ->
                                     []
 
                                 _ ->
-                                    [ Font.color Colors.white ]
+                                    []
                             )
                             (text " Audio")
                     }
                 , Input.button
                     [ case tabSwitch of
-                        Audiot ->
+                        Kodi AudTab ->
                             Background.color Colors.backgroundLocal
 
-                        Videot ->
+                        Kodi VidTab ->
                             Background.color Colors.innertab
 
                         _ ->
@@ -203,10 +182,10 @@ kodiTab tabSwitch audioMsg videoMsg =
                     , label =
                         el
                             (case tabSwitch of
-                                Audiot ->
+                                Kodi AudTab ->
                                     []
 
-                                Videot ->
+                                Kodi VidTab ->
                                     [ Font.color Colors.white ]
 
                                 _ ->
@@ -216,10 +195,10 @@ kodiTab tabSwitch audioMsg videoMsg =
                     }
                 ]
             , case tabSwitch of
-                Audiot ->
+                Kodi AudTab ->
                     audioTab
 
-                Videot ->
+                Kodi VidTab ->
                     videoTab
 
                 _ ->

@@ -317,7 +317,7 @@ init flags url key =
       , translations = decodedTranslations
       , interfaceLocalSettings = decodedInterfaceSettings
       , addonLocalSettings = decodedAddonSettings
-      , tabSwitch = Kodi
+      , tabSwitch = Kodi AudTab
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
@@ -721,7 +721,7 @@ update msg model =
             )
 
         KodiMsg ->
-            ( { model | tabSwitch = Kodi }
+            ( { model | tabSwitch = Kodi AudTab }
             , Cmd.none
             )
 
@@ -731,12 +731,12 @@ update msg model =
             )
 
         VideoMsg ->
-            ( { model | tabSwitch = Videot }
+            ( { model | tabSwitch = Kodi VidTab }
             , Cmd.none
             )
 
         AudioMsg ->
-            ( { model | tabSwitch = Audiot }
+            ( { model | tabSwitch = Kodi AudTab }
             , Cmd.none
             )
 
