@@ -115,8 +115,8 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                     }
                 ]
             , case tabSwitch of
-                Kodi _ ->
-                    kodiTab tabSwitch audioMsg videoMsg
+                Kodi kodiTabs ->
+                    kodiTab kodiTabs audioMsg videoMsg
 
                 Local ->
                     localTab
@@ -134,75 +134,60 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
             ]
 
 
-kodiTab : Tabs -> msg -> msg -> Element msg
-kodiTab tabSwitch audioMsg videoMsg =
+kodiTab : KodiTabs -> msg -> msg -> Element msg
+kodiTab kodiTabs audioMsg videoMsg =
     el [ width fill, height fill, Background.color Colors.playlistBackground, padding 10 ] <|
         column [ width fill, spacing 10 ]
             [ row [ width fill, height (px 30), Background.color Colors.backgroundLocal ]
                 [ Input.button
-                    [ case tabSwitch of
-                        Kodi Audio ->
+                    [ case kodiTabs of
+                        Audio ->
                             Background.color Colors.innertab
 
-                        Kodi Video ->
+                        Video ->
                             Background.color Colors.backgroundLocal
-
-                        _ ->
-                            Background.color Colors.innertab
                     , padding 8
                     ]
                     { onPress = Just audioMsg
                     , label =
                         el
-                            (case tabSwitch of
-                                Kodi Audio ->
+                            (case kodiTabs of
+                                Audio ->
                                     [ Font.color Colors.white ]
 
-                                Kodi Video ->
-                                    []
-
-                                _ ->
+                                Video ->
                                     []
                             )
                             (text " Audio")
                     }
                 , Input.button
-                    [ case tabSwitch of
-                        Kodi Audio ->
+                    [ case kodiTabs of
+                        Audio ->
                             Background.color Colors.backgroundLocal
 
-                        Kodi Video ->
+                        Video ->
                             Background.color Colors.innertab
-
-                        _ ->
-                            Background.color Colors.backgroundLocal
                     , padding 8
                     ]
                     { onPress = Just videoMsg
                     , label =
                         el
-                            (case tabSwitch of
-                                Kodi Audio ->
+                            (case kodiTabs of
+                                Audio ->
                                     []
 
-                                Kodi Video ->
+                                Video ->
                                     [ Font.color Colors.white ]
-
-                                _ ->
-                                    []
                             )
                             (text " Video")
                     }
                 ]
-            , case tabSwitch of
-                Kodi Audio ->
+            , case kodiTabs of
+                Audio ->
                     audioTab
 
-                Kodi Video ->
+                Video ->
                     videoTab
-
-                _ ->
-                    audioTab
             ]
 
 
