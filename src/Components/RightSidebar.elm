@@ -14,14 +14,14 @@ import WSDecoder exposing (Connection(..))
 
 
 view : ShowRightSidebarMenu msg -> Bool -> msg -> Int -> Connection -> Element msg
-view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshPlaylistMsg, partyModeToggleMsg, kodiMsg, localMsg, tabSwitch } rightSidebarExtended rightSidebarMsg panelHeight connection =
+view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshPlaylistMsg, partyModeToggleMsg, kodiMsg, localMsg, audioMsg, videoMsg, tabSwitch } rightSidebarExtended rightSidebarMsg panelHeight connection =
     if rightSidebarExtended then
         column
             [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
             [ row [ width fill ]
                 [ Input.button
                     [ case tabSwitch of
-                        Kodi ->
+                        Kodi _ ->
                             Background.color Colors.backgroundKodi
 
                         Local ->
@@ -37,7 +37,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                                 { description = ""
                                 , src =
                                     case tabSwitch of
-                                        Kodi ->
+                                        Kodi _ ->
                                             "logo.png"
 
                                         Local ->
@@ -45,7 +45,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                                 }
                             , el
                                 (case tabSwitch of
-                                    Kodi ->
+                                    Kodi _ ->
                                         [ Font.color Colors.kodi ]
 
                                     Local ->
@@ -56,7 +56,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                     }
                 , Input.button
                     [ case tabSwitch of
-                        Kodi ->
+                        Kodi _ ->
                             Background.color Colors.backgroundLocal
 
                         Local ->
@@ -72,7 +72,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                                 (Filled.headphones 14
                                     (MITypes.Color <|
                                         case tabSwitch of
-                                            Kodi ->
+                                            Kodi _ ->
                                                 greyIcon
 
                                             Local ->
@@ -81,7 +81,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                                 )
                             , el
                                 (case tabSwitch of
-                                    Kodi ->
+                                    Kodi _ ->
                                         []
 
                                     Local ->
@@ -115,8 +115,8 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                     }
                 ]
             , case tabSwitch of
-                Kodi ->
-                    kodiTab
+                Kodi kodiTabs ->
+                    kodiTab kodiTabs audioMsg videoMsg
 
                 Local ->
                     localTab
@@ -134,14 +134,76 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
             ]
 
 
-kodiTab : Element msg
-kodiTab =
-    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Kodi Tab")
+kodiTab : KodiTabs -> msg -> msg -> Element msg
+kodiTab kodiTabs audioMsg videoMsg =
+    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 10 ] <|
+        column [ width fill, spacing 10 ]
+            [ row [ width fill, height (px 30), Background.color Colors.backgroundLocal ]
+                [ Input.button
+                    [ case kodiTabs of
+                        Audio ->
+                            Background.color Colors.innertab
+
+                        Video ->
+                            Background.color Colors.backgroundLocal
+                    , padding 8
+                    ]
+                    { onPress = Just audioMsg
+                    , label =
+                        el
+                            (case kodiTabs of
+                                Audio ->
+                                    [ Font.color Colors.white ]
+
+                                Video ->
+                                    []
+                            )
+                            (text " Audio")
+                    }
+                , Input.button
+                    [ case kodiTabs of
+                        Audio ->
+                            Background.color Colors.backgroundLocal
+
+                        Video ->
+                            Background.color Colors.innertab
+                    , padding 8
+                    ]
+                    { onPress = Just videoMsg
+                    , label =
+                        el
+                            (case kodiTabs of
+                                Audio ->
+                                    []
+
+                                Video ->
+                                    [ Font.color Colors.white ]
+                            )
+                            (text " Video")
+                    }
+                ]
+            , case kodiTabs of
+                Audio ->
+                    audioTab
+
+                Video ->
+                    videoTab
+            ]
 
 
 localTab : Element msg
 localTab =
     el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Local Tab")
+
+
+audioTab : Element msg
+audioTab =
+    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Audio Tab")
+
+
+videoTab : Element msg
+videoTab =
+    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Video Tab")
 
 
 rightSidebarMenuDropDown : Bool -> msg -> msg -> msg -> List (Attribute msg)

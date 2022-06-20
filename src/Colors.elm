@@ -167,6 +167,11 @@ local =
     ceriseRed
 
 
+innertab : Element.Color
+innertab =
+    Element.rgba 255 255 255 0.1
+
+
 
 -- Background colors.
 
