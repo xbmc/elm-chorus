@@ -867,7 +867,9 @@ view { page, toMsg } model =
             , localMsg = toMsg LocalMsg
             , tabSwitch = model.tabSwitch
             , audioMsg = toMsg AudioMsg
+            , currentlyPlaying = model.currentlyPlaying
             , videoMsg = toMsg VideoMsg
+            , playing = model.playing
             }
         , playerControl =
             { playPauseMsg = toMsg PlayPause
