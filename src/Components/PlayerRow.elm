@@ -50,7 +50,7 @@ playControlRow { tabSwitch } { reverseMsg, playPauseMsg, skipMsg, playing } =
         [ height fill
         , width (px 300)
         , case tabSwitch of
-            Kodi ->
+            Kodi _ ->
                 Background.color Colors.darkGrey
 
             Local ->
@@ -74,7 +74,7 @@ currentlyPlayingColumn { tabSwitch } { currentlyPlaying, progressSlider } =
             [ height (px 25)
             , width fill
             , case tabSwitch of
-                Kodi ->
+                Kodi _ ->
                     Background.color Colors.playerBackground
 
                 Local ->
@@ -97,7 +97,7 @@ currentlyPlayingColumn { tabSwitch } { currentlyPlaying, progressSlider } =
             [ height (px 25)
             , width fill
             , case tabSwitch of
-                Kodi ->
+                Kodi _ ->
                     Background.color Colors.playerBackground
 
                 Local ->
@@ -128,7 +128,7 @@ volumesAndControlsColumn { tabSwitch } { muteMsg, mute, repeat, repeatMsg, shuff
             [ width fill
             , height fill
             , case tabSwitch of
-                Kodi ->
+                Kodi _ ->
                     Background.color Colors.darkGrey
 
                 Local ->

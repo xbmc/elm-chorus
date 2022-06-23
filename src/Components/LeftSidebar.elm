@@ -46,7 +46,7 @@ materialIconLink { tabSwitch } elementHover elementHoverMsg elementLeaveMsg icon
         leftSidebarIconStyle =
             if elementHover == iconHoverName then
                 [ case tabSwitch of
-                    Kodi ->
+                    Kodi _ ->
                         Background.color Colors.brandPrimary
 
                     Local ->
