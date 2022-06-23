@@ -21,7 +21,7 @@ view { tabSwitch } searchChanged =
         [ width fill
         , height (px headerHeight)
         , case tabSwitch of
-            Kodi ->
+            Kodi _ ->
                 Background.color Colors.headerBackground
 
             Local ->
@@ -34,7 +34,7 @@ view { tabSwitch } searchChanged =
                     { description = ""
                     , src =
                         case tabSwitch of
-                            Kodi ->
+                            Kodi _ ->
                                 "logo.png"
 
                             Local ->
