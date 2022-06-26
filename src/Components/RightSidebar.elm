@@ -189,7 +189,7 @@ kodiTab kodiTabs currentlyPlaying playing audioMsg videoMsg =
                     audioTab currentlyPlaying playing
 
                 Video ->
-                    videoTab
+                    videoTab currentlyPlaying playing
             ]
 
 
@@ -205,36 +205,75 @@ audioTab currentlyPlaying playing =
             Element.none
 
         Just item ->
-            row [ width fill, height (px 80), Background.color Colors.black ]
-                [ case playing of
-                    True ->
-                        Element.image [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0 ]
+            case item.mediatype of
+                WSDecoder.Audio ->
+                    row [ width fill, height (px 80), Background.color Colors.black ]
+                        [ case playing of
+                            True ->
+                                Element.image [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0 ]
+                                    { description = ""
+                                    , src = "wave.gif"
+                                    }
+
+                            False ->
+                                el [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0, Font.color white, Font.size 20 ] (text "---")
+                        , column [ padding 20, spacing 10 ]
+                            [ row [] [ el [ Font.color white ] (text item.title) ]
+                            , row []
+                                (List.map
+                                    (\artist ->
+                                        el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13 ] (text artist)
+                                    )
+                                    item.artist
+                                )
+                            ]
+                        , Element.image [ alignRight, height (px 70), width (px 70) ]
                             { description = ""
-                            , src = "wave.gif"
+                            , src = crossOrigin "http://localhost:8080" [ "image", percentEncode item.thumbnail ] []
                             }
+                        ]
 
-                    False ->
-                        el [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0, Font.color white, Font.size 20 ] (text "---")
-                , column [ padding 20, spacing 10 ]
-                    [ row [] [ el [ Font.color white ] (text item.title) ]
-                    , row []
-                        (List.map
-                            (\artist ->
-                                el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13 ] (text artist)
-                            )
-                            item.artist
-                        )
-                    ]
-                , Element.image [ alignRight, height (px 70), width (px 70) ]
-                    { description = ""
-                    , src = crossOrigin "http://localhost:8080" [ "image", percentEncode item.thumbnail ] []
-                    }
-                ]
+                WSDecoder.Video ->
+                    Element.none
 
 
-videoTab : Element msg
-videoTab =
-    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Video Tab")
+videoTab : Maybe ItemDetails -> Bool -> Element msg
+videoTab currentlyPlaying playing =
+    case currentlyPlaying of
+        Nothing ->
+            Element.none
+
+        Just item ->
+            case item.mediatype of
+                WSDecoder.Audio ->
+                    Element.none
+
+                WSDecoder.Video ->
+                    row [ width fill, height (px 80), Background.color Colors.black ]
+                        [ case playing of
+                            True ->
+                                Element.image [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0 ]
+                                    { description = ""
+                                    , src = "wave.gif"
+                                    }
+
+                            False ->
+                                el [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0, Font.color white, Font.size 20 ] (text "---")
+                        , column [ padding 20, spacing 10 ]
+                            [ row [] [ el [ Font.color white ] (text item.title) ]
+                            , row []
+                                (List.map
+                                    (\artist ->
+                                        el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13 ] (text artist)
+                                    )
+                                    item.artist
+                                )
+                            ]
+                        , Element.image [ alignRight, height (px 70), width (px 70) ]
+                            { description = ""
+                            , src = crossOrigin "http://localhost:8080" [ "image", percentEncode item.thumbnail ] []
+                            }
+                        ]
 
 
 rightSidebarMenuDropDown : Bool -> msg -> msg -> msg -> List (Attribute msg)
