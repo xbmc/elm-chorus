@@ -2,7 +2,7 @@ module Components.RightSidebar exposing (view)
 
 import Colors exposing (..)
 import Components.LayoutType exposing (ShowRightSidebarMenu)
-import Element exposing (Attribute, Element, alignRight, centerX, centerY, column, el, fill, height, htmlAttribute, image, padding, paddingXY, px, rgb, row, spacing, text, width)
+import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, centerY, column, el, fill, height, htmlAttribute, image, padding, paddingXY, px, rgb, row, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
@@ -10,11 +10,13 @@ import Html.Attributes
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes
 import SharedType exposing (..)
-import WSDecoder exposing (Connection(..))
+import Url exposing (percentEncode)
+import Url.Builder exposing (crossOrigin)
+import WSDecoder exposing (Connection(..), ItemDetails)
 
 
 view : ShowRightSidebarMenu msg -> Bool -> msg -> Int -> Connection -> Element msg
-view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshPlaylistMsg, partyModeToggleMsg, kodiMsg, localMsg, audioMsg, videoMsg, tabSwitch } rightSidebarExtended rightSidebarMsg panelHeight connection =
+view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshPlaylistMsg, partyModeToggleMsg, kodiMsg, localMsg, audioMsg, videoMsg, tabSwitch, currentlyPlaying, playing } rightSidebarExtended rightSidebarMsg panelHeight connection =
     if rightSidebarExtended then
         column
             [ height (px panelHeight), width (px 400), Background.color Colors.playlistHeaderBackground, alignRight, htmlAttribute <| Html.Attributes.style "pointer-events" "all" ]
@@ -116,7 +118,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                 ]
             , case tabSwitch of
                 Kodi kodiTabs ->
-                    kodiTab kodiTabs audioMsg videoMsg
+                    kodiTab kodiTabs currentlyPlaying playing audioMsg videoMsg
 
                 Local ->
                     localTab
@@ -134,8 +136,8 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
             ]
 
 
-kodiTab : KodiTabs -> msg -> msg -> Element msg
-kodiTab kodiTabs audioMsg videoMsg =
+kodiTab : KodiTabs -> Maybe ItemDetails -> Bool -> msg -> msg -> Element msg
+kodiTab kodiTabs currentlyPlaying playing audioMsg videoMsg =
     el [ width fill, height fill, Background.color Colors.playlistBackground, padding 10 ] <|
         column [ width fill, spacing 10 ]
             [ row [ width fill, height (px 30), Background.color Colors.backgroundLocal ]
@@ -184,10 +186,10 @@ kodiTab kodiTabs audioMsg videoMsg =
                 ]
             , case kodiTabs of
                 Audio ->
-                    audioTab
+                    audioTab currentlyPlaying playing
 
                 Video ->
-                    videoTab
+                    videoTab currentlyPlaying playing
             ]
 
 
@@ -196,14 +198,82 @@ localTab =
     el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Local Tab")
 
 
-audioTab : Element msg
-audioTab =
-    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Audio Tab")
+audioTab : Maybe ItemDetails -> Bool -> Element msg
+audioTab currentlyPlaying playing =
+    case currentlyPlaying of
+        Nothing ->
+            Element.none
+
+        Just item ->
+            case item.mediatype of
+                WSDecoder.Audio ->
+                    row [ width fill, height (px 80), Background.color Colors.black ]
+                        [ case playing of
+                            True ->
+                                Element.image [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0 ]
+                                    { description = ""
+                                    , src = "wave.gif"
+                                    }
+
+                            False ->
+                                el [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0, Font.color white, Font.size 20 ] (text "---")
+                        , column [ padding 20, spacing 10 ]
+                            [ row [] [ el [ Font.color white ] (text item.title) ]
+                            , row []
+                                (List.map
+                                    (\artist ->
+                                        el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13 ] (text artist)
+                                    )
+                                    item.artist
+                                )
+                            ]
+                        , Element.image [ alignRight, height (px 70), width (px 70) ]
+                            { description = ""
+                            , src = crossOrigin "http://localhost:8080" [ "image", percentEncode item.thumbnail ] []
+                            }
+                        ]
+
+                WSDecoder.Video ->
+                    Element.none
 
 
-videoTab : Element msg
-videoTab =
-    el [ width fill, height fill, Background.color Colors.playlistBackground, padding 8 ] (text "Video Tab")
+videoTab : Maybe ItemDetails -> Bool -> Element msg
+videoTab currentlyPlaying playing =
+    case currentlyPlaying of
+        Nothing ->
+            Element.none
+
+        Just item ->
+            case item.mediatype of
+                WSDecoder.Audio ->
+                    Element.none
+
+                WSDecoder.Video ->
+                    row [ width fill, height (px 80), Background.color Colors.black ]
+                        [ case playing of
+                            True ->
+                                Element.image [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0 ]
+                                    { description = ""
+                                    , src = "wave.gif"
+                                    }
+
+                            False ->
+                                el [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0, Font.color white, Font.size 20 ] (text "---")
+                        , column [ padding 20, spacing 10 ]
+                            [ row [] [ el [ Font.color white ] (text item.title) ]
+                            , row []
+                                (List.map
+                                    (\artist ->
+                                        el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 13 ] (text artist)
+                                    )
+                                    item.artist
+                                )
+                            ]
+                        , Element.image [ alignRight, height (px 70), width (px 70) ]
+                            { description = ""
+                            , src = crossOrigin "http://localhost:8080" [ "image", percentEncode item.thumbnail ] []
+                            }
+                        ]
 
 
 rightSidebarMenuDropDown : Bool -> msg -> msg -> msg -> List (Attribute msg)

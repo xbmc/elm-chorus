@@ -1,4 +1,4 @@
-module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, encodeLocalSettings, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
+module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, encodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, nullable, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -107,6 +107,29 @@ type PlayerObj
     | PlayerB Int PlayerType PType
 
 
+addMediaType : PType -> ItemDetails -> ItemDetails
+addMediaType mediaType details =
+    { details | mediatype = mediaType }
+
+
+getMediaType : List PlayerObj -> ItemDetails -> ItemDetails
+getMediaType player itemdetail =
+    case List.head player of
+        Just (PlayerA playerid speed) ->
+            itemdetail
+
+        Just (PlayerB playerid playertype ptype) ->
+            case ptype of
+                Video ->
+                    addMediaType Video itemdetail
+
+                Audio ->
+                    addMediaType Audio itemdetail
+
+        Nothing ->
+            itemdetail
+
+
 playerSpdDecoder : Decoder PlayerObj
 playerSpdDecoder =
     Decode.succeed PlayerA
@@ -203,8 +226,22 @@ itemDetailDecoder =
     Decode.succeed ItemDetails
         |> custom (at [ "item", "title" ] string)
         |> custom (at [ "item", "artist" ] (list string))
-        |> custom (at [ "item", "duration" ] int)
+        |> custom durationDecoder
         |> custom (at [ "item", "thumbnail" ] string)
+        |> optional "type" pTypeDecoder Audio
+
+
+durationDecoder : Decoder Int
+durationDecoder =
+    Decode.oneOf
+        [ Decode.at [ "item", "duration" ] Decode.int
+        , Decode.at [ "item", "streamdetails", "video" ]
+            (Decode.index 0
+                (Decode.field "duration"
+                    Decode.int
+                )
+            )
+        ]
 
 
 type alias ItemDetails =
@@ -212,6 +249,7 @@ type alias ItemDetails =
     , artist : List String
     , duration : Int
     , thumbnail : String
+    , mediatype : PType
     }
 
 

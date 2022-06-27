@@ -19,7 +19,7 @@ port module Shared exposing
 
 import Browser.Navigation exposing (Key, pushUrl)
 import Components.Frame
-import Components.LayoutType exposing (DialogType(..))
+import Components.LayoutType exposing (CurrentlyPlaying, DialogType(..))
 import Element exposing (..)
 import Http exposing (Part)
 import I18Next
@@ -36,7 +36,7 @@ import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Translations
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -544,7 +544,7 @@ update msg model =
                     )
 
                 ResultC item ->
-                    ( { model | currentlyPlaying = Just item }
+                    ( { model | currentlyPlaying = Just (getMediaType model.players item) }
                     , sendActions
                         [ """{"jsonrpc":"2.0","method":"Player.GetProperties","params":{"playerid":0,"properties":["percentage", "speed"]},"id":"0"}"""
                         , """{"jsonrpc": "2.0", "method": "Application.GetProperties", "params" : { "properties" : [ "volume", "muted" ] }, "id": 0}""" --get volume on start
@@ -867,7 +867,9 @@ view { page, toMsg } model =
             , localMsg = toMsg LocalMsg
             , tabSwitch = model.tabSwitch
             , audioMsg = toMsg AudioMsg
+            , currentlyPlaying = model.currentlyPlaying
             , videoMsg = toMsg VideoMsg
+            , playing = model.playing
             }
         , playerControl =
             { playPauseMsg = toMsg PlayPause

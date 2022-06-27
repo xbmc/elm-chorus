@@ -95,6 +95,8 @@ type alias ShowRightSidebarMenu msg =
     , localMsg : msg
     , audioMsg : msg
     , videoMsg : msg
+    , currentlyPlaying : Maybe ItemDetails
+    , playing : Bool
     }
 
 
