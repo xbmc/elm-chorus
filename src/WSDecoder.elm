@@ -1,4 +1,4 @@
-module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, encodeLocalSettings, getmediatype, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
+module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, encodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, nullable, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -107,28 +107,24 @@ type PlayerObj
     | PlayerB Int PlayerType PType
 
 
-addmediatype : PType -> ItemDetails -> ItemDetails
-addmediatype mediaType details =
+addMediaType : PType -> ItemDetails -> ItemDetails
+addMediaType mediaType details =
     { details | mediatype = mediaType }
 
 
-getmediatype : List PlayerObj -> ItemDetails -> ItemDetails
-getmediatype player itemdetail =
-    let
-        x =
-            List.head player
-    in
-    case x of
+getMediaType : List PlayerObj -> ItemDetails -> ItemDetails
+getMediaType player itemdetail =
+    case List.head player of
         Just (PlayerA playerid speed) ->
             itemdetail
 
         Just (PlayerB playerid playertype ptype) ->
             case ptype of
                 Video ->
-                    addmediatype Video itemdetail
+                    addMediaType Video itemdetail
 
                 Audio ->
-                    addmediatype Audio itemdetail
+                    addMediaType Audio itemdetail
 
         Nothing ->
             itemdetail
