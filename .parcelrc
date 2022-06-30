@@ -1,4 +1,7 @@
 {
   "extends": ["@parcel/config-default"],
-  "reporters":  ["...", "parcel-reporter-static-files-copy"]
+  "reporters":  ["...", "parcel-reporter-static-files-copy"],
+  "transformers": {
+    "*.elm": ["parcel-transformer-elm-svg-modules", "..."] // <-- add the new transform here, the "..." is important to keep the other defaults
+  }
 }

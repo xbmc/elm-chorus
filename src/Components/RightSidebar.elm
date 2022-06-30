@@ -6,13 +6,27 @@ import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, cen
 import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
-import Html.Attributes
+import Html exposing (Html, div)
+import Html.Attributes exposing (class, style)
+import Icons exposing (..)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes
 import SharedType exposing (..)
 import Url exposing (percentEncode)
 import Url.Builder exposing (crossOrigin)
 import WSDecoder exposing (Connection(..), ItemDetails)
+
+
+blueLogoSvg : Html msg
+blueLogoSvg =
+    div [ style "width" "12px", style "height" "12px", class "scale" ]
+        [ logo [] ]
+
+
+greyLogoSvg : Html msg
+greyLogoSvg =
+    div [ style "width" "12px", style "height" "12px", class "scale" ]
+        [ greylogo [] ]
 
 
 view : ShowRightSidebarMenu msg -> Bool -> msg -> Int -> Connection -> Element msg
@@ -34,26 +48,22 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                     ]
                     { onPress = Just kodiMsg
                     , label =
-                        Element.row []
-                            [ image [ width (px 15), height (px 15), paddingXY 15 0 ]
-                                { description = ""
-                                , src =
-                                    case tabSwitch of
-                                        Kodi _ ->
-                                            "logo.png"
+                        Element.row [ padding 10 ]
+                            [ case tabSwitch of
+                                Kodi _ ->
+                                    Element.html blueLogoSvg
 
-                                        Local ->
-                                            "greylogo.png"
-                                }
+                                Local ->
+                                    Element.html greyLogoSvg
                             , el
                                 (case tabSwitch of
                                     Kodi _ ->
-                                        [ Font.color Colors.kodi ]
+                                        [ paddingXY 10 0, Font.color Colors.kodi ]
 
                                     Local ->
-                                        []
+                                        [ paddingXY 10 0 ]
                                 )
-                                (text " Kodi")
+                                (text "Kodi")
                             ]
                     }
                 , Input.button
@@ -69,7 +79,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                     ]
                     { onPress = Just localMsg
                     , label =
-                        Element.row []
+                        Element.row [ padding 10 ]
                             [ Element.html
                                 (Filled.headphones 14
                                     (MITypes.Color <|
@@ -84,12 +94,12 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                             , el
                                 (case tabSwitch of
                                     Kodi _ ->
-                                        []
+                                        [ paddingXY 10 0 ]
 
                                     Local ->
-                                        [ Font.color Colors.local ]
+                                        [ paddingXY 10 0, Font.color Colors.local ]
                                 )
-                                (text " Local")
+                                (text "Local")
                             ]
                     }
                 , el (rightSidebarMenuDropDown showRightSidebarMenu clearPlaylistMsg refreshPlaylistMsg partyModeToggleMsg)
