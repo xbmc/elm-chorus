@@ -58,12 +58,12 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                             , el
                                 (case tabSwitch of
                                     Kodi _ ->
-                                        [ Font.color Colors.kodi ]
+                                        [ paddingXY 10 0, Font.color Colors.kodi ]
 
                                     Local ->
-                                        []
+                                        [ paddingXY 10 0 ]
                                 )
-                                (text "  Kodi")
+                                (text "Kodi")
                             ]
                     }
                 , Input.button
@@ -79,7 +79,7 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                     ]
                     { onPress = Just localMsg
                     , label =
-                        Element.row []
+                        Element.row [ padding 10 ]
                             [ Element.html
                                 (Filled.headphones 14
                                     (MITypes.Color <|
@@ -94,12 +94,12 @@ view { showRightSidebarMenu, showRightSidebarMenuMsg, clearPlaylistMsg, refreshP
                             , el
                                 (case tabSwitch of
                                     Kodi _ ->
-                                        []
+                                        [ paddingXY 10 0 ]
 
                                     Local ->
-                                        [ Font.color Colors.local ]
+                                        [ paddingXY 10 0, Font.color Colors.local ]
                                 )
-                                (text " Local")
+                                (text "Local")
                             ]
                     }
                 , el (rightSidebarMenuDropDown showRightSidebarMenu clearPlaylistMsg refreshPlaylistMsg partyModeToggleMsg)
