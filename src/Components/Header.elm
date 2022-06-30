@@ -5,7 +5,9 @@ import Components.LayoutType exposing (ShowRightSidebarMenu)
 import Element exposing (Element, alignRight, fill, height, htmlAttribute, image, paddingXY, px, row, text, width)
 import Element.Background as Background
 import Element.Input as Input
-import Html.Attributes
+import Html exposing (Html, div)
+import Html.Attributes exposing (class, style)
+import Icons exposing (..)
 import SharedType exposing (..)
 import Spa.Generated.Route as Route
 
@@ -13,6 +15,18 @@ import Spa.Generated.Route as Route
 headerHeight : Int
 headerHeight =
     50
+
+
+redLogoSvg : Html msg
+redLogoSvg =
+    div [ style "width" "25px", style "height" "25px", class "scale" ]
+        [ ceriseRedLogo [] ]
+
+
+blueLogoSvg : Html msg
+blueLogoSvg =
+    div [ style "width" "25px", style "height" "25px", class "scale" ]
+        [ logo [] ]
 
 
 view : ShowRightSidebarMenu msg -> (String -> msg) -> Element msg
@@ -28,18 +42,14 @@ view { tabSwitch } searchChanged =
                 Background.color Colors.greyscaleShark
         , htmlAttribute <| Html.Attributes.style "pointer-events" "all"
         ]
-        [ Element.link []
+        [ Element.link [ paddingXY 10 0 ]
             { label =
-                image [ width (px 37), height (px 37), paddingXY 7 0 ]
-                    { description = ""
-                    , src =
-                        case tabSwitch of
-                            Kodi _ ->
-                                "logo.png"
+                case tabSwitch of
+                    Kodi _ ->
+                        Element.html blueLogoSvg
 
-                            Local ->
-                                "ceriseRed-logo.png"
-                    }
+                    Local ->
+                        Element.html redLogoSvg
             , url = Route.Top |> Route.toString
             }
         , Input.search [ alignRight, width (px 200), height fill ] { onChange = searchChanged, text = "", placeholder = Just (Input.placeholder [] (Element.text "Search")), label = Input.labelHidden "Search" }
