@@ -15,3 +15,8 @@ type Tabs
 type KodiTabs
     = Audio
     | Video
+
+
+type Selected
+    = Title
+    | DateAdded

@@ -6,18 +6,17 @@ import Components.VerticalNav
 import Components.VerticalNavMusic
 import Element exposing (..)
 import Element.Background as Background
-import Element.Border as Border
-import Element.Events
 import Element.Font as Font
 import Element.Input as Input
+import Html exposing (Html, div)
+import Html.Attributes exposing (class, style)
 import Shared
+import SharedType exposing (Selected(..))
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
 import WSDecoder exposing (AlbumObj)
-import Widget
-import Widget.Material as Material
 
 
 page : Page Params Model Msg
@@ -43,12 +42,15 @@ type alias Params =
 type alias Model =
     { album_list : List AlbumObj
     , route : Route
+    , currentButton : Selected
+    , titleToggle : Bool
+    , dateToggle : Bool
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { album_list = shared.album_list, route = url.route }, Cmd.none )
+    ( { album_list = shared.album_list, route = url.route, currentButton = Title, titleToggle = True, dateToggle = False }, Cmd.none )
 
 
 
@@ -56,14 +58,35 @@ init shared url =
 
 
 type Msg
-    = ReplaceMe
+    = TitleButtonMsg
+    | DateButtonMsg
+
+
+sbylabelalbum : List AlbumObj -> List AlbumObj
+sbylabelalbum list =
+    List.sortBy (.label >> String.toLower) list
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ReplaceMe ->
-            ( model, Cmd.none )
+        TitleButtonMsg ->
+            ( { model
+                | currentButton = Title
+                , titleToggle = not model.titleToggle
+                , album_list =
+                    case model.titleToggle of
+                        True ->
+                            sbylabelalbum model.album_list
+
+                        False ->
+                            List.reverse (sbylabelalbum model.album_list)
+              }
+            , Cmd.none
+            )
+
+        DateButtonMsg ->
+            ( { model | currentButton = DateAdded, dateToggle = not model.dateToggle }, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -81,6 +104,29 @@ subscriptions model =
     Sub.none
 
 
+sortButton : Selected -> Selected -> String -> msg -> Bool -> Element msg
+sortButton currentButton button name buttonMsg toggle =
+    Input.button [ paddingXY 10 0 ]
+        { onPress = Just buttonMsg
+        , label =
+            if currentButton == button then
+                row [ Font.color Colors.navTextHover ]
+                    [ Element.text
+                        (name
+                            ++ (if toggle then
+                                    "↑"
+
+                                else
+                                    "↓"
+                               )
+                        )
+                    ]
+
+            else
+                row [ Font.color Colors.navText ] [ Element.text (name ++ "↑") ]
+        }
+
+
 
 -- VIEW
 
@@ -90,7 +136,14 @@ view model =
     { title = "Music.Artists"
     , body =
         [ row [ Element.height fill, Element.width fill ]
-            [ Components.VerticalNavMusic.view model.route
+            [ column [ Element.height fill, Element.width fill ]
+                [ Components.VerticalNavMusic.view model.route
+                , column [ Element.height fill, Element.width fill, paddingXY 20 30, Background.color Colors.sidebar, spacingXY 0 15 ]
+                    [ Element.text "SORT"
+                    , sortButton model.currentButton Title "Title " TitleButtonMsg model.titleToggle
+                    , sortButton model.currentButton DateAdded "Date Added " DateButtonMsg model.dateToggle
+                    ]
+                ]
             , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
                 [ Components.SectionHeader.viewAlbums model.album_list
                 ]
