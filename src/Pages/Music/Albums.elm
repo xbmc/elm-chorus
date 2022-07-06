@@ -10,8 +10,10 @@ import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html, div)
 import Html.Attributes exposing (class, style)
+import Random
 import Shared
-import SharedType exposing (Selected(..))
+import SharedType exposing (SortDirection(..))
+import SharedUtil exposing (..)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
@@ -39,18 +41,25 @@ type alias Params =
     ()
 
 
+type AlbumSort
+    = Title SortDirection
+    | DateAdded SortDirection
+    | Year SortDirection
+    | Artist SortDirection
+    | Random SortDirection
+
+
 type alias Model =
     { album_list : List AlbumObj
     , route : Route
-    , currentButton : Selected
-    , titleToggle : Bool
-    , dateToggle : Bool
+    , currentButton : AlbumSort
+    , seed : Random.Seed
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { album_list = shared.album_list, route = url.route, currentButton = Title, titleToggle = True, dateToggle = False }, Cmd.none )
+    ( { album_list = shared.album_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }, Cmd.none )
 
 
 
@@ -60,33 +69,78 @@ init shared url =
 type Msg
     = TitleButtonMsg
     | DateButtonMsg
-
-
-sbylabelalbum : List AlbumObj -> List AlbumObj
-sbylabelalbum list =
-    List.sortBy (.label >> String.toLower) list
+    | YearButtonMsg
+    | ArtistButtonMsg
+    | RandomButtonMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         TitleButtonMsg ->
-            ( { model
-                | currentButton = Title
-                , titleToggle = not model.titleToggle
-                , album_list =
-                    case model.titleToggle of
-                        True ->
-                            sbylabelalbum model.album_list
+            case model.currentButton of
+                Title Asc ->
+                    ( { model | currentButton = Title Desc, album_list = sortByTitleAlbum model.album_list }, Cmd.none )
 
-                        False ->
-                            List.reverse (sbylabelalbum model.album_list)
-              }
-            , Cmd.none
-            )
+                Title Desc ->
+                    ( { model | currentButton = Title Asc, album_list = List.reverse (sortByTitleAlbum model.album_list) }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Title Asc }, Cmd.none )
 
         DateButtonMsg ->
-            ( { model | currentButton = DateAdded, dateToggle = not model.dateToggle }, Cmd.none )
+            case model.currentButton of
+                DateAdded Asc ->
+                    ( { model | currentButton = DateAdded Desc, album_list = sortByDateAlbum model.album_list }, Cmd.none )
+
+                DateAdded Desc ->
+                    ( { model | currentButton = DateAdded Asc, album_list = List.reverse (sortByDateAlbum model.album_list) }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = DateAdded Asc }, Cmd.none )
+
+        YearButtonMsg ->
+            case model.currentButton of
+                Year Asc ->
+                    ( { model | currentButton = Year Desc, album_list = sortByYearAlbum model.album_list }, Cmd.none )
+
+                Year Desc ->
+                    ( { model | currentButton = Year Asc, album_list = List.reverse (sortByYearAlbum model.album_list) }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Year Asc }, Cmd.none )
+
+        ArtistButtonMsg ->
+            case model.currentButton of
+                Artist Asc ->
+                    ( { model | currentButton = Artist Desc, album_list = sortByArtistAlbum model.album_list }, Cmd.none )
+
+                Artist Desc ->
+                    ( { model | currentButton = Artist Asc, album_list = List.reverse (sortByArtistAlbum model.album_list) }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Artist Asc }, Cmd.none )
+
+        RandomButtonMsg ->
+            let
+                output =
+                    sortByRandom model.seed model.album_list
+
+                list =
+                    Tuple.first output
+
+                seedoutput =
+                    Tuple.second output
+            in
+            case model.currentButton of
+                Random Asc ->
+                    ( { model | currentButton = Random Desc, album_list = list, seed = seedoutput }, Cmd.none )
+
+                Random Desc ->
+                    ( { model | currentButton = Random Asc, album_list = list, seed = seedoutput }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Random Asc }, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -104,29 +158,6 @@ subscriptions model =
     Sub.none
 
 
-sortButton : Selected -> Selected -> String -> msg -> Bool -> Element msg
-sortButton currentButton button name buttonMsg toggle =
-    Input.button [ paddingXY 10 0 ]
-        { onPress = Just buttonMsg
-        , label =
-            if currentButton == button then
-                row [ Font.color Colors.navTextHover ]
-                    [ Element.text
-                        (name
-                            ++ (if toggle then
-                                    "↑"
-
-                                else
-                                    "↓"
-                               )
-                        )
-                    ]
-
-            else
-                row [ Font.color Colors.navText ] [ Element.text (name ++ "↑") ]
-        }
-
-
 
 -- VIEW
 
@@ -140,8 +171,11 @@ view model =
                 [ Components.VerticalNavMusic.view model.route
                 , column [ Element.height fill, Element.width fill, paddingXY 20 30, Background.color Colors.sidebar, spacingXY 0 15 ]
                     [ Element.text "SORT"
-                    , sortButton model.currentButton Title "Title " TitleButtonMsg model.titleToggle
-                    , sortButton model.currentButton DateAdded "Date Added " DateButtonMsg model.dateToggle
+                    , sortButton model.currentButton (Title Asc) "Title " TitleButtonMsg
+                    , sortButton model.currentButton (Year Asc) "Year " YearButtonMsg
+                    , sortButton model.currentButton (DateAdded Asc) "Date Added " DateButtonMsg
+                    , sortButton model.currentButton (Artist Asc) "Artist " ArtistButtonMsg
+                    , sortButton model.currentButton (Random Asc) "Random " RandomButtonMsg
                     ]
                 ]
             , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
@@ -150,3 +184,69 @@ view model =
             ]
         ]
     }
+
+
+sortButton : AlbumSort -> AlbumSort -> String -> msg -> Element msg
+sortButton currentButton button name buttonMsg =
+    Input.button [ paddingXY 10 0 ]
+        { onPress = Just buttonMsg
+        , label =
+            case ( currentButton, button ) of
+                ( Title _, Title _ ) ->
+                    row [ Font.color Colors.navTextHover ]
+                        [ Element.text
+                            (if currentButton == Title Asc then
+                                name ++ "↑"
+
+                             else
+                                name ++ "↓"
+                            )
+                        ]
+
+                ( DateAdded _, DateAdded _ ) ->
+                    row [ Font.color Colors.navTextHover ]
+                        [ Element.text
+                            (if currentButton == DateAdded Asc then
+                                name ++ "↑"
+
+                             else
+                                name ++ "↓"
+                            )
+                        ]
+
+                ( Year _, Year _ ) ->
+                    row [ Font.color Colors.navTextHover ]
+                        [ Element.text
+                            (if currentButton == Year Asc then
+                                name ++ "↑"
+
+                             else
+                                name ++ "↓"
+                            )
+                        ]
+
+                ( Artist _, Artist _ ) ->
+                    row [ Font.color Colors.navTextHover ]
+                        [ Element.text
+                            (if currentButton == Artist Asc then
+                                name ++ "↑"
+
+                             else
+                                name ++ "↓"
+                            )
+                        ]
+
+                ( Random _, Random _ ) ->
+                    row [ Font.color Colors.navTextHover ]
+                        [ Element.text
+                            (if currentButton == Random Asc then
+                                name ++ "↑"
+
+                             else
+                                name ++ "↓"
+                            )
+                        ]
+
+                _ ->
+                    row [ Font.color Colors.navText ] [ Element.text (name ++ "↑") ]
+        }

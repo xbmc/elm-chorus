@@ -17,6 +17,6 @@ type KodiTabs
     | Video
 
 
-type Selected
-    = Title
-    | DateAdded
+type SortDirection
+    = Asc
+    | Desc
