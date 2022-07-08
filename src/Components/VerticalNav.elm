@@ -1,7 +1,7 @@
 module Components.VerticalNav exposing (view)
 
 import Colors
-import Element exposing (Attribute, Element, column, el, fill, fillPortion, padding, paddingXY, spacing)
+import Element exposing (Attribute, Element, column, el, fill, fillPortion, padding, paddingXY, px, spacing)
 import Element.Background
 import Element.Font as Font exposing (Font)
 import Spa.Generated.Route as Route exposing (Route)
@@ -20,7 +20,7 @@ view :
 view header currentRoute links listPagesWithFilter =
     case List.member currentRoute listPagesWithFilter of
         False ->
-            column [ Element.height fill, Element.width (fillPortion 1), paddingXY 16 8, spacing 16, Font.color Colors.greyscaleGray, Element.Background.color Colors.sidebar ]
+            column [ Element.height fill, Element.width (fillPortion 1), paddingXY 16 30, spacing 16, Font.color Colors.greyscaleGray, Element.Background.color Colors.sidebar ]
                 ([ header |> String.toUpper |> Element.text ]
                     ++ List.map
                         (\a ->
@@ -33,7 +33,7 @@ view header currentRoute links listPagesWithFilter =
                 )
 
         True ->
-            column [ Element.height fill, Element.width (fillPortion 1), Font.color Colors.greyscaleGray, Element.Background.color Colors.sidebar ]
+            column [ Element.height (px 250), Element.width (fillPortion 1), Font.color Colors.greyscaleGray, Element.Background.color Colors.sidebar, paddingXY 0 20 ]
                 [ column [ Element.height fill, Element.width fill, paddingXY 16 8, spacing 16 ]
                     ([ header |> String.toUpper |> Element.text ]
                         ++ List.map
@@ -45,10 +45,6 @@ view header currentRoute links listPagesWithFilter =
                             )
                             links
                     )
-                , column [ Element.height fill, Element.width fill, paddingXY 16 8, spacing 16 ]
-                    [ Element.text "FILTERS" ]
-                , column [ Element.height fill, Element.width fill, paddingXY 16 8, spacing 16 ]
-                    [ Element.text "SORT" ]
                 ]
 
 
