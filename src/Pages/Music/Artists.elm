@@ -10,7 +10,10 @@ import Element.Border as Border
 import Element.Events
 import Element.Font as Font
 import Element.Input as Input
+import Random
 import Shared
+import SharedType exposing (SortDirection(..))
+import SharedUtil exposing (..)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
@@ -34,6 +37,11 @@ page =
 -- INIT
 
 
+type ArtistSort
+    = Title SortDirection
+    | Random SortDirection
+
+
 type alias Params =
     ()
 
@@ -41,12 +49,14 @@ type alias Params =
 type alias Model =
     { artist_list : List ArtistObj
     , route : Route
+    , currentButton : ArtistSort
+    , seed : Random.Seed
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { artist_list = shared.artist_list, route = url.route }, Cmd.none )
+    ( { artist_list = sortByTitleArtist shared.artist_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }, Cmd.none )
 
 
 
@@ -54,14 +64,44 @@ init shared url =
 
 
 type Msg
-    = ReplaceMe
+    = TitleButtonMsg
+    | RandomButtonMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ReplaceMe ->
-            ( model, Cmd.none )
+        TitleButtonMsg ->
+            case model.currentButton of
+                Title Asc ->
+                    ( { model | currentButton = Title Desc, artist_list = List.reverse model.artist_list }, Cmd.none )
+
+                Title Desc ->
+                    ( { model | currentButton = Title Asc, artist_list = List.reverse model.artist_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Title Asc, artist_list = sortByTitleArtist model.artist_list }, Cmd.none )
+
+        RandomButtonMsg ->
+            let
+                output =
+                    sortByRandom model.seed model.artist_list
+
+                list =
+                    Tuple.first output
+
+                seedoutput =
+                    Tuple.second output
+            in
+            case model.currentButton of
+                Random Asc ->
+                    ( { model | currentButton = Random Desc, artist_list = list, seed = seedoutput }, Cmd.none )
+
+                Random Desc ->
+                    ( { model | currentButton = Random Asc, artist_list = list, seed = seedoutput }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Random Asc, artist_list = list, seed = seedoutput }, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -88,10 +128,52 @@ view model =
     { title = "Music.Artists"
     , body =
         [ row [ Element.height fill, Element.width fill ]
-            [ Components.VerticalNavMusic.view model.route
+            [ column [ Element.height fill, Element.width fill ]
+                [ Components.VerticalNavMusic.view model.route
+                , column [ Element.height fill, Element.width fill, paddingXY 20 30, Background.color Colors.sidebar, spacingXY 0 15 ]
+                    [ Element.text "SORT"
+                    , sortButton model.currentButton (Title Asc) "Title " TitleButtonMsg
+                    , sortButton model.currentButton (Random Asc) "Random " RandomButtonMsg
+                    ]
+                ]
             , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
                 [ Components.SectionHeader.viewArtists model.artist_list
                 ]
             ]
         ]
     }
+
+
+sortButton : ArtistSort -> ArtistSort -> String -> msg -> Element msg
+sortButton currentButton button name buttonMsg =
+    let
+        isCurrentButton =
+            case ( currentButton, button ) of
+                ( Title _, Title _ ) ->
+                    ( True, Title )
+
+                ( Random _, Random _ ) ->
+                    ( True, Random )
+
+                _ ->
+                    ( False, Random )
+    in
+    Input.button [ paddingXY 10 0 ]
+        { onPress = Just buttonMsg
+        , label =
+            currentButtonText currentButton name isCurrentButton
+        }
+
+
+currentButtonText : ArtistSort -> String -> ( Bool, SortDirection -> ArtistSort ) -> Element msg
+currentButtonText currentButton name ( isCurrent, button ) =
+    case isCurrent of
+        True ->
+            if currentButton == button Asc then
+                row [ Font.color Colors.navTextHover ] [ Element.text (name ++ " ↑") ]
+
+            else
+                row [ Font.color Colors.navTextHover ] [ Element.text (name ++ " ↓") ]
+
+        False ->
+            row [ Font.color Colors.navText ] [ Element.text name ]

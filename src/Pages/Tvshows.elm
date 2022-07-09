@@ -13,8 +13,11 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
+import Random
 import Request
 import Shared exposing (sendAction, sendActions)
+import SharedType exposing (SortDirection(..))
+import SharedUtil exposing (..)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
@@ -41,6 +44,11 @@ page =
 -- INIT
 
 
+type TvShowSort
+    = Title SortDirection
+    | Random SortDirection
+
+
 type alias Params =
     ()
 
@@ -49,12 +57,14 @@ type alias Model =
     { currentlyPlaying : Maybe ItemDetails
     , tvshow_list : List TvshowObj
     , route : Route
+    , currentButton : TvShowSort
+    , seed : Random.Seed
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { currentlyPlaying = shared.currentlyPlaying, tvshow_list = shared.tvshow_list, route = url.route }
+    ( { currentlyPlaying = shared.currentlyPlaying, tvshow_list = sortByTitleTvShow shared.tvshow_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }
     , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}"""
     )
 
@@ -66,6 +76,8 @@ init shared url =
 type Msg
     = SetCurrentlyPlaying TvshowObj
     | NoOp
+    | TitleButtonMsg
+    | RandomButtonMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -79,6 +91,38 @@ update msg model =
                 , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
                 ]
             )
+
+        TitleButtonMsg ->
+            case model.currentButton of
+                Title Asc ->
+                    ( { model | currentButton = Title Desc, tvshow_list = List.reverse model.tvshow_list }, Cmd.none )
+
+                Title Desc ->
+                    ( { model | currentButton = Title Asc, tvshow_list = List.reverse model.tvshow_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Title Asc, tvshow_list = sortByTitleTvShow model.tvshow_list }, Cmd.none )
+
+        RandomButtonMsg ->
+            let
+                output =
+                    sortByRandom model.seed model.tvshow_list
+
+                list =
+                    Tuple.first output
+
+                seedoutput =
+                    Tuple.second output
+            in
+            case model.currentButton of
+                Random Asc ->
+                    ( { model | currentButton = Random Desc, tvshow_list = list, seed = seedoutput }, Cmd.none )
+
+                Random Desc ->
+                    ( { model | currentButton = Random Asc, tvshow_list = list, seed = seedoutput }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Random Asc, tvshow_list = list, seed = seedoutput }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
@@ -148,7 +192,14 @@ view model =
     { title = "TVShows"
     , body =
         [ row [ Element.height fill, Element.width fill ]
-            [ Components.VerticalNavTvshows.view model.route
+            [ column [ Element.height fill, Element.width fill ]
+                [ Components.VerticalNavTvshows.view model.route
+                , column [ Element.height fill, Element.width fill, paddingXY 20 30, Background.color Colors.sidebar, spacingXY 0 15 ]
+                    [ Element.text "SORT"
+                    , sortButton model.currentButton (Title Asc) "Title " TitleButtonMsg
+                    , sortButton model.currentButton (Random Asc) "Random " RandomButtonMsg
+                    ]
+                ]
             , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
                 (List.map
                     (\tvshow ->
@@ -159,3 +210,38 @@ view model =
             ]
         ]
     }
+
+
+sortButton : TvShowSort -> TvShowSort -> String -> msg -> Element msg
+sortButton currentButton button name buttonMsg =
+    let
+        isCurrentButton =
+            case ( currentButton, button ) of
+                ( Title _, Title _ ) ->
+                    ( True, Title )
+
+                ( Random _, Random _ ) ->
+                    ( True, Random )
+
+                _ ->
+                    ( False, Random )
+    in
+    Input.button [ paddingXY 10 0 ]
+        { onPress = Just buttonMsg
+        , label =
+            currentButtonText currentButton name isCurrentButton
+        }
+
+
+currentButtonText : TvShowSort -> String -> ( Bool, SortDirection -> TvShowSort ) -> Element msg
+currentButtonText currentButton name ( isCurrent, button ) =
+    case isCurrent of
+        True ->
+            if currentButton == button Asc then
+                row [ Font.color Colors.navTextHover ] [ Element.text (name ++ " ↑") ]
+
+            else
+                row [ Font.color Colors.navTextHover ] [ Element.text (name ++ " ↓") ]
+
+        False ->
+            row [ Font.color Colors.navText ] [ Element.text name ]
