@@ -11,14 +11,14 @@ import Element.Events
 import Element.Font as Font
 import Element.Input as Input
 import Random
-import Shared
+import Shared exposing (sendActions)
 import SharedType exposing (SortDirection(..))
 import SharedUtil exposing (..)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
-import WSDecoder exposing (ArtistObj)
+import WSDecoder exposing (ArtistObj, SongObj)
 
 
 page : Page Params Model Msg
@@ -51,12 +51,13 @@ type alias Model =
     , route : Route
     , currentButton : ArtistSort
     , seed : Random.Seed
+    , song_list : List SongObj
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { artist_list = sortByTitleArtist shared.artist_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }, Cmd.none )
+    ( { artist_list = sortByTitleArtist shared.artist_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453, song_list = shared.song_list }, Cmd.none )
 
 
 
@@ -66,6 +67,7 @@ init shared url =
 type Msg
     = TitleButtonMsg
     | RandomButtonMsg
+    | ArtistCardButtonMsg ArtistObj
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -103,6 +105,21 @@ update msg model =
                 _ ->
                     ( { model | currentButton = Random Asc, artist_list = list, seed = seedoutput }, Cmd.none )
 
+        ArtistCardButtonMsg artist ->
+            let
+                songs =
+                    List.filter (\album -> List.member artist.label album.artist) model.song_list
+
+                added_songs =
+                    List.map (\song -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"songid": """ ++ String.fromInt song.songid ++ """}}}""") songs
+
+                output =
+                    [ """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""" ]
+                        ++ added_songs
+                        ++ [ """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""" ]
+            in
+            ( model, sendActions output )
+
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
@@ -137,7 +154,13 @@ view model =
                     ]
                 ]
             , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
-                [ Components.SectionHeader.viewArtists model.artist_list
+                [ wrappedRow [ Element.height fill, Element.width fill, paddingXY 20 20, spacingXY 15 7 ]
+                    (List.map
+                        (\artist ->
+                            Components.SectionHeader.viewArtists (ArtistCardButtonMsg artist) artist
+                        )
+                        model.artist_list
+                    )
                 ]
             ]
         ]

@@ -14,6 +14,7 @@ import Helper exposing (durationToString)
 import List.Extra exposing (unique)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
+import Request exposing (Property(..))
 import Shared exposing (sendAction, sendActions)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
@@ -83,7 +84,8 @@ parseGenre string =
 
 type Msg
     = SetCurrentlyPlaying SongObj
-    | DoNothing
+    | AlbumCardButtonMsg AlbumObj
+    | ArtistCardButtonMsg ArtistObj
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -98,8 +100,33 @@ update msg model =
                 ]
             )
 
-        DoNothing ->
-            ( model, Cmd.none )
+        AlbumCardButtonMsg album ->
+            let
+                songs =
+                    List.filter (\song -> song.albumid == album.albumid) model.song_list
+
+                added_songs =
+                    List.map (\song -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"songid": """ ++ String.fromInt song.songid ++ """}}}""") songs
+
+                output =
+                    [ """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""" ] ++ added_songs ++ [ """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""" ]
+            in
+            ( model, sendActions output )
+
+        ArtistCardButtonMsg artist ->
+            let
+                songs =
+                    List.filter (\album -> List.member artist.label album.artist) model.song_list
+
+                added_songs =
+                    List.map (\song -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"songid": """ ++ String.fromInt song.songid ++ """}}}""") songs
+
+                output =
+                    [ """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""" ]
+                        ++ added_songs
+                        ++ [ """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""" ]
+            in
+            ( model, sendActions output )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -149,14 +176,26 @@ view model =
                         Nothing
                         False
                         []
-                    , Components.SectionHeader.viewArtists model.artist_list
+                    , wrappedRow [ Element.height fill, Element.width fill, paddingXY 20 20, spacingXY 15 7 ]
+                        (List.map
+                            (\artist ->
+                                Components.SectionHeader.viewArtists (ArtistCardButtonMsg artist) artist
+                            )
+                            model.artist_list
+                        )
                     ]
                 , column [ Element.height fill, Element.width fill ]
                     [ Components.SectionHeader.view (model.genre ++ " Albums")
                         Nothing
                         False
                         []
-                    , Components.SectionHeader.viewAlbums model.album_list
+                    , wrappedRow [ Element.height fill, Element.width fill, paddingXY 20 15, spacingXY 10 7 ]
+                        (List.map
+                            (\album ->
+                                Components.SectionHeader.viewAlbums (AlbumCardButtonMsg album) album
+                            )
+                            model.album_list
+                        )
                     ]
                 , column [ Element.height fill, Element.width fill, alignBottom ]
                     [ Components.SectionHeader.view (model.genre ++ " Songs")

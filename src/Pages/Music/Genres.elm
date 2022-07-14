@@ -117,7 +117,7 @@ view model =
     , body =
         [ row [ Element.height fill, Element.width fill ]
             [ Components.VerticalNavMusic.view model.route
-            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color Colors.background, paddingXY 5 5, spacingXY 5 7 ]
+            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color Colors.background, paddingXY 20 15, spacingXY 10 7 ]
                 (model.genre_list
                     |> List.sort
                     |> List.map
@@ -128,7 +128,7 @@ view model =
                                 , mouseOver [ Background.color Colors.sidebar ]
                                 , Element.height (fill |> minimum 50 |> maximum 50)
                                 , Element.width (fill |> minimum 185 |> maximum 185)
-                                , Border.rounded 2
+                                , Border.rounded 1
                                 ]
                                 [ Element.link [ Element.width fill, Element.height fill, paddingXY 7 16 ]
                                     { url = Route.toString (Route.Music__Genre__Genre_String { genre = percentEncode genre })

@@ -45,6 +45,11 @@ ceriseIcon =
     fromElementColorToColor ceriseRed
 
 
+whiteIcon : Color.Color
+whiteIcon =
+    fromElementColorToColor white
+
+
 grey : Element.Color
 grey =
     Element.rgb255 51 51 51
@@ -242,6 +247,11 @@ scrollbarHandle =
 scrollbarHoverHandle : Element.Color
 scrollbarHoverHandle =
     Element.rgba 0 0 0 0.4
+
+
+cardHover : Element.Color
+cardHover =
+    Element.rgba 0 0 0 0.54
 
 
 

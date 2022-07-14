@@ -53,12 +53,13 @@ type alias Model =
     { currentlyPlaying : Maybe ItemDetails
     , album_list : List AlbumObj
     , route : Route
+    , song_list : List SongObj
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { currentlyPlaying = shared.currentlyPlaying, album_list = shared.album_list, route = url.route }
+    ( { currentlyPlaying = shared.currentlyPlaying, album_list = shared.album_list, route = url.route, song_list = shared.song_list }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": true } }, "id": "libSongs"}"""
         , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "properties": ["playcount", "artist", "genre", "rating", "thumbnail", "year", "mood", "style", "dateadded"] }, "id": "libAlbums"}"""
@@ -74,6 +75,7 @@ init shared url =
 
 type Msg
     = SetCurrentlyPlaying SongObj
+    | AlbumCardButtonMsg AlbumObj
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -87,6 +89,21 @@ update msg model =
                 , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
                 ]
             )
+
+        AlbumCardButtonMsg album ->
+            let
+                songs =
+                    List.filter (\song -> song.albumid == album.albumid) model.song_list
+
+                added_songs =
+                    List.map (\song -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"songid": """ ++ String.fromInt song.songid ++ """}}}""") songs
+
+                output =
+                    [ """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""" ]
+                        ++ added_songs
+                        ++ [ """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""" ]
+            in
+            ( model, sendActions output )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -151,21 +168,39 @@ view model =
                         Nothing
                         False
                         []
-                    , Components.SectionHeader.viewAlbums (List.reverse (List.sortBy .albumid model.album_list))
+                    , wrappedRow [ Element.height fill, Element.width fill, paddingXY 20 15, spacingXY 10 7 ]
+                        (List.map
+                            (\album ->
+                                Components.SectionHeader.viewAlbums (AlbumCardButtonMsg album) album
+                            )
+                            (List.reverse (List.sortBy .albumid model.album_list))
+                        )
                     ]
                 , column [ Element.height fill, Element.width fill ]
                     [ Components.SectionHeader.view "Recently Played Albums"
                         Nothing
                         False
                         []
-                    , Components.SectionHeader.viewAlbums (List.reverse (List.sortBy .playcount model.album_list))
+                    , wrappedRow [ Element.height fill, Element.width fill, paddingXY 20 15, spacingXY 10 7 ]
+                        (List.map
+                            (\album ->
+                                Components.SectionHeader.viewAlbums (AlbumCardButtonMsg album) album
+                            )
+                            (List.reverse (List.sortBy .playcount model.album_list))
+                        )
                     ]
                 , column [ Element.height fill, Element.width fill ]
                     [ Components.SectionHeader.view "All Albums"
                         Nothing
                         False
                         []
-                    , Components.SectionHeader.viewAlbums model.album_list
+                    , wrappedRow [ Element.height fill, Element.width fill, paddingXY 20 15, spacingXY 10 7 ]
+                        (List.map
+                            (\album ->
+                                Components.SectionHeader.viewAlbums (AlbumCardButtonMsg album) album
+                            )
+                            model.album_list
+                        )
                     ]
                 ]
             ]
