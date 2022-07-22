@@ -78,9 +78,19 @@ artistLabel artist =
 
 videoLabel : VideoObj -> Element msg
 videoLabel video =
-    Element.link [ Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
+    Element.link [ Element.width fill, Element.height (px 30), paddingXY 12 10, Font.color Colors.black ]
         { url = Route.toString (Route.Music__Videos__Videoid_Int { videoid = video.videoid })
-        , label = Element.text video.label
+        , label =
+            column []
+                [ Element.text video.label
+                , wrappedRow [ paddingEach { left = 0, right = 0, top = 10, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
+                    (List.map
+                        (\artist ->
+                            el [ alignLeft, height (px 20), width (px 130), clipX ] (Element.text artist)
+                        )
+                        video.artist
+                    )
+                ]
         }
 
 
@@ -116,44 +126,46 @@ viewArtists buttonMsg artist =
         ]
 
 
-viewVideos : List VideoObj -> Element msg
-viewVideos videoslist =
-    wrappedRow [ Element.height fill, Element.width fill, paddingXY 5 5, spacingXY 5 7 ]
-        (List.map
-            (\video ->
-                column
-                    [ paddingXY 5 5
-                    , Background.color (rgb 1 1 1)
-                    , mouseOver [ Background.color Colors.sidebar ]
-                    , Element.height (fill |> minimum 170 |> maximum 170)
-                    , Element.width (fill |> minimum 280 |> maximum 280)
-                    , Border.rounded 3
-                    , clipX
+viewVideos : msg -> VideoObj -> Element msg
+viewVideos buttonMsg video =
+    column
+        [ Background.color (rgb 1 1 1)
+        , Element.height (fill |> minimum 130 |> maximum 180)
+        , Element.width (fill |> minimum 280 |> maximum 280)
+        , Element.htmlAttribute (Html.Attributes.class "card-parent")
+        ]
+        [ case video.thumbnail of
+            "" ->
+                image [ width fill, height (px 125) ]
+                    { src = "https://via.placeholder.com/170"
+                    , description = "Hero Image"
+                    }
 
-                    --, Element.below (videoLabel video)
-                    ]
-                    [ case video.thumbnail of
-                        "" ->
-                            image [ width fill, height fill, Element.inFront (videoLabel video) ]
-                                { src = "https://via.placeholder.com/170"
-                                , description = "Hero Image"
-                                }
-
-                        _ ->
-                            image [ width fill, height fill, Element.inFront (videoLabel video) ]
-                                { src = crossOrigin "http://localhost:8080" [ "image", percentEncode video.thumbnail ] []
-                                , description = "Thumbnail"
-                                }
-                    , videoLabel video
-                    ]
-            )
-            videoslist
-        )
+            _ ->
+                image [ width fill, height (px 125) ]
+                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode video.thumbnail ] []
+                    , description = "Thumbnail"
+                    }
+        , column [ Element.htmlAttribute (Html.Attributes.class "card"), Element.height (px 125), Element.width (px 280), Background.color cardHover ]
+            [ row [ alignTop, alignRight, paddingXY 0 10 ]
+                [ materialButton ( Filled.thumb_up, buttonMsg )
+                , materialButtonBig ( Filled.more_vert, buttonMsg )
+                ]
+            , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
+            ]
+        , videoLabel video
+        ]
 
 
 viewAlbums : msg -> AlbumObj -> Element msg
 viewAlbums buttonMsg album =
-    column [ Background.color (rgb 1 1 1), Element.htmlAttribute (Html.Attributes.class "card-parent"), Element.height (fill |> maximum 220), Element.width (fill |> minimum 160 |> maximum 160), Border.rounded 3 ]
+    column
+        [ Background.color (rgb 1 1 1)
+        , Element.htmlAttribute (Html.Attributes.class "card-parent")
+        , Element.height (fill |> maximum 220)
+        , Element.width (fill |> minimum 160 |> maximum 160)
+        , Border.rounded 3
+        ]
         [ image [ alignTop, width fill, height fill ]
             { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
             , description = "Thumbnail"

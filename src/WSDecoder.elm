@@ -269,6 +269,7 @@ queryDecoder =
         , volumeDecoder
         , fileQueryDecoder
         , settingsQueryDecoder
+        , videoQueryDecoder
         ]
 
 
@@ -331,7 +332,7 @@ type alias ArtistObj =
 videoQueryDecoder : Decoder ResultResponse
 videoQueryDecoder =
     Decode.succeed ResultM
-        |> custom (at [ "result", "videos" ] (list videoDecoder))
+        |> custom (at [ "result", "musicvideos" ] (list videoDecoder))
 
 
 videoDecoder : Decoder VideoObj
@@ -339,21 +340,21 @@ videoDecoder =
     Decode.succeed VideoObj
         |> required "label" string
         |> required "artist" (list string)
-        |> required "albumid" int
-        |> required "duration" int
-        |> required "videoid" int
+        |> required "album" string
+        |> required "musicvideoid" int
         |> required "thumbnail" string
         |> required "genre" (list string)
+        |> required "file" string
 
 
 type alias VideoObj =
     { label : String
-    , artistid : List String
-    , albumid : Int
-    , duration : Int
+    , artist : List String
+    , album : String
     , videoid : Int
     , thumbnail : String
     , genre : List String
+    , file : String
     }
 
 
