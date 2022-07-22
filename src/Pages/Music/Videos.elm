@@ -11,7 +11,7 @@ import Element.Events
 import Element.Font as Font
 import Element.Input as Input
 import Random
-import Shared
+import Shared exposing (sendActions)
 import SharedType exposing (SortDirection(..))
 import SharedUtil exposing (..)
 import Spa.Document exposing (Document)
@@ -66,6 +66,7 @@ init shared url =
 type Msg
     = TitleButtonMsg
     | RandomButtonMsg
+    | VideoCardButtonMsg VideoObj
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -103,6 +104,15 @@ update msg model =
                 _ ->
                     ( { model | currentButton = Random Asc, video_list = list, seed = seedoutput }, Cmd.none )
 
+        VideoCardButtonMsg video ->
+            ( model
+            , sendActions
+                [ {- clear the queue -} """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}"""
+                , {- add the next video -} """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"musicvideoid": """ ++ String.fromInt video.videoid ++ """}}}"""
+                , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
+                ]
+            )
+
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
@@ -137,7 +147,14 @@ view model =
                     ]
                 ]
             , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
-                [ Components.SectionHeader.viewVideos model.video_list ]
+                [ wrappedRow [ Element.height fill, Element.width fill, paddingXY 20 15, spacingXY 10 7 ]
+                    (List.map
+                        (\video ->
+                            Components.SectionHeader.viewVideos (VideoCardButtonMsg video) video
+                        )
+                        model.video_list
+                    )
+                ]
             ]
         ]
     }
