@@ -47,6 +47,9 @@ page =
 type MovieSort
     = Title SortDirection
     | Random SortDirection
+    | Year SortDirection
+    | DateAdded SortDirection
+    | Rating SortDirection
 
 
 type alias Params =
@@ -64,8 +67,8 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { currentlyPlaying = shared.currentlyPlaying, movie_list = sortByTitleMovie shared.movie_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }
-    , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "properties" : ["art", "rating", "thumbnail", "playcount", "file"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}"""
+    ( { currentlyPlaying = shared.currentlyPlaying, movie_list = sortByTitle shared.movie_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }
+    , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "properties" : ["art", "rating", "thumbnail", "playcount", "file","year","dateadded"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}"""
     )
 
 
@@ -76,6 +79,9 @@ init shared url =
 type Msg
     = SetCurrentlyPlaying MovieObj
     | TitleButtonMsg
+    | YearButtonMsg
+    | DateButtonMsg
+    | RatingButtonMsg
     | RandomButtonMsg
 
 
@@ -100,7 +106,40 @@ update msg model =
                     ( { model | currentButton = Title Asc, movie_list = List.reverse model.movie_list }, Cmd.none )
 
                 _ ->
-                    ( { model | currentButton = Title Asc, movie_list = sortByTitleMovie model.movie_list }, Cmd.none )
+                    ( { model | currentButton = Title Asc, movie_list = sortByTitle model.movie_list }, Cmd.none )
+
+        YearButtonMsg ->
+            case model.currentButton of
+                Year Asc ->
+                    ( { model | currentButton = Year Desc, movie_list = List.reverse model.movie_list }, Cmd.none )
+
+                Year Desc ->
+                    ( { model | currentButton = Year Asc, movie_list = List.reverse model.movie_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Year Asc, movie_list = sortByYear model.movie_list }, Cmd.none )
+
+        DateButtonMsg ->
+            case model.currentButton of
+                DateAdded Asc ->
+                    ( { model | currentButton = DateAdded Desc, movie_list = List.reverse model.movie_list }, Cmd.none )
+
+                DateAdded Desc ->
+                    ( { model | currentButton = DateAdded Asc, movie_list = List.reverse model.movie_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = DateAdded Asc, movie_list = sortByDate model.movie_list }, Cmd.none )
+
+        RatingButtonMsg ->
+            case model.currentButton of
+                Rating Asc ->
+                    ( { model | currentButton = Rating Desc, movie_list = List.reverse model.movie_list }, Cmd.none )
+
+                Rating Desc ->
+                    ( { model | currentButton = Rating Asc, movie_list = List.reverse model.movie_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Rating Asc, movie_list = sortByRating model.movie_list }, Cmd.none )
 
         RandomButtonMsg ->
             let
@@ -189,6 +228,9 @@ view model =
                 , column [ Element.height fill, Element.width fill, paddingXY 20 30, Background.color Colors.sidebar, spacingXY 0 15 ]
                     [ Element.text "SORT"
                     , sortButton model.currentButton (Title Asc) "Title " TitleButtonMsg
+                    , sortButton model.currentButton (Year Asc) "Year " YearButtonMsg
+                    , sortButton model.currentButton (DateAdded Asc) "Date Added " DateButtonMsg
+                    , sortButton model.currentButton (Rating Asc) "Rating " RatingButtonMsg
                     , sortButton model.currentButton (Random Asc) "Random " RandomButtonMsg
                     ]
                 ]
@@ -211,6 +253,15 @@ sortButton currentButton button name buttonMsg =
             case ( currentButton, button ) of
                 ( Title _, Title _ ) ->
                     ( True, Title )
+
+                ( Year _, Year _ ) ->
+                    ( True, Year )
+
+                ( DateAdded _, DateAdded _ ) ->
+                    ( True, DateAdded )
+
+                ( Rating _, Rating _ ) ->
+                    ( True, Rating )
 
                 ( Random _, Random _ ) ->
                     ( True, Random )

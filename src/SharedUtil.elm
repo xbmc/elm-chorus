@@ -20,38 +20,23 @@ dateParts date =
             parts
 
 
-years : String -> List String
-years date =
-    let
-        parts : List String
-        parts =
-            String.split "-" date
-    in
-    case parts of
-        year :: month :: day :: [] ->
-            [ year ]
-
-        _ ->
-            parts
-
-
-sortByTitleAlbum : List AlbumObj -> List AlbumObj
-sortByTitleAlbum list =
+sortByTitle list =
     List.sortBy (.label >> String.toLower) list
 
 
-sortByYearAlbum : List AlbumObj -> List AlbumObj
-sortByYearAlbum list =
-    List.sortBy (.dateadded >> years) list
+sortByYear list =
+    List.sortBy .year list
 
 
-sortByDateAlbum : List AlbumObj -> List AlbumObj
-sortByDateAlbum list =
+sortByDate list =
     List.sortBy (.dateadded >> dateParts) list
 
 
-sortByArtistAlbum : List AlbumObj -> List AlbumObj
-sortByArtistAlbum list =
+sortByRating list =
+    List.sortBy .rating list
+
+
+sortByArtist list =
     List.sortBy
         (.artist
             >> List.sort
@@ -62,24 +47,9 @@ sortByArtistAlbum list =
         list
 
 
-sortByTitleArtist : List ArtistObj -> List ArtistObj
-sortByTitleArtist list =
-    List.sortBy (.label >> String.toLower) list
-
-
-sortByTitleVideo : List VideoObj -> List VideoObj
-sortByTitleVideo list =
-    List.sortBy (.label >> String.toLower) list
-
-
-sortByTitleMovie : List MovieObj -> List MovieObj
-sortByTitleMovie list =
-    List.sortBy (.label >> String.toLower) list
-
-
-sortByTitleTvShow : List TvshowObj -> List TvshowObj
-sortByTitleTvShow list =
-    List.sortBy (.label >> String.toLower) list
+sortByAlbumVideo : List VideoObj -> List VideoObj
+sortByAlbumVideo list =
+    List.sortBy (.album >> String.toLower) list
 
 
 sortByRandom mySeed list =

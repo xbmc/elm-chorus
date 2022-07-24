@@ -47,6 +47,7 @@ type AlbumSort
     | Year SortDirection
     | Artist SortDirection
     | Random SortDirection
+    | Rating SortDirection
 
 
 type alias Model =
@@ -60,7 +61,7 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { album_list = sortByTitleAlbum shared.album_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453, song_list = shared.song_list }, Cmd.none )
+    ( { album_list = sortByTitle shared.album_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453, song_list = shared.song_list }, Cmd.none )
 
 
 
@@ -73,6 +74,7 @@ type Msg
     | YearButtonMsg
     | ArtistButtonMsg
     | RandomButtonMsg
+    | RatingButtonMsg
     | AlbumCardButtonMsg AlbumObj
 
 
@@ -88,7 +90,7 @@ update msg model =
                     ( { model | currentButton = Title Asc, album_list = List.reverse model.album_list }, Cmd.none )
 
                 _ ->
-                    ( { model | currentButton = Title Asc, album_list = sortByTitleAlbum model.album_list }, Cmd.none )
+                    ( { model | currentButton = Title Asc, album_list = sortByTitle model.album_list }, Cmd.none )
 
         DateButtonMsg ->
             case model.currentButton of
@@ -99,7 +101,7 @@ update msg model =
                     ( { model | currentButton = DateAdded Asc, album_list = List.reverse model.album_list }, Cmd.none )
 
                 _ ->
-                    ( { model | currentButton = DateAdded Asc, album_list = sortByDateAlbum model.album_list }, Cmd.none )
+                    ( { model | currentButton = DateAdded Asc, album_list = sortByDate model.album_list }, Cmd.none )
 
         YearButtonMsg ->
             case model.currentButton of
@@ -110,7 +112,7 @@ update msg model =
                     ( { model | currentButton = Year Asc, album_list = List.reverse model.album_list }, Cmd.none )
 
                 _ ->
-                    ( { model | currentButton = Year Asc, album_list = sortByYearAlbum model.album_list }, Cmd.none )
+                    ( { model | currentButton = Year Asc, album_list = sortByYear model.album_list }, Cmd.none )
 
         ArtistButtonMsg ->
             case model.currentButton of
@@ -121,7 +123,18 @@ update msg model =
                     ( { model | currentButton = Artist Asc, album_list = List.reverse model.album_list }, Cmd.none )
 
                 _ ->
-                    ( { model | currentButton = Artist Asc, album_list = sortByArtistAlbum model.album_list }, Cmd.none )
+                    ( { model | currentButton = Artist Asc, album_list = sortByArtist model.album_list }, Cmd.none )
+
+        RatingButtonMsg ->
+            case model.currentButton of
+                Rating Asc ->
+                    ( { model | currentButton = Rating Desc, album_list = List.reverse model.album_list }, Cmd.none )
+
+                Rating Desc ->
+                    ( { model | currentButton = Rating Asc, album_list = List.reverse model.album_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Rating Asc, album_list = List.reverse (sortByRating model.album_list) }, Cmd.none )
 
         RandomButtonMsg ->
             let
@@ -191,6 +204,7 @@ view model =
                     , sortButton model.currentButton (Title Asc) "Title " TitleButtonMsg
                     , sortButton model.currentButton (Year Asc) "Year " YearButtonMsg
                     , sortButton model.currentButton (DateAdded Asc) "Date Added " DateButtonMsg
+                    , sortButton model.currentButton (Rating Asc) "Rating " RatingButtonMsg
                     , sortButton model.currentButton (Artist Asc) "Artist " ArtistButtonMsg
                     , sortButton model.currentButton (Random Asc) "Random " RandomButtonMsg
                     ]
@@ -228,6 +242,9 @@ sortButton currentButton button name buttonMsg =
 
                 ( Random _, Random _ ) ->
                     ( True, Random )
+
+                ( Rating _, Rating _ ) ->
+                    ( True, Rating )
 
                 _ ->
                     ( False, Random )

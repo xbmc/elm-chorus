@@ -188,6 +188,7 @@ type ResultResponse
     | ResultK (List FileObj)
     | ResultL (List SettingsObj)
     | ResultM (List VideoObj)
+    | ResultN (List TvshowObj)
 
 
 
@@ -270,6 +271,7 @@ queryDecoder =
         , fileQueryDecoder
         , settingsQueryDecoder
         , videoQueryDecoder
+        , tvShowQueryDecoder
         ]
 
 
@@ -344,6 +346,7 @@ videoDecoder =
         |> required "musicvideoid" int
         |> required "thumbnail" string
         |> required "genre" (list string)
+        |> required "year" int
         |> required "file" string
 
 
@@ -354,6 +357,7 @@ type alias VideoObj =
     , videoid : Int
     , thumbnail : String
     , genre : List String
+    , year : Int
     , file : String
     }
 
@@ -374,6 +378,8 @@ albumDecoder =
         |> required "genre" (list string)
         |> required "playcount" int
         |> required "dateadded" string
+        |> required "year" int
+        |> required "rating" Decode.float
 
 
 type alias AlbumObj =
@@ -384,6 +390,8 @@ type alias AlbumObj =
     , genre : List String
     , playcount : Int
     , dateadded : String
+    , year : Int
+    , rating : Float
     }
 
 
@@ -693,6 +701,26 @@ movieDecoder =
         |> required "movieid" int
         |> required "thumbnail" string
         |> required "file" string
+        |> required "year" int
+        |> required "dateadded" string
+        |> required "rating" Decode.float
+
+
+tvShowQueryDecoder : Decoder ResultResponse
+tvShowQueryDecoder =
+    Decode.succeed ResultN
+        |> custom (at [ "result", "tvshows" ] (list tvShowDecoder))
+
+
+tvShowDecoder : Decoder TvshowObj
+tvShowDecoder =
+    Decode.succeed TvshowObj
+        |> required "label" string
+        |> required "tvshowid" int
+        |> required "year" int
+        |> required "dateadded" string
+        |> required "rating" Decode.float
+        |> custom (at [ "art", "poster" ] string)
 
 
 type alias MovieObj =
@@ -700,12 +728,18 @@ type alias MovieObj =
     , movieid : Int
     , thumbnail : String
     , file : String
+    , year : Int
+    , dateadded : String
+    , rating : Float
     }
 
 
 type alias TvshowObj =
     { label : String
     , tvshowid : Int
+    , year : Int
+    , dateadded : String
+    , rating : Float
     , thumbnail : String
     }
 

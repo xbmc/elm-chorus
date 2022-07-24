@@ -39,6 +39,9 @@ page =
 
 type VideoSort
     = Title SortDirection
+    | Year SortDirection
+    | Artist SortDirection
+    | Album SortDirection
     | Random SortDirection
 
 
@@ -56,7 +59,7 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { video_list = sortByTitleVideo shared.video_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }, Cmd.none )
+    ( { video_list = sortByTitle shared.video_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }, Cmd.none )
 
 
 
@@ -65,6 +68,9 @@ init shared url =
 
 type Msg
     = TitleButtonMsg
+    | YearButtonMsg
+    | ArtistButtonMsg
+    | AlbumButtonMsg
     | RandomButtonMsg
     | VideoCardButtonMsg VideoObj
 
@@ -81,7 +87,40 @@ update msg model =
                     ( { model | currentButton = Title Asc, video_list = List.reverse model.video_list }, Cmd.none )
 
                 _ ->
-                    ( { model | currentButton = Title Asc, video_list = sortByTitleVideo model.video_list }, Cmd.none )
+                    ( { model | currentButton = Title Asc, video_list = sortByTitle model.video_list }, Cmd.none )
+
+        YearButtonMsg ->
+            case model.currentButton of
+                Year Asc ->
+                    ( { model | currentButton = Year Desc, video_list = List.reverse model.video_list }, Cmd.none )
+
+                Year Desc ->
+                    ( { model | currentButton = Year Asc, video_list = List.reverse model.video_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Year Asc, video_list = sortByYear model.video_list }, Cmd.none )
+
+        ArtistButtonMsg ->
+            case model.currentButton of
+                Artist Asc ->
+                    ( { model | currentButton = Artist Desc, video_list = List.reverse model.video_list }, Cmd.none )
+
+                Artist Desc ->
+                    ( { model | currentButton = Artist Asc, video_list = List.reverse model.video_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Artist Asc, video_list = sortByArtist model.video_list }, Cmd.none )
+
+        AlbumButtonMsg ->
+            case model.currentButton of
+                Album Asc ->
+                    ( { model | currentButton = Album Desc, video_list = List.reverse model.video_list }, Cmd.none )
+
+                Album Desc ->
+                    ( { model | currentButton = Album Asc, video_list = List.reverse model.video_list }, Cmd.none )
+
+                _ ->
+                    ( { model | currentButton = Album Asc, video_list = sortByAlbumVideo model.video_list }, Cmd.none )
 
         RandomButtonMsg ->
             let
@@ -143,7 +182,9 @@ view model =
                 , column [ Element.height fill, Element.width fill, paddingXY 20 30, Background.color Colors.sidebar, spacingXY 0 15 ]
                     [ Element.text "SORT"
                     , sortButton model.currentButton (Title Asc) "Title " TitleButtonMsg
-                    , sortButton model.currentButton (Random Asc) "Random " RandomButtonMsg
+                    , sortButton model.currentButton (Year Asc) "Year " YearButtonMsg
+                    , sortButton model.currentButton (Artist Asc) "Artist " ArtistButtonMsg
+                    , sortButton model.currentButton (Album Asc) "Album " AlbumButtonMsg
                     ]
                 ]
             , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
@@ -168,11 +209,17 @@ sortButton currentButton button name buttonMsg =
                 ( Title _, Title _ ) ->
                     ( True, Title )
 
-                ( Random _, Random _ ) ->
-                    ( True, Random )
+                ( Artist _, Artist _ ) ->
+                    ( True, Artist )
+
+                ( Album _, Album _ ) ->
+                    ( True, Album )
+
+                ( Year _, Year _ ) ->
+                    ( True, Year )
 
                 _ ->
-                    ( False, Random )
+                    ( False, Title )
     in
     Input.button [ paddingXY 10 0 ]
         { onPress = Just buttonMsg

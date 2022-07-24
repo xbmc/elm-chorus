@@ -57,7 +57,7 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { artist_list = sortByTitleArtist shared.artist_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453, song_list = shared.song_list }, Cmd.none )
+    ( { artist_list = sortByTitle shared.artist_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453, song_list = shared.song_list }, Cmd.none )
 
 
 
@@ -82,7 +82,7 @@ update msg model =
                     ( { model | currentButton = Title Asc, artist_list = List.reverse model.artist_list }, Cmd.none )
 
                 _ ->
-                    ( { model | currentButton = Title Asc, artist_list = sortByTitleArtist model.artist_list }, Cmd.none )
+                    ( { model | currentButton = Title Asc, artist_list = sortByTitle model.artist_list }, Cmd.none )
 
         RandomButtonMsg ->
             let
