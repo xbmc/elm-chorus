@@ -2,6 +2,9 @@
   font-family: "Open Sans";
   src: url("./opensans.woff") format("woff");
 }
+body {
+  overflow-x: hidden;
+}
 
 .input-range-container {
 }
@@ -293,4 +296,5 @@ h2 {
   opacity: 0;
   position: absolute !important;
   transition: opacity 0.3s;
+  cursor: pointer;
 }
