@@ -1,6 +1,6 @@
 module Pages.Music.Top.Top exposing (Model, Msg, Params, page)
 
-import Colors exposing (greyIcon)
+import Colors exposing (blackIcon, cardHover, darkGreyIcon, greyIcon, whiteIcon)
 import Components.SectionHeader
 import Components.VerticalNavMusic
 import Element exposing (..)
@@ -18,7 +18,9 @@ import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
-import WSDecoder exposing (ItemDetails, SongObj)
+import Url exposing (percentEncode)
+import Url.Builder exposing (crossOrigin)
+import WSDecoder exposing (AlbumObj, ItemDetails, SongObj)
 
 
 
@@ -49,13 +51,14 @@ type alias Model =
     { currentlyPlaying : Maybe ItemDetails
     , song_list : List SongObj
     , route : Route
+    , album : List AlbumObj
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { route } =
-    ( { currentlyPlaying = shared.currentlyPlaying, song_list = shared.song_list, route = route }
-    , sendAction """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "limits": { "start" : 0, "end": 25 }, "properties": [ "artist", "duration", "album", "track" ], "sort": { "order": "ascending", "method": "track", "ignorearticle": true } }, "id": "libSongs"}"""
+    ( { currentlyPlaying = shared.currentlyPlaying, song_list = shared.song_list, route = route, album = shared.album_list }
+    , sendAction """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "limits": { "start" : 0, "end": 25 }, "properties": [ "artist", "duration", "album", "track" ,"thumbnail"], "sort": { "order": "ascending", "method": "track", "ignorearticle": true } }, "id": "libSongs"}"""
     )
 
 
@@ -97,9 +100,17 @@ subscriptions model =
 
 materialButton : ( Icon msg, msg ) -> Element msg
 materialButton ( icon, action ) =
-    Input.button [ paddingXY 5 3 ]
+    Input.button [ paddingXY 5 5 ]
         { onPress = Just action
-        , label = Element.html (icon 24 (MITypes.Color <| greyIcon))
+        , label = Element.html (icon 24 (MITypes.Color <| whiteIcon))
+        }
+
+
+materialButtonRight : ( Icon msg, msg ) -> Element msg
+materialButtonRight ( icon, action ) =
+    Input.button [ paddingXY 5 0 ]
+        { onPress = Just action
+        , label = Element.html (icon 18 (MITypes.Color <| darkGreyIcon))
         }
 
 
@@ -111,7 +122,7 @@ view : Model -> Document Msg
 view model =
     { title = "Music"
     , body =
-        [ row [ Element.height fill, Element.width fill ]
+        [ row [ Element.height fill, Element.width fill, Background.color Colors.background ]
             [ Components.VerticalNavMusic.view model.route
             , column [ Element.height fill, Element.width (fillPortion 6), spacingXY 5 7 ]
                 (List.append
@@ -119,20 +130,51 @@ view model =
                     ]
                     (List.map
                         (\song ->
-                            row [ Element.width fill, paddingXY 5 5, Background.color (rgb 0.2 0.2 0.2), mouseOver [ Background.color (rgb 0.4 0.4 0.4) ], Element.Events.onDoubleClick (SetCurrentlyPlaying song) ]
-                                [ materialButton ( Filled.play_arrow, SetCurrentlyPlaying song )
-                                , materialButton ( Filled.thumb_up, SetCurrentlyPlaying song )
-                                , el [ Font.color (Element.rgb 0.8 0.8 0.8) ] (Element.text song.label)
-                                , row [ alignRight ]
-                                    (List.map
-                                        (\artist ->
-                                            el [ Font.color (Element.rgb 0.8 0.8 0.8), paddingXY 5 0 ] (Element.text artist)
-                                        )
-                                        song.artist
-                                    )
-                                , el [ alignRight, Font.color (Element.rgb 0.8 0.8 0.8) ] (song.duration |> durationToString |> Element.text)
-                                , materialButton ( Filled.more_horiz, SetCurrentlyPlaying song )
-                                ]
+                            el [ Element.width fill, paddingEach { left = 10, top = 0, right = 60, bottom = 0 } ]
+                                (row [ Element.width fill, paddingXY 5 5, Background.color Colors.background, mouseOver [ Background.color (rgba 223 223 223 0.5) ], Font.size 13, Element.Events.onDoubleClick (SetCurrentlyPlaying song), Element.htmlAttribute (Html.Attributes.class "song-card-parent"), htmlAttribute <| Html.Attributes.style "border-bottom" "1px solid rgb(216 ,216 ,216 ,1)" ]
+                                    [ column [ paddingEach { left = 0, top = 0, right = 500, bottom = 0 }, Element.width (px 600) ]
+                                        [ row [ spacing 10 ]
+                                            [ case song.thumbnail of
+                                                "" ->
+                                                    image [ Element.width (px 35), Element.height (px 35) ]
+                                                        { src = "https://via.placeholder.com/170x170"
+                                                        , description = "Hero Image"
+                                                        }
+
+                                                _ ->
+                                                    image [ Element.width (px 35), Element.height (px 35) ]
+                                                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode song.thumbnail ] []
+                                                        , description = "Thumbnail"
+                                                        }
+                                            , el [ Font.color (Element.rgba255 43 47 48 0.5) ] (Element.text (String.fromInt song.track))
+                                            , el [ Font.color Colors.black ] (Element.text song.label)
+                                            ]
+                                        , el [ Element.htmlAttribute (Html.Attributes.class "song-play"), Background.color cardHover, Element.width (px 35), Element.height (px 35) ] (materialButton ( Filled.play_arrow, SetCurrentlyPlaying song ))
+                                        ]
+                                    , column [ Element.width (px 300) ]
+                                        [ row []
+                                            (List.map
+                                                (\album ->
+                                                    el [ Font.color (Element.rgba255 43 47 48 0.5), paddingXY 5 0 ] (Element.text album.label)
+                                                )
+                                                (List.filter (\album -> song.albumid == album.albumid) model.album)
+                                            )
+                                        ]
+                                    , column [ alignRight, Element.width (px 300) ]
+                                        [ row [ alignRight ]
+                                            [ row [ Element.width (px 300), alignLeft ]
+                                                (List.map
+                                                    (\artist ->
+                                                        el [ Font.color (Element.rgba255 43 47 48 0.5), paddingXY 5 0 ] (Element.text artist)
+                                                    )
+                                                    song.artist
+                                                )
+                                            , el [ alignRight, Font.color (Element.rgba255 43 47 48 0.5), Element.htmlAttribute (Html.Attributes.class "song-duration") ] (song.duration |> durationToString |> Element.text)
+                                            ]
+                                        , row [ alignRight, Background.color (rgba 223 223 223 0.4), Element.htmlAttribute (Html.Attributes.class "song-icons") ] [ materialButtonRight ( Filled.thumb_up, SetCurrentlyPlaying song ), materialButtonRight ( Filled.add_box, SetCurrentlyPlaying song ), materialButtonRight ( Filled.more_horiz, SetCurrentlyPlaying song ) ]
+                                        ]
+                                    ]
+                                )
                         )
                         model.song_list
                     )

@@ -298,3 +298,27 @@ h2 {
   transition: opacity 0.3s;
   cursor: pointer;
 }
+.song-card-parent:hover .song-play {
+  opacity: 1;
+  transition: opacity 0.3;
+  position: absolute !important;
+}
+.song-card-parent:hover .song-icons {
+  opacity: 1;
+  transition: opacity 0.3;
+  position: absolute !important;
+}
+.song-card-parent:hover .song-duration {
+  opacity: 0;
+}
+.song-play {
+  opacity: 0;
+  position: absolute !important;
+  transition: opacity 0.3s;
+  cursor: pointer;
+}
+.song-icons {
+  opacity: 0;
+  position: absolute !important;
+  cursor: pointer;
+}

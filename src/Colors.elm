@@ -50,6 +50,11 @@ whiteIcon =
     fromElementColorToColor white
 
 
+darkGreyIcon : Color.Color
+darkGreyIcon =
+    fromElementColorToColor (Element.rgba255 43 47 48 0.5)
+
+
 grey : Element.Color
 grey =
     Element.rgb255 51 51 51
