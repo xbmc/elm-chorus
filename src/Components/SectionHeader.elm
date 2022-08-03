@@ -102,6 +102,7 @@ viewArtists buttonMsg artist =
         , Element.width (fill |> minimum 280 |> maximum 280)
         , Border.rounded 3
         , Element.htmlAttribute (Html.Attributes.class "card-parent")
+        , Element.htmlAttribute (Html.Attributes.style "box-shadow" "0px 0px 2px #888888")
         ]
         [ case artist.thumbnail of
             "" ->
@@ -133,6 +134,7 @@ viewVideos buttonMsg video =
         , Element.height (fill |> minimum 130 |> maximum 180)
         , Element.width (fill |> minimum 280 |> maximum 280)
         , Element.htmlAttribute (Html.Attributes.class "card-parent")
+        , Element.htmlAttribute (Html.Attributes.style "box-shadow" "0px 0px 2px #888888")
         ]
         [ case video.thumbnail of
             "" ->
@@ -165,6 +167,7 @@ viewAlbums buttonMsg album =
         , Element.height (fill |> maximum 220)
         , Element.width (fill |> minimum 160 |> maximum 160)
         , Border.rounded 3
+        , Element.htmlAttribute (Html.Attributes.style "box-shadow" "0px 0px 2px #888888")
         ]
         [ image [ alignTop, width fill, height fill ]
             { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
