@@ -214,7 +214,7 @@ view model =
                                                                                 )
                                                                                 song.artist
                                                                             )
-                                                                        , el [ alignRight, Font.color (Element.rgba255 43 47 48 0.5), Element.htmlAttribute (Html.Attributes.class "song-duration") ] (song.duration |> durationToString |> Element.text)
+                                                                        , el [ alignRight, Font.color (Element.rgba255 43 47 48 0.5), Element.htmlAttribute (Html.Attributes.class "hide-onhover") ] (song.duration |> durationToString |> Element.text)
                                                                         ]
                                                                     , row [ alignRight, Background.color (rgba 223 223 223 0.4), Element.htmlAttribute (Html.Attributes.class "song-icons") ] [ materialButtonRight ( Filled.thumb_up, SetCurrentlyPlaying song ), materialButtonRight ( Filled.add_box, SetCurrentlyPlaying song ), materialButtonRight ( Filled.more_horiz, SetCurrentlyPlaying song ) ]
                                                                     ]
