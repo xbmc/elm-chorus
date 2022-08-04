@@ -161,10 +161,10 @@ view model =
                         Nothing
                         False
                         []
-                    , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
+                    , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 15 10, padding 30 ]
                         (List.map
                             (\tvshow ->
-                                constructTvshowItem tvshow
+                                Components.SectionHeader.viewTvShows (SetCurrentlyPlaying tvshow) tvshow
                             )
                             model.tvshow_list
                         )
@@ -174,10 +174,10 @@ view model =
                         Nothing
                         False
                         []
-                    , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
+                    , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 15 10, padding 30 ]
                         (List.map
                             (\tvshow ->
-                                constructTvshowItem tvshow
+                                Components.SectionHeader.viewTvShows (SetCurrentlyPlaying tvshow) tvshow
                             )
                             model.tvshow_list
                         )

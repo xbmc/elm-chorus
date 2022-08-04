@@ -1,6 +1,7 @@
 module Pages.Tvshows exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
+import Components.SectionHeader
 import Components.VerticalNav
 import Components.VerticalNavTvshows
 import Element exposing (..)
@@ -242,10 +243,10 @@ view model =
                     , sortButton model.currentButton (Random Asc) "Random " RandomButtonMsg
                     ]
                 ]
-            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
+            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 15 10, padding 20 ]
                 (List.map
                     (\tvshow ->
-                        constructTvshowItem tvshow
+                        Components.SectionHeader.viewTvShows (SetCurrentlyPlaying tvshow) tvshow
                     )
                     model.tvshow_list
                 )

@@ -710,6 +710,7 @@ movieDecoder =
         |> required "year" int
         |> required "dateadded" string
         |> required "rating" Decode.float
+        |> custom (at [ "art", "poster" ] string)
 
 
 tvShowQueryDecoder : Decoder ResultResponse
@@ -737,6 +738,7 @@ type alias MovieObj =
     , year : Int
     , dateadded : String
     , rating : Float
+    , poster : String
     }
 
 
