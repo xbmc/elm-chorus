@@ -1,6 +1,7 @@
 module Pages.Movies exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
+import Components.SectionHeader
 import Components.VerticalNav
 import Components.VerticalNavMovies
 import Element exposing (..)
@@ -11,10 +12,7 @@ import Element.Font as Font
 import Element.Input as Input
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Material.Icons as Filled
-import Material.Icons.Types as MITypes exposing (Icon)
 import Random
-import Request
 import Shared exposing (sendAction, sendActions)
 import SharedType exposing (SortDirection(..))
 import SharedUtil exposing (..)
@@ -178,42 +176,6 @@ subscriptions model =
     Sub.none
 
 
-constructMovieItem : MovieObj -> Element Msg
-constructMovieItem movie =
-    column [ spacingXY 5 0, Element.width fill, Element.height fill ]
-        [ image
-            [ Element.width (fill |> minimum 150 |> maximum 150)
-            , Element.height (fill |> minimum 200 |> maximum 200)
-            , inFront
-                (row []
-                    [ link [ paddingXY 5 3, Background.color (rgb 0.2 0.2 0.2) ]
-                        { url = Route.toString (Route.Videoplayer__Movieid_Int { movieid = movie.movieid })
-                        , label = Element.html (Filled.play_arrow 24 (MITypes.Color <| greyIcon))
-                        }
-                    ]
-                )
-
-            {- , Element.Events.onMouseEnter ShowMenu
-               , Element.Events.onMouseLeave CloseMenu
-            -}
-            ]
-            (if String.isEmpty movie.thumbnail then
-                { src = "/thumbnail_default.png"
-                , description = "Hero Image"
-                }
-
-             else
-                { description = movie.label
-                , src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
-                }
-            )
-        , column [ alignBottom, Background.color (rgb 1 1 1), Element.width (fill |> minimum 150 |> maximum 150), clip ]
-            [ el [ Font.color (Element.rgb 0 0 0), Font.size 18 ] (Element.text movie.label)
-            , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (Element.text "2020")
-            ]
-        ]
-
-
 
 -- VIEW
 
@@ -234,10 +196,10 @@ view model =
                     , sortButton model.currentButton (Random Asc) "Random " RandomButtonMsg
                     ]
                 ]
-            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
+            , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color Colors.background, spacingXY 15 10, padding 25 ]
                 (List.map
                     (\movie ->
-                        constructMovieItem movie
+                        Components.SectionHeader.viewMovies (SetCurrentlyPlaying movie) movie
                     )
                     model.movie_list
                 )

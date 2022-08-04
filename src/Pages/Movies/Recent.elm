@@ -105,46 +105,6 @@ subscriptions model =
     Sub.none
 
 
-materialButton : ( Icon msg, msg ) -> Element msg
-materialButton ( icon, action ) =
-    Input.button [ paddingXY 5 3, Background.color (rgb 0.2 0.2 0.2) ]
-        { onPress = Just action
-        , label = Element.html (icon 24 (MITypes.Color <| greyIcon))
-        }
-
-
-constructMovieItem : MovieObj -> Element Msg
-constructMovieItem movie =
-    column [ spacingXY 5 0, Element.width fill, Element.height fill ]
-        [ image
-            [ Element.width (fill |> minimum 150 |> maximum 150)
-            , Element.height (fill |> minimum 200 |> maximum 200)
-            , inFront
-                (row []
-                    [ materialButton ( Filled.play_arrow, NoOp ) ]
-                )
-
-            {- , Element.Events.onMouseEnter ShowMenu
-               , Element.Events.onMouseLeave CloseMenu
-            -}
-            ]
-            (if String.isEmpty movie.thumbnail then
-                { src = "/thumbnail_default.png"
-                , description = "Hero Image"
-                }
-
-             else
-                { description = movie.label
-                , src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.thumbnail ] []
-                }
-            )
-        , column [ alignBottom, Background.color (rgb 1 1 1), Element.width (fill |> minimum 150 |> maximum 150), clip ]
-            [ el [ Font.color (Element.rgb 0 0 0), Font.size 18 ] (Element.text movie.label)
-            , el [ Font.color (Element.rgb 0.6 0.6 0.6), Font.size 18 ] (Element.text "2020")
-            ]
-        ]
-
-
 
 -- VIEW
 
@@ -161,10 +121,10 @@ view model =
                         Nothing
                         False
                         []
-                    , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
+                    , wrappedRow [ Element.height fill, Element.width (fillPortion 6), spacingXY 15 10, padding 40 ]
                         (List.map
                             (\movie ->
-                                constructMovieItem movie
+                                Components.SectionHeader.viewMovies (SetCurrentlyPlaying movie) movie
                             )
                             model.movie_list
                         )
@@ -174,10 +134,10 @@ view model =
                         Nothing
                         False
                         []
-                    , wrappedRow [ Element.height fill, Element.width (fillPortion 6), Background.color (rgb 0.8 0.8 0.8), spacingXY 5 10 ]
+                    , wrappedRow [ Element.height fill, Element.width (fillPortion 6), spacingXY 15 10, padding 40 ]
                         (List.map
                             (\movie ->
-                                constructMovieItem movie
+                                Components.SectionHeader.viewMovies (SetCurrentlyPlaying movie) movie
                             )
                             model.movie_list
                         )

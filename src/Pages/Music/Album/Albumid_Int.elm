@@ -154,10 +154,18 @@ view model =
                 column [ Element.height fill, Element.width fill, Background.color Colors.sidebar ]
                     [ row [ Element.height (fillPortion 1), Element.width fill, Background.color (Element.rgba255 50 53 55 1), Element.htmlAttribute (Html.Attributes.class "card-parent"), padding 30 ]
                         [ column [ Element.width (px 250), Element.height (px 250), Element.htmlAttribute (Html.Attributes.class "card-parent") ]
-                            [ image [ Element.height (fill |> maximum 230), Element.width (fillPortion 2 |> maximum 230) ]
-                                { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
-                                , description = "Thumbnail"
-                                }
+                            [ case album.thumbnail of
+                                "" ->
+                                    image [ Element.height (fill |> maximum 230), Element.width (fillPortion 2 |> maximum 230) ]
+                                        { src = "/thumbnail_default.png"
+                                        , description = "Default Thumbnail"
+                                        }
+
+                                _ ->
+                                    image [ Element.height (fill |> maximum 230), Element.width (fillPortion 2 |> maximum 230) ]
+                                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
+                                        , description = "Thumbnail"
+                                        }
                             , column [ Element.htmlAttribute (Html.Attributes.class "card"), Element.height (px 230), Element.width (fill |> minimum 230 |> maximum 230), Background.color cardHover ]
                                 [ row [ alignTop, alignRight, paddingXY 15 15 ]
                                     [ Input.button []
