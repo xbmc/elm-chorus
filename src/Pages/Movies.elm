@@ -198,7 +198,7 @@ constructMovieItem movie =
             -}
             ]
             (if String.isEmpty movie.thumbnail then
-                { src = "https://via.placeholder.com/70"
+                { src = "/thumbnail_default.png"
                 , description = "Hero Image"
                 }
 

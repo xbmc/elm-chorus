@@ -107,7 +107,7 @@ viewArtists buttonMsg artist =
         [ case artist.thumbnail of
             "" ->
                 image [ width fill, height (px 150) ]
-                    { src = "https://via.placeholder.com/170"
+                    { src = "/thumbnail_default.png"
                     , description = "Hero Image"
                     }
 
@@ -139,7 +139,7 @@ viewVideos buttonMsg video =
         [ case video.thumbnail of
             "" ->
                 image [ width fill, height (px 125) ]
-                    { src = "https://via.placeholder.com/170"
+                    { src = "/thumbnail_default.png"
                     , description = "Hero Image"
                     }
 
