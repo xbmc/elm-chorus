@@ -207,11 +207,11 @@ view model =
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Queue"), Element.html (Filled.add_circle 16 (MITypes.Color <| greyIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
-                                    { onPress = Just PlayMsg
+                                    { onPress = Nothing -- TODO : make stream button work when the stream functionality has been implemented
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Stream"), Element.html (Filled.cast_connected 16 (MITypes.Color <| greyIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
-                                    { onPress = Just PlayMsg
+                                    { onPress = Nothing -- TODO : Add More menu dropdown
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "More"), Element.html (Filled.more_vert 16 (MITypes.Color <| greyIcon)) ]
                                     }
                                 ]
