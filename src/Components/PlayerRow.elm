@@ -29,7 +29,7 @@ view layoutType =
             [ case layoutType.currentlyPlaying.currentlyPlaying of
                 Nothing ->
                     image [ alignLeft, width fill, height fill ]
-                        { src = "https://via.placeholder.com/70"
+                        { src = "/thumbnail_default.png"
                         , description = "Hero Image"
                         }
 

@@ -137,7 +137,7 @@ view model =
                                             [ case song.thumbnail of
                                                 "" ->
                                                     image [ Element.width (px 35), Element.height (px 35) ]
-                                                        { src = "https://via.placeholder.com/170x170"
+                                                        { src = "/thumbnail_default.png"
                                                         , description = "Hero Image"
                                                         }
 
