@@ -116,6 +116,9 @@ routes =
         , (Parser.s "music" </> Parser.s "genre" </> Parser.string)
             |> Parser.map (\genre -> { genre = genre })
             |> Parser.map Music__Genre__Genre_String
+        , (Parser.s "music" </> Parser.s "videos" </> Parser.int)
+            |> Parser.map (\videoid -> { videoid = videoid })
+            |> Parser.map Music__Videos__Videoid_Int
         ]
 
 
