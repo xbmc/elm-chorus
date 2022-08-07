@@ -425,6 +425,9 @@ update bigMsg bigModel =
         ( Music__Genre__Genre_String__Msg msg, Music__Genre__Genre_String__Model model ) ->
             pages.music__genre__genre_string.update msg model
 
+        ( Music__Videos__Videoid_Int__Msg msg, Music__Videos__Videoid_Int__Model model ) ->
+            pages.music__videos__videoid_int.update msg model
+
         _ ->
             ( bigModel, Cmd.none )
 

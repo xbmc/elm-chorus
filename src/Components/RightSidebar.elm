@@ -264,7 +264,7 @@ videoTab currentlyPlaying playing =
                             True ->
                                 Element.image [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0 ]
                                     { description = ""
-                                    , src = "wave.gif"
+                                    , src = "/wave.gif"
                                     }
 
                             False ->

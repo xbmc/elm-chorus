@@ -43,7 +43,6 @@ type alias Model =
     , video : Maybe VideoObj
     , album_list : List AlbumObj
     , video_list : List VideoObj
-    , teststring : String
     }
 
 
@@ -54,7 +53,6 @@ init shared { params } =
       , album_list = shared.album_list
       , artist_list = shared.artist_list
       , video_list = shared.video_list
-      , teststring = "tests"
       }
     , Cmd.none
     )
@@ -72,7 +70,6 @@ getVideos id videolist =
 type Msg
     = SetCurrentlyPlaying VideoObj
     | QueueMsg
-    | TestMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -89,9 +86,6 @@ update msg model =
 
         QueueMsg ->
             ( model, sendAction """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"musicvideoid": 1}}}""" )
-
-        TestMsg ->
-            ( { model | teststring = "shaheer" }, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -193,7 +187,7 @@ view model =
                             , el [ paddingXY 0 20, Font.size 15 ] (Element.text "Music Video")
                             , row [ spacingXY 10 0 ]
                                 [ Input.button [ paddingXY 12 8, Background.color Colors.navTextHover ]
-                                    { onPress = Nothing
+                                    { onPress = Just (SetCurrentlyPlaying video)
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Play"), Element.html (Filled.play_circle_filled 16 (MITypes.Color <| whiteIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
@@ -212,13 +206,7 @@ view model =
                             ]
                         ]
                     , column [ Element.height (fillPortion 5), Element.width fill, paddingXY 35 35, spacingXY 5 7 ]
-                        [ el [ Font.size 30, Font.color black ] (Element.text "Related music videos from YouTube")
-                        , Input.button [ paddingXY 12 8, Background.color Colors.navTextHover ]
-                            { onPress = Just TestMsg
-                            , label = Element.text "NEW LABEL"
-                            }
-                        , el [ Font.size 30, Font.color black ] (Element.text model.teststring)
-                        ]
+                        [ el [ Font.size 30, Font.color black ] (Element.text "Related music videos from YouTube") ]
                     ]
         ]
     }
