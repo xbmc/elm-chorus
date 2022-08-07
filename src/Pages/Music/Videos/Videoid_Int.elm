@@ -85,7 +85,7 @@ update msg model =
             )
 
         QueueMsg ->
-            ( model, sendAction """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"musicvideoid": 1}}}""" )
+            ( model, sendActions [ """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"musicvideoid": """ ++ String.fromInt model.videoid ++ """}}}""" ] )
 
 
 save : Model -> Shared.Model -> Shared.Model
