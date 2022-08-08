@@ -20,3 +20,8 @@ type KodiTabs
 type SortDirection
     = Asc
     | Desc
+
+
+type VideoModal
+    = Open
+    | Closed
