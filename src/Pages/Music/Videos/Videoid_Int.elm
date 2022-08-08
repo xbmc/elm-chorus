@@ -1,20 +1,24 @@
 module Pages.Music.Videos.Videoid_Int exposing (Model, Msg, Params, page)
 
 import Colors exposing (black, cardHover, darkGreyIcon, greyIcon, white, whiteIcon)
+import Components.Video
 import Element exposing (..)
 import Element.Background as Background
 import Element.Font as Font exposing (Font)
 import Element.Input as Input
+import Html exposing (video)
 import Html.Attributes exposing (..)
+import Http
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
-import Shared exposing (sendAction, sendActions)
+import Shared exposing (sendActions)
+import SharedType exposing (VideoModal(..))
 import Spa.Document exposing (Document)
 import Spa.Page as Page exposing (Page)
 import Spa.Url exposing (Url)
 import Url exposing (percentEncode)
 import Url.Builder exposing (crossOrigin)
-import WSDecoder exposing (AlbumObj, ArtistObj, SongObj, VideoObj)
+import WSDecoder exposing (AlbumObj, ArtistObj, Path, VideoObj, prepareDownloadDecoder)
 
 
 page : Page Params Model Msg
@@ -43,19 +47,37 @@ type alias Model =
     , video : Maybe VideoObj
     , album_list : List AlbumObj
     , video_list : List VideoObj
+    , prepareDownloadPath : Maybe String
+    , modalstate : VideoModal
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( { videoid = params.videoid
-      , video = getVideos params.videoid shared.video_list
-      , album_list = shared.album_list
-      , artist_list = shared.artist_list
-      , video_list = shared.video_list
-      }
-    , Cmd.none
-    )
+    case getVideos params.videoid shared.video_list of
+        Nothing ->
+            ( { videoid = params.videoid
+              , video = getVideos params.videoid shared.video_list
+              , album_list = shared.album_list
+              , artist_list = shared.artist_list
+              , video_list = shared.video_list
+              , prepareDownloadPath = shared.prepareDownloadPath
+              , modalstate = Closed
+              }
+            , Cmd.none
+            )
+
+        Just vid ->
+            ( { videoid = params.videoid
+              , video = getVideos params.videoid shared.video_list
+              , album_list = shared.album_list
+              , artist_list = shared.artist_list
+              , video_list = shared.video_list
+              , prepareDownloadPath = shared.prepareDownloadPath
+              , modalstate = Closed
+              }
+            , postRequestVideo vid.file
+            )
 
 
 getVideos : Int -> List VideoObj -> Maybe VideoObj
@@ -70,6 +92,8 @@ getVideos id videolist =
 type Msg
     = SetCurrentlyPlaying VideoObj
     | QueueMsg
+    | GotVideo (Result Http.Error Path)
+    | ToggleModalMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -87,6 +111,22 @@ update msg model =
         QueueMsg ->
             ( model, sendActions [ """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"musicvideoid": """ ++ String.fromInt model.videoid ++ """}}}""" ] )
 
+        ToggleModalMsg ->
+            case model.modalstate of
+                Closed ->
+                    ( { model | modalstate = Open }, Cmd.none )
+
+                Open ->
+                    ( { model | modalstate = Closed }, Cmd.none )
+
+        GotVideo result ->
+            case result of
+                Ok pathObj ->
+                    ( { model | prepareDownloadPath = Just pathObj.path }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
@@ -103,11 +143,11 @@ subscriptions model =
     Sub.none
 
 
-materialButtonRight : ( Icon msg, msg ) -> Element msg
-materialButtonRight ( icon, action ) =
-    Input.button [ paddingXY 5 0 ]
-        { onPress = Just action
-        , label = Element.html (icon 18 (MITypes.Color <| darkGreyIcon))
+postRequestVideo : String -> Cmd Msg
+postRequestVideo path =
+    Http.get
+        { url = crossOrigin "http://localhost:8080" [ """jsonrpc?request={"jsonrpc":"2.0","params":{"path":\"""" ++ path ++ """"},"method":"Files.PrepareDownload","id":"1"}""" ] []
+        , expect = Http.expectJson GotVideo prepareDownloadDecoder
         }
 
 
@@ -195,7 +235,7 @@ view model =
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Queue"), Element.html (Filled.add_circle 16 (MITypes.Color <| greyIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
-                                    { onPress = Nothing -- TODO : make stream button work when the stream functionality has been implemented
+                                    { onPress = Just ToggleModalMsg
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Stream"), Element.html (Filled.cast_connected 16 (MITypes.Color <| greyIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
@@ -206,7 +246,47 @@ view model =
                             ]
                         ]
                     , column [ Element.height (fillPortion 5), Element.width fill, paddingXY 35 35, spacingXY 5 7 ]
-                        [ el [ Font.size 30, Font.color black ] (Element.text "Related music videos from YouTube") ]
+                        [ el [ Font.size 30, Font.color black ] (Element.text "Related music videos from YouTube")
+                        ]
+                    , column [ Element.htmlAttribute (Html.Attributes.class "image-gradient"), alignRight, alignTop ]
+                        [ image [ Element.width (fillPortion 2 |> maximum 540) ]
+                            { src = "/concert.jpg"
+                            , description = "Fanart"
+                            }
+                        ]
+                    , case model.modalstate of
+                        Open ->
+                            column [ Element.htmlAttribute (Html.Attributes.class "video-modal"), Element.width fill, Element.height fill ]
+                                [ case model.prepareDownloadPath of
+                                    Nothing ->
+                                        column [ Element.htmlAttribute (Html.Attributes.class "video-modal-body") ]
+                                            [ row [ Background.color Colors.backgroundLocal, paddingXY 20 20, Element.width fill, Font.color white, Font.size 20, spacingXY 20 0 ]
+                                                [ Element.text "Video not available"
+                                                , Input.button [ alignRight ]
+                                                    { onPress = Just ToggleModalMsg
+                                                    , label = Element.html (Filled.close 16 (MITypes.Color <| greyIcon))
+                                                    }
+                                                ]
+                                            ]
+
+                                    Just path ->
+                                        column [ Element.htmlAttribute (Html.Attributes.class "video-modal-body") ]
+                                            [ row [ Background.color Colors.backgroundLocal, paddingXY 20 20, Element.width fill, Font.color white, Font.size 20 ]
+                                                [ Element.text video.label
+                                                , Input.button [ alignRight ]
+                                                    { onPress = Just ToggleModalMsg
+                                                    , label = Element.html (Filled.close 16 (MITypes.Color <| greyIcon))
+                                                    }
+                                                ]
+                                            , Components.Video.view [ Background.color (rgb 0 0 0), Element.width (px 700) ]
+                                                { poster = crossOrigin "http://localhost:8080" [ "image", percentEncode video.thumbnail ] []
+                                                , source = crossOrigin "http://localhost:8080" [ path ] []
+                                                }
+                                            ]
+                                ]
+
+                        Closed ->
+                            Element.none
                     ]
         ]
     }
