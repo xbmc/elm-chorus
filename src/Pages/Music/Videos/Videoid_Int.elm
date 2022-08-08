@@ -54,30 +54,23 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
+    let
+        sharedobjects =
+            { videoid = params.videoid
+            , video = getVideos params.videoid shared.video_list
+            , album_list = shared.album_list
+            , artist_list = shared.artist_list
+            , video_list = shared.video_list
+            , prepareDownloadPath = shared.prepareDownloadPath
+            , modalstate = Closed
+            }
+    in
     case getVideos params.videoid shared.video_list of
         Nothing ->
-            ( { videoid = params.videoid
-              , video = getVideos params.videoid shared.video_list
-              , album_list = shared.album_list
-              , artist_list = shared.artist_list
-              , video_list = shared.video_list
-              , prepareDownloadPath = shared.prepareDownloadPath
-              , modalstate = Closed
-              }
-            , Cmd.none
-            )
+            ( sharedobjects, Cmd.none )
 
         Just vid ->
-            ( { videoid = params.videoid
-              , video = getVideos params.videoid shared.video_list
-              , album_list = shared.album_list
-              , artist_list = shared.artist_list
-              , video_list = shared.video_list
-              , prepareDownloadPath = shared.prepareDownloadPath
-              , modalstate = Closed
-              }
-            , postRequestVideo vid.file
-            )
+            ( sharedobjects, postRequestVideo vid.file )
 
 
 getVideos : Int -> List VideoObj -> Maybe VideoObj
