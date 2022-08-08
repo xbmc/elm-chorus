@@ -55,7 +55,7 @@ type alias Model =
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
     let
-        sharedobjects =
+        initialModel =
             { videoid = params.videoid
             , video = getVideos params.videoid shared.video_list
             , album_list = shared.album_list
@@ -67,10 +67,10 @@ init shared { params } =
     in
     case getVideos params.videoid shared.video_list of
         Nothing ->
-            ( sharedobjects, Cmd.none )
+            ( initialModel, Cmd.none )
 
         Just vid ->
-            ( sharedobjects, postRequestVideo vid.file )
+            ( initialModel, postRequestVideo vid.file )
 
 
 getVideos : Int -> List VideoObj -> Maybe VideoObj
