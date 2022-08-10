@@ -4,6 +4,7 @@ import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, null
 import Json.Decode.Pipeline exposing (custom, optional, required)
 import Json.Encode as Encode
 import Method exposing (Method(..))
+import Request exposing (Property(..))
 
 
 
@@ -711,6 +712,16 @@ movieDecoder =
         |> required "dateadded" string
         |> required "rating" Decode.float
         |> custom (at [ "art", "poster" ] string)
+        |> required "director" (list string)
+        |> required "mpaa" string
+        |> required "playcount" int
+        |> required "genre" (list string)
+        |> required "runtime" int
+        |> required "cast" (list castDecoder)
+        |> required "writer" (list string)
+        |> custom streamDetailDecoder
+        |> custom (at [ "art", "fanart" ] string)
+        |> required "plot" string
 
 
 tvShowQueryDecoder : Decoder ResultResponse
@@ -739,6 +750,16 @@ type alias MovieObj =
     , dateadded : String
     , rating : Float
     , poster : String
+    , director : List String
+    , mpaa : String
+    , playcount : Int
+    , genre : List String
+    , runtime : Int
+    , cast : List CastObj
+    , writer : List String
+    , streamdetails : StreamDetailObj
+    , fanart : String
+    , plot : String
     }
 
 
@@ -749,6 +770,46 @@ type alias TvshowObj =
     , dateadded : String
     , rating : Float
     , thumbnail : String
+    }
+
+
+castDecoder : Decoder CastObj
+castDecoder =
+    Decode.succeed CastObj
+        |> required "name" string
+        |> required "role" string
+        |> optional "thumbnail" string ""
+
+
+type alias CastObj =
+    { name : String
+    , role : String
+    , thumbnail : String
+    }
+
+
+streamDetailDecoder : Decoder StreamDetailObj
+streamDetailDecoder =
+    Decode.succeed StreamDetailObj
+        |> custom (at [ "streamdetails", "audio" ] (Decode.index 0 (Decode.field "codec" Decode.string)))
+        |> custom (at [ "streamdetails", "video" ] (Decode.index 0 (Decode.field "codec" Decode.string)))
+        |> custom (at [ "streamdetails", "audio" ] (Decode.index 0 (Decode.field "language" Decode.string)))
+        |> custom (at [ "streamdetails", "audio" ] (Decode.index 0 (Decode.field "channels" Decode.int)))
+        |> custom (at [ "streamdetails", "video" ] (Decode.index 0 (Decode.field "height" Decode.int)))
+        |> custom (at [ "streamdetails", "video" ] (Decode.index 0 (Decode.field "width" Decode.int)))
+        |> custom (at [ "streamdetails", "video" ] (Decode.index 0 (Decode.field "language" Decode.string)))
+        |> custom (at [ "streamdetails", "subtitle" ] (list string))
+
+
+type alias StreamDetailObj =
+    { audio_codec : String
+    , video_codec : String
+    , audio_language : String
+    , audio_channel : Int
+    , video_height : Int
+    , video_width : Int
+    , video_language : String
+    , subtitle : List String
     }
 
 
