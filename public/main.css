@@ -338,7 +338,7 @@ h2 {
   z-index: 3;
   width: 100vw;
   height: 100vh;
-  position: absolute !important;
+  position: fixed !important;
   background-color: #000000b4;
 }
 .video-modal-body {
@@ -347,6 +347,13 @@ h2 {
   margin: 0 auto !important;
   box-shadow: 2px 2px 10px #000000;
   animation: popup 0.7s;
+}
+
+.cast-image {
+  filter: grayscale(100%);
+}
+.cast-image:hover {
+  filter: grayscale(0%);
 }
 
 @keyframes popup {
