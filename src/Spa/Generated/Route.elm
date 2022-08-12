@@ -52,6 +52,7 @@ type Route
     | Music__Artist__Artistid_Int { artistid : Int }
     | Music__Videos__Videoid_Int { videoid : Int }
     | Music__Genre__Genre_String { genre : String }
+    | Tvshows__Tvshowid_Int { tvshowid : Int }
 
 
 fromUrl : Url -> Maybe Route
@@ -119,6 +120,9 @@ routes =
         , (Parser.s "music" </> Parser.s "videos" </> Parser.int)
             |> Parser.map (\videoid -> { videoid = videoid })
             |> Parser.map Music__Videos__Videoid_Int
+        , (Parser.s "tvshows" </> Parser.int)
+            |> Parser.map (\tvshowid -> { tvshowid = tvshowid })
+            |> Parser.map Tvshows__Tvshowid_Int
         ]
 
 
@@ -256,6 +260,9 @@ toString route =
 
                 Music__Genre__Genre_String { genre } ->
                     [ "music", "genre", genre ]
+
+                Tvshows__Tvshowid_Int { tvshowid } ->
+                    [ "tvshows", String.fromInt tvshowid ]
     in
     segments
         |> String.join "/"

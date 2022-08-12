@@ -36,7 +36,7 @@ import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Translations
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SeasonObj, SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -92,6 +92,7 @@ type alias Model =
     , interfaceLocalSettings : LocalSettings
     , addonLocalSettings : LocalSettings
     , tabSwitch : SharedType.Tabs
+    , season_list : List SeasonObj
     }
 
 
@@ -291,6 +292,7 @@ init flags url key =
       , tvshow_list = []
       , source_list = []
       , file_list = []
+      , season_list = []
       , volumeSlider =
             SingleSlider.init
                 { min = 0
@@ -325,7 +327,7 @@ init flags url key =
         , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ] }, "id": 1}"""
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails","dateadded" ] }, "id": "libMusicVideos"}"""
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "properties" : ["art", "rating", "thumbnail", "playcount", "file","year","dateadded","genre","director","cast","streamdetails","mpaa","runtime","writer"] }, "id": "libMovies"}"""
-        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart","dateadded","year"] }, "id": "libTvShows"}"""
+        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart","dateadded","year","mpaa","genre","season","studio","episode","watchedepisodes","cast"] }, "id": "libTvShows"}"""
         , """{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "video" }, "id": 1 }""" --get video and music sources
         , """{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "music" }, "id": 1 }"""
         , """{"jsonrpc": "2.0", "method": "Player.SetShuffle", "params": { "playerid": 0, "shuffle": false }, "id": 1 }""" --set shuffle to false on init
@@ -630,6 +632,9 @@ update msg model =
 
                 ResultN tvshowList ->
                     ( { model | tvshow_list = tvshowList }, Cmd.none )
+
+                ResultO seasonList ->
+                    ( { model | season_list = seasonList }, Cmd.none )
 
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
