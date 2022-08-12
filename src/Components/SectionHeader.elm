@@ -1,4 +1,4 @@
-module Components.SectionHeader exposing (view, viewAlbums, viewArtists, viewMovies, viewTvShows, viewVideos)
+module Components.SectionHeader exposing (view, viewAlbums, viewArtists, viewMovies, viewSeasons, viewTvShows, viewVideos)
 
 import Colors exposing (cardHover)
 import Element as Element exposing (Attribute, Element, alignBottom, alignLeft, alignRight, alignTop, centerX, centerY, clipX, column, el, fill, fillPortion, height, image, maximum, minimum, mouseOver, padding, paddingEach, paddingXY, px, rgb, row, spacingXY, width, wrappedRow)
@@ -13,7 +13,7 @@ import Material.Icons.Types as MITypes exposing (Icon)
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (percentDecode, percentEncode)
 import Url.Builder exposing (crossOrigin)
-import WSDecoder exposing (AlbumObj, ArtistObj, ItemDetails, MovieObj, SongObj, TvshowObj, VideoObj)
+import WSDecoder exposing (AlbumObj, ArtistObj, ItemDetails, MovieObj, SeasonObj, SongObj, TvshowObj, VideoObj)
 
 
 view : String -> Maybe msg -> Bool -> List { title : String, action : Maybe msg } -> Element msg
@@ -276,12 +276,52 @@ viewTvShows buttonMsg tvshow =
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
             ]
         , Element.link [ Element.width fill, Element.height fill, alignBottom, paddingEach { left = 10, right = 0, top = 10, bottom = 10 }, Font.color Colors.black ]
-            { url = "" -- TODO : direct the link towards the individual tvshow page once the routing has been implemented
+            { url = Route.toString (Route.Tvshows__Tvshowid_Int { tvshowid = tvshow.tvshowid })
             , label =
                 column []
                     [ Element.text tvshow.label
                     , el [ paddingEach { left = 0, right = 0, top = 5, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
                         (Element.text (String.slice 0 3 (String.fromFloat tvshow.rating)))
+                    ]
+            }
+        ]
+
+
+viewSeasons : msg -> SeasonObj -> Element msg
+viewSeasons buttonMsg season =
+    column
+        [ Background.color (rgb 1 1 1)
+        , Element.htmlAttribute (Html.Attributes.class "card-parent")
+        , Element.height (fill |> maximum 310)
+        , Element.width (fill |> minimum 170 |> maximum 170)
+        , Element.htmlAttribute (Html.Attributes.style "box-shadow" "0px 0px 2px #888888")
+        ]
+        [ case season.poster of
+            "" ->
+                image [ alignTop, width fill, height fill ]
+                    { src = "/thumbnail_default.png"
+                    , description = "Default thumbnail"
+                    }
+
+            _ ->
+                image [ alignTop, width fill, height fill ]
+                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode season.poster ] []
+                    , description = "Poster"
+                    }
+        , column [ Element.htmlAttribute (Html.Attributes.class "card"), Element.height (px 255), Element.width (fill |> minimum 170 |> maximum 170), Background.color cardHover ]
+            [ row [ alignTop, alignRight, paddingXY 0 10 ]
+                [ materialButton ( Filled.check_box_outline_blank, buttonMsg ) -- TODO : checkbox to Set Watched
+                , materialButtonBig ( Filled.more_vert, buttonMsg ) -- TODO : Add Dropdown
+                ]
+            , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg )) -- TODO: make it functional once EpisodeObjs have been created
+            ]
+        , Element.link [ Element.width fill, Element.height fill, alignBottom, paddingEach { left = 10, right = 0, top = 10, bottom = 10 }, Font.color Colors.black ]
+            { url = "" --- TODO : redirect url to seasonid_int page when it gets implemented
+            , label =
+                column []
+                    [ Element.text season.label
+                    , el [ paddingEach { left = 0, right = 0, top = 5, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
+                        (Element.text (String.fromInt season.episode ++ " episodes"))
                     ]
             }
         ]

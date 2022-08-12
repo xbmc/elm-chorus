@@ -1,4 +1,4 @@
-module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, encodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
+module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SeasonObj, SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, encodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, nullable, string)
 import Json.Decode.Pipeline exposing (custom, optional, required)
@@ -190,6 +190,7 @@ type ResultResponse
     | ResultL (List SettingsObj)
     | ResultM (List VideoObj)
     | ResultN (List TvshowObj)
+    | ResultO (List SeasonObj)
 
 
 
@@ -273,6 +274,7 @@ queryDecoder =
         , settingsQueryDecoder
         , videoQueryDecoder
         , tvShowQueryDecoder
+        , seasonQueryDecoder
         ]
 
 
@@ -739,6 +741,31 @@ tvShowDecoder =
         |> required "dateadded" string
         |> required "rating" Decode.float
         |> custom (at [ "art", "poster" ] string)
+        |> required "genre" (list string)
+        |> required "mpaa" string
+        |> required "plot" string
+        |> required "season" int
+        |> required "studio" (list string)
+        |> required "episode" int
+        |> required "watchedepisodes" int
+        |> required "cast" (list castDecoder)
+        |> custom (at [ "art", "fanart" ] string)
+
+
+seasonQueryDecoder : Decoder ResultResponse
+seasonQueryDecoder =
+    Decode.succeed ResultO
+        |> custom (at [ "result", "seasons" ] (list seasonDecoder))
+
+
+seasonDecoder : Decoder SeasonObj
+seasonDecoder =
+    Decode.succeed SeasonObj
+        |> required "label" string
+        |> required "seasonid" int
+        |> required "episode" int
+        |> required "tvshowid" int
+        |> custom (at [ "art", "poster" ] string)
 
 
 type alias MovieObj =
@@ -770,6 +797,24 @@ type alias TvshowObj =
     , dateadded : String
     , rating : Float
     , thumbnail : String
+    , genre : List String
+    , mpaa : String
+    , plot : String
+    , season : Int
+    , studio : List String
+    , episode : Int
+    , watchepisode : Int
+    , cast : List CastObj
+    , fanart : String
+    }
+
+
+type alias SeasonObj =
+    { label : String
+    , seasonid : Int
+    , episode : Int
+    , tvshowid : Int
+    , poster : String
     }
 
 
