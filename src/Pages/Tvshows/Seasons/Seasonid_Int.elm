@@ -1,4 +1,4 @@
-module Pages.Tvshows.Tvshowid_Int exposing (Model, Msg, Params, page)
+module Pages.Tvshows.Seasons.Seasonid_Int exposing (Model, Msg, Params, page)
 
 import Colors exposing (black, cardHover, darkGreyIcon, greyIcon, white, whiteIcon)
 import Components.SectionHeader
@@ -9,8 +9,7 @@ import Element.Input as Input
 import Html.Attributes exposing (..)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
-import Request
-import Shared exposing (sendActions)
+import Shared
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
@@ -37,22 +36,31 @@ type Msg
 
 
 type alias Params =
-    { tvshowid : Int }
+    { tvshowid : Int, seasonid : Int }
 
 
 type alias Model =
-    { tvshowid : Int
-    , tvshow : Maybe TvshowObj
+    { season_list : List SeasonObj
+    , seasonid : Int
+    , tvshowid : Int
+    , season : Maybe SeasonObj
     , tvshow_list : List TvshowObj
-    , season_list : List SeasonObj
+    , tvshow : Maybe TvshowObj
     , episode_list : List EpisodeObj
     }
 
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared { params } =
-    ( { tvshowid = params.tvshowid, tvshow = getTvShow params.tvshowid shared.tvshow_list, tvshow_list = shared.tvshow_list, season_list = shared.season_list, episode_list = shared.episode_list }
-    , sendActions [ """{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["season","episode","tvshowid","art","watchedepisodes"]}, "id": "libSeasons"}""", """{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["tvshowid","seasonid","episode","title","art"]}, "id": "libEpisodes"}""" ]
+    ( { tvshowid = params.tvshowid
+      , tvshow = getTvShow params.tvshowid shared.tvshow_list
+      , tvshow_list = shared.tvshow_list
+      , season_list = shared.season_list
+      , seasonid = params.seasonid
+      , season = getSeason params.seasonid shared.season_list
+      , episode_list = shared.episode_list
+      }
+    , Cmd.none
     )
 
 
@@ -65,17 +73,22 @@ update msg model =
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
-    { shared | season_list = model.season_list, episode_list = model.episode_list }
+    shared
 
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( { model | season_list = shared.season_list, episode_list = shared.episode_list }, Cmd.none )
+    ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
+
+
+getSeason : Int -> List SeasonObj -> Maybe SeasonObj
+getSeason id seasonlist =
+    List.head (List.filter (\season -> id == season.seasonid) seasonlist)
 
 
 getTvShow : Int -> List TvshowObj -> Maybe TvshowObj
@@ -84,24 +97,19 @@ getTvShow id tvShowlist =
 
 
 
--- VIEWS
+-- VIEW
 
 
 view : Model -> Document Msg
 view model =
-    { title = "TvShow_Int"
+    { title = "Season_Int"
     , body =
-        [ case model.tvshow of
-            Nothing ->
-                column [ Element.height fill, Element.width fill ]
-                    [ Element.text (String.fromInt model.tvshowid)
-                    ]
-
-            Just tvshow ->
+        [ case ( model.season, model.tvshow ) of
+            ( Just season, Just tvshow ) ->
                 column [ Element.height fill, Element.width fill, Background.color Colors.sidebar ]
                     [ row [ Element.height (fillPortion 1), Element.width fill, Background.color (Element.rgba255 50 53 55 1), Element.htmlAttribute (Html.Attributes.class "card-parent"), paddingXY 20 15 ]
                         [ column [ Element.width (px 250), Element.height (px 250), Element.htmlAttribute (Html.Attributes.class "card-parent"), alignTop ]
-                            [ case tvshow.thumbnail of
+                            [ case season.poster of
                                 "" ->
                                     image [ Element.height (fill |> maximum 250), Element.width (fillPortion 2 |> maximum 240) ]
                                         { src = "/thumbnail_default.png"
@@ -110,7 +118,7 @@ view model =
 
                                 _ ->
                                     image [ Element.height (fill |> maximum 360), Element.width (fillPortion 2 |> maximum 240) ]
-                                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode tvshow.thumbnail ] []
+                                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode season.poster ] []
                                         , description = "Thumbnail"
                                         }
                             , column [ Element.htmlAttribute (Html.Attributes.class "card"), Element.height (px 360), Element.width (fill |> minimum 230 |> maximum 240), Background.color cardHover ]
@@ -130,7 +138,13 @@ view model =
                             ]
                         , column [ alignTop, Element.height fill, Element.width (fillPortion 7 |> maximum 900), paddingXY 10 35 ]
                             [ row [ alignRight, alignTop, Font.size 25, Element.htmlAttribute (Html.Attributes.style "position" "absolute") ] [ Element.text (String.slice 0 3 (String.fromFloat tvshow.rating)), Element.html (Filled.star 36 (MITypes.Color <| greyIcon)) ]
-                            , row [] [ el [ Font.color white, Font.size 30 ] (Element.text tvshow.label), el [ alignBottom, paddingXY 10 0, Font.size 15 ] (Element.text (String.fromInt tvshow.year)) ]
+                            , row []
+                                [ el [ Font.color white, Font.size 30 ] (Element.text season.label)
+                                , Element.link [ alignBottom, paddingXY 10 0, Font.size 15 ]
+                                    { url = Route.toString (Route.Tvshows__Tvshowid_Int { tvshowid = tvshow.tvshowid })
+                                    , label = Element.text tvshow.label
+                                    }
+                                ]
                             , column [ paddingEach { top = 20, left = 0, right = 0, bottom = 0 }, spacingXY 0 12, Font.size 14 ]
                                 [ row []
                                     [ el [ Font.color white ] (Element.text "Genre: ")
@@ -143,16 +157,6 @@ view model =
                                         )
                                     ]
                                 , row []
-                                    [ el [ Font.color white ] (Element.text "Studio: ")
-                                    , row []
-                                        (List.map
-                                            (\studio ->
-                                                Element.text (studio ++ " ")
-                                            )
-                                            tvshow.studio
-                                        )
-                                    ]
-                                , row []
                                     [ el [ Font.color white ] (Element.text "Cast: ")
                                     , row []
                                         (List.map
@@ -162,8 +166,18 @@ view model =
                                             (List.take 5 tvshow.cast)
                                         )
                                     ]
+                                , row []
+                                    [ el [ Font.color white ] (Element.text "Studio: ")
+                                    , row []
+                                        (List.map
+                                            (\studio ->
+                                                Element.text (studio ++ " ")
+                                            )
+                                            tvshow.studio
+                                        )
+                                    ]
                                 , row [] [ el [ Font.color white ] (Element.text "Rated: "), Element.text tvshow.mpaa ]
-                                , row [] [ el [ Font.color white ] (Element.text "Episodes: "), Element.text (String.fromInt tvshow.episode ++ " total" ++ " " ++ "(" ++ String.fromInt (tvshow.episode - tvshow.watchepisode) ++ " unwatched)") ]
+                                , row [] [ el [ Font.color white ] (Element.text "Episodes: "), Element.text (String.fromInt season.episode ++ " total" ++ " " ++ "(" ++ String.fromInt (season.episode - season.watchedepisode) ++ " unwatched)") ]
                                 , paragraph [ Element.height (fill |> minimum 105), Element.width (fill |> maximum 950), spacing 10, paddingXY 0 20 ] [ Element.text tvshow.plot ]
                                 ]
                             , row [ spacingXY 10 0 ]
@@ -179,20 +193,14 @@ view model =
                                     { onPress = Nothing -- TODO : Button to set Watched
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Set Watched"), Element.html (Filled.check_box 16 (MITypes.Color <| greyIcon)) ]
                                     }
-                                , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
-                                    { onPress = Nothing -- TODO : Add More menu dropdown
-                                    , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "More"), Element.html (Filled.more_vert 16 (MITypes.Color <| greyIcon)) ]
-                                    }
                                 ]
                             ]
                         ]
                     , column [ Element.height (fillPortion 5), Element.width fill, paddingXY 35 35, spacingXY 5 7 ]
-                        [ wrappedRow [ spacingXY 15 0 ]
+                        [ wrappedRow [ spacingXY 15 20 ]
                             (List.map
-                                (\season ->
-                                    Components.SectionHeader.viewSeasons model.tvshowid ReplaceMe season
-                                )
-                                model.season_list
+                                (\episode -> Components.SectionHeader.viewEpisode ReplaceMe episode)
+                                (List.filter (\episodes -> model.seasonid == episodes.seasonid) model.episode_list)
                             )
                         ]
                     , case tvshow.fanart of
@@ -212,5 +220,8 @@ view model =
                                     }
                                 ]
                     ]
+
+            _ ->
+                Element.text (String.fromInt model.seasonid)
         ]
     }
