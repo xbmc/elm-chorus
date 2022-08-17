@@ -285,6 +285,9 @@ h2 {
   width: 100%;
   height: auto;
 }
+.card-parent {
+  margin: 20px 0 0 20px !important;
+}
 .card-parent:hover > .card {
   opacity: 1;
   transition: opacity 0.3s;
@@ -319,10 +322,7 @@ h2 {
   position: absolute !important;
   cursor: pointer;
 }
-.image-gradient {
-  position: absolute !important;
-}
-.image-gradient > div > img {
+.image-gradient img {
   -webkit-mask-image: linear-gradient(
     90deg,
     rgba(2, 0, 36, 0) 10%,
@@ -333,6 +333,7 @@ h2 {
     rgba(0, 0, 0, 1),
     rgba(0, 0, 0, 0)
   ) !important;
+  height: 100%;
 }
 .video-modal {
   z-index: 3;
@@ -354,6 +355,22 @@ h2 {
 }
 .cast-image:hover {
   filter: grayscale(0%);
+}
+
+#description {
+  display: none;
+}
+
+#description:checked + label {
+  height: 100%;
+}
+.description-text {
+  display: block;
+  word-break: break-word;
+  white-space: normal;
+  overflow: hidden;
+  height: 22px;
+  line-height: 1.5em;
 }
 
 @keyframes popup {
