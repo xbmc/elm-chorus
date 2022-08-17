@@ -329,7 +329,7 @@ h2 {
     rgba(9, 9, 121, 1) 130%
   ) !important;
   mask-image: linear-gradient(
-    to right,
+    to left,
     rgba(0, 0, 0, 1),
     rgba(0, 0, 0, 0)
   ) !important;
@@ -371,6 +371,7 @@ h2 {
   overflow: hidden;
   height: 22px;
   line-height: 1.5em;
+  cursor: pointer;
 }
 
 @keyframes popup {
