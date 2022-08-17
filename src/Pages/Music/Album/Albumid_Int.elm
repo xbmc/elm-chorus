@@ -151,8 +151,8 @@ view model =
                     ]
 
             Just album ->
-                column [ Element.height fill, Element.width fill, Background.color Colors.sidebar ]
-                    [ row [ Element.height (fillPortion 1), Element.width fill, Background.color (Element.rgba255 50 53 55 1), Element.htmlAttribute (Html.Attributes.class "card-parent"), padding 30 ]
+                column [ Element.height fill, Element.width fill ]
+                    [ row [ Element.height (fill |> maximum 300), Element.width fill, Background.color (Element.rgba255 50 53 55 1) ]
                         [ column [ Element.width (px 250), Element.height (px 250), Element.htmlAttribute (Html.Attributes.class "card-parent") ]
                             [ case album.thumbnail of
                                 "" ->
@@ -181,7 +181,7 @@ view model =
                                     )
                                 ]
                             ]
-                        , column [ alignTop, Element.height fill, Element.width (fillPortion 7), paddingXY 10 25 ]
+                        , column [ Element.width fill, paddingXY 10 25 ]
                             [ row [] [ el [ Font.color white, Font.size 30 ] (Element.text album.label), el [ alignBottom, paddingXY 10 0, Font.size 15 ] (Element.text (String.fromInt album.year)) ]
                             , column [ paddingXY 0 35, spacingXY 0 10, Font.size 14 ]
                                 [ row []
@@ -224,8 +224,20 @@ view model =
                                     }
                                 ]
                             ]
+                        , case album.fanart of
+                            "" ->
+                                image [ Element.width fill, Element.height fill, Element.htmlAttribute (Html.Attributes.class "image-gradient") ]
+                                    { src = "/concert.jpg"
+                                    , description = "Default"
+                                    }
+
+                            _ ->
+                                image [ Element.width fill, Element.height fill, Element.htmlAttribute (Html.Attributes.class "image-gradient") ]
+                                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.fanart ] []
+                                    , description = "Fanart"
+                                    }
                         ]
-                    , column [ Element.height (fillPortion 5), Element.width fill, paddingXY 15 25, spacingXY 5 7 ]
+                    , column [ Element.height fill, Element.width fill, paddingXY 15 25, spacingXY 5 7, Background.color (Element.rgba255 245 245 245 1) ]
                         (List.map
                             (\song ->
                                 el [ Element.width (fill |> maximum 1200), paddingEach { left = 10, top = 0, right = 60, bottom = 0 } ]
@@ -255,17 +267,6 @@ view model =
                             )
                             model.song_list
                         )
-                    , case album.fanart of
-                        "" ->
-                            Element.none
-
-                        _ ->
-                            column [ Element.htmlAttribute (Html.Attributes.class "image-gradient"), alignRight, alignTop ]
-                                [ image [ Element.width (fillPortion 2 |> maximum 550) ]
-                                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.fanart ] []
-                                    , description = "Fanart"
-                                    }
-                                ]
                     ]
         ]
     }

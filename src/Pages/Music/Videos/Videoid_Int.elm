@@ -159,8 +159,8 @@ view model =
                     ]
 
             Just video ->
-                column [ Element.height fill, Element.width fill, Background.color Colors.sidebar ]
-                    [ row [ Element.height (fillPortion 1), Element.width fill, Background.color (Element.rgba255 50 53 55 1), Element.htmlAttribute (Html.Attributes.class "card-parent"), paddingXY 20 10 ]
+                column [ Element.height fill, Element.width fill ]
+                    [ row [ Element.height (fill |> maximum 300), Element.width fill, Background.color (Element.rgba255 50 53 55 1) ]
                         [ column [ Element.width (px 250), Element.height (px 250), Element.htmlAttribute (Html.Attributes.class "card-parent") ]
                             [ case video.thumbnail of
                                 "" ->
@@ -189,7 +189,7 @@ view model =
                                     )
                                 ]
                             ]
-                        , column [ alignTop, Element.height fill, Element.width (fillPortion 7), paddingXY 10 35 ]
+                        , column [ Element.height fill, Element.width fill, paddingXY 10 35 ]
                             [ el [ Font.color white, Font.size 30 ] (Element.text video.label)
                             , column [ paddingEach { top = 30, left = 0, right = 0, bottom = 0 }, spacingXY 0 12, Font.size 14 ]
                                 [ row []
@@ -237,15 +237,13 @@ view model =
                                     }
                                 ]
                             ]
-                        ]
-                    , column [ Element.height (fillPortion 5), Element.width fill, paddingXY 35 35, spacingXY 5 7 ]
-                        [ el [ Font.size 30, Font.color black ] (Element.text "Related music videos from YouTube")
-                        ]
-                    , column [ Element.htmlAttribute (Html.Attributes.class "image-gradient"), alignRight, alignTop ]
-                        [ image [ Element.width (fillPortion 2 |> maximum 540) ]
+                        , image [ Element.width fill, Element.height fill, Element.htmlAttribute (Html.Attributes.class "image-gradient") ]
                             { src = "/concert.jpg"
                             , description = "Fanart"
                             }
+                        ]
+                    , column [ Element.height fill, Element.width fill, paddingXY 35 35, spacingXY 5 7 ]
+                        [ el [ Font.size 30, Font.color black ] (Element.text "Related music videos from YouTube")
                         ]
                     , case model.modalstate of
                         Open ->

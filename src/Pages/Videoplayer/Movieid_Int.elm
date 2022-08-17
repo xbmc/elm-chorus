@@ -180,8 +180,8 @@ view model =
                     ]
 
             Just movie ->
-                column [ Element.height fill, Element.width fill, Background.color Colors.sidebar ]
-                    [ row [ Element.height (fillPortion 1), Element.width fill, Background.color (Element.rgba255 50 53 55 1), Element.htmlAttribute (Html.Attributes.class "card-parent"), paddingXY 20 15 ]
+                column [ Element.height fill, Element.width fill ]
+                    [ row [ Element.height fill, Element.width fill, Background.color (Element.rgba255 50 53 55 1), paddingXY 20 0 ]
                         [ column [ Element.width (px 250), Element.height (px 250), Element.htmlAttribute (Html.Attributes.class "card-parent"), alignTop ]
                             [ case movie.thumbnail of
                                 "" ->
@@ -210,11 +210,11 @@ view model =
                                     )
                                 ]
                             ]
-                        , column [ alignTop, Element.height fill, Element.width (fillPortion 7 |> maximum 900), paddingXY 10 35 ]
+                        , column [ alignTop, Element.height fill, Element.width fill, paddingXY 10 35 ]
                             [ row [ alignRight, alignTop, Font.size 25, Element.htmlAttribute (Html.Attributes.style "position" "absolute") ] [ Element.text (String.slice 0 3 (String.fromFloat movie.rating)), Element.html (Filled.star 36 (MITypes.Color <| greyIcon)) ]
                             , row [] [ el [ Font.color white, Font.size 30 ] (Element.text movie.label), el [ alignBottom, paddingXY 10 0, Font.size 15 ] (Element.text (String.fromInt movie.year)) ]
                             , el [ Font.size 19, paddingEach { top = 20, left = 0, right = 0, bottom = 0 } ] (movie.runtime |> durationToString |> text)
-                            , column [ paddingEach { top = 20, left = 0, right = 0, bottom = 0 }, spacingXY 0 12, Font.size 14 ]
+                            , column [ paddingEach { top = 20, left = 0, right = 0, bottom = 15 }, spacingXY 0 12, Font.size 14 ]
                                 [ row []
                                     [ el [ Font.color white ] (Element.text "Genre: ")
                                     , row []
@@ -294,8 +294,20 @@ view model =
                                     }
                                 ]
                             ]
+                        , case movie.fanart of
+                            "" ->
+                                image [ Element.width fill, Element.height fill, Element.htmlAttribute (Html.Attributes.class "image-gradient") ]
+                                    { src = "/concert.jpg"
+                                    , description = "Fanart"
+                                    }
+
+                            _ ->
+                                image [ Element.width fill, Element.height fill, Element.htmlAttribute (Html.Attributes.class "image-gradient") ]
+                                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.fanart ] []
+                                    , description = "Fanart"
+                                    }
                         ]
-                    , column [ Element.height (fillPortion 5), Element.width fill, paddingXY 35 35, spacingXY 5 7 ]
+                    , column [ Element.height fill, Element.width fill, paddingXY 35 35, spacingXY 5 7 ]
                         [ el [ Font.size 30, Font.color black ] (Element.text "Synopsis")
                         , paragraph [ Element.width (fill |> maximum 950), spacing 10, paddingXY 0 10, Font.color Colors.black ] [ Element.text movie.plot ]
                         , row [ Element.width (fill |> maximum 950), Element.height (px 200), clipX, scrollbarX, spacingXY 10 0 ]
@@ -327,22 +339,6 @@ view model =
                                 )
                             ]
                         ]
-                    , case movie.fanart of
-                        "" ->
-                            column [ Element.htmlAttribute (Html.Attributes.class "image-gradient"), alignRight, alignTop ]
-                                [ image [ Element.width (fillPortion 2 |> maximum 740) ]
-                                    { src = "/concert.jpg"
-                                    , description = "Fanart"
-                                    }
-                                ]
-
-                        _ ->
-                            column [ Element.htmlAttribute (Html.Attributes.class "image-gradient"), alignRight, alignTop ]
-                                [ image [ Element.width (fillPortion 2 |> maximum 740) ]
-                                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.fanart ] []
-                                    , description = "Fanart"
-                                    }
-                                ]
                     , case model.modalstate of
                         Open ->
                             column [ Element.htmlAttribute (Html.Attributes.class "video-modal"), Element.width fill, Element.height fill ]
