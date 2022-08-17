@@ -6,6 +6,7 @@ import Element exposing (..)
 import Element.Background as Background
 import Element.Font as Font exposing (Font)
 import Element.Input as Input
+import Html exposing (Html, div, img, input, label, p)
 import Html.Attributes exposing (..)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
@@ -97,12 +98,12 @@ view model =
                     ]
 
             Just tvshow ->
-                column [ Element.height fill, Element.width fill, Background.color Colors.sidebar ]
-                    [ row [ Element.height (fillPortion 1), Element.width fill, Background.color (Element.rgba255 50 53 55 1), Element.htmlAttribute (Html.Attributes.class "card-parent"), paddingXY 20 15 ]
+                column [ Element.height fill, Element.width fill ]
+                    [ row [ Element.height fill, Element.width fill, Background.color (Element.rgba255 50 53 51 1) ]
                         [ column [ Element.width (px 250), Element.height (px 250), Element.htmlAttribute (Html.Attributes.class "card-parent"), alignTop ]
                             [ case tvshow.thumbnail of
                                 "" ->
-                                    image [ Element.height (fill |> maximum 250), Element.width (fillPortion 2 |> maximum 240) ]
+                                    image [ Element.height (fill |> maximum 360), Element.width (fillPortion 2 |> maximum 240) ]
                                         { src = "/thumbnail_default.png"
                                         , description = "Default Thumbnail"
                                         }
@@ -163,7 +164,12 @@ view model =
                                     ]
                                 , row [] [ el [ Font.color white ] (Element.text "Rated: "), Element.text tvshow.mpaa ]
                                 , row [] [ el [ Font.color white ] (Element.text "Episodes: "), Element.text (String.fromInt tvshow.episode ++ " total" ++ " " ++ "(" ++ String.fromInt (tvshow.episode - tvshow.watchepisode) ++ " unwatched)") ]
-                                , paragraph [ Element.height (fill |> minimum 105), Element.width (fill |> maximum 950), spacing 10, paddingXY 0 20 ] [ Element.text tvshow.plot ]
+                                , Element.html
+                                    (div [ style "margin" "2em 0em" ]
+                                        [ input [ type_ "checkbox", id "description" ] []
+                                        , label [ class "description-text", for "description" ] [ Html.text tvshow.plot ]
+                                        ]
+                                    )
                                 ]
                             , row [ spacingXY 10 0 ]
                                 [ Input.button [ paddingXY 12 8, Background.color Colors.navTextHover ]
@@ -184,8 +190,20 @@ view model =
                                     }
                                 ]
                             ]
+                        , case tvshow.fanart of
+                            "" ->
+                                image [ Element.width fill, Element.height fill, Element.htmlAttribute (Html.Attributes.class "image-gradient") ]
+                                    { src = "/concert.jpg"
+                                    , description = "Default-Fanart"
+                                    }
+
+                            _ ->
+                                image [ Element.width fill, Element.height fill, Element.htmlAttribute (Html.Attributes.class "image-gradient") ]
+                                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode tvshow.fanart ] []
+                                    , description = "Fanart"
+                                    }
                         ]
-                    , column [ Element.height (fillPortion 5), Element.width fill, paddingXY 35 35, spacingXY 5 7 ]
+                    , column [ Element.height fill, Element.width fill, paddingXY 35 35, spacingXY 5 7, Background.color (Element.rgba255 245 245 245 1) ]
                         [ wrappedRow [ spacingXY 15 0 ]
                             (List.map
                                 (\season ->
@@ -194,22 +212,6 @@ view model =
                                 model.season_list
                             )
                         ]
-                    , case tvshow.fanart of
-                        "" ->
-                            column [ Element.htmlAttribute (Html.Attributes.class "image-gradient"), alignRight, alignTop ]
-                                [ image [ Element.width (fillPortion 2 |> maximum 740) ]
-                                    { src = "/concert.jpg"
-                                    , description = "Default-Fanart"
-                                    }
-                                ]
-
-                        _ ->
-                            column [ Element.htmlAttribute (Html.Attributes.class "image-gradient"), alignRight, alignTop ]
-                                [ image [ Element.width (fillPortion 2 |> maximum 740) ]
-                                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode tvshow.fanart ] []
-                                    , description = "Fanart"
-                                    }
-                                ]
                     ]
         ]
     }
