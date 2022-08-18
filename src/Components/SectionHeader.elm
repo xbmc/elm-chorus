@@ -10,6 +10,7 @@ import Helper exposing (durationToString)
 import Html.Attributes
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
+import Round
 import Spa.Generated.Route as Route exposing (Route)
 import Url exposing (percentDecode, percentEncode)
 import Url.Builder exposing (crossOrigin)
@@ -281,7 +282,7 @@ viewTvShows buttonMsg tvshow =
                 column []
                     [ Element.text tvshow.label
                     , el [ paddingEach { left = 0, right = 0, top = 5, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
-                        (Element.text (String.slice 0 3 (String.fromFloat tvshow.rating)))
+                        (Element.text (Round.round 1 tvshow.rating))
                     ]
             }
         ]

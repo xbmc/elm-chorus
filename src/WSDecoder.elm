@@ -803,7 +803,7 @@ type alias TvshowObj =
     , season : Int
     , studio : List String
     , episode : Int
-    , watchepisode : Int
+    , watchedpisode : Int
     , cast : List CastObj
     , fanart : String
     }
