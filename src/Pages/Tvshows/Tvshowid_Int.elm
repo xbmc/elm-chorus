@@ -11,6 +11,7 @@ import Html.Attributes exposing (..)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
 import Request
+import Round
 import Shared exposing (sendActions)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
@@ -129,7 +130,7 @@ view model =
                                 ]
                             ]
                         , column [ alignTop, Element.height fill, Element.width (fillPortion 7 |> maximum 900), paddingXY 10 35 ]
-                            [ row [ alignRight, alignTop, Font.size 25, Element.htmlAttribute (Html.Attributes.style "position" "absolute") ] [ Element.text (String.slice 0 3 (String.fromFloat tvshow.rating)), Element.html (Filled.star 36 (MITypes.Color <| greyIcon)) ]
+                            [ row [ alignRight, alignTop, Font.size 25, Element.htmlAttribute (Html.Attributes.style "position" "absolute") ] [ Element.text (Round.round 1 tvshow.rating), Element.html (Filled.star 36 (MITypes.Color <| greyIcon)) ]
                             , row [] [ el [ Font.color white, Font.size 30 ] (Element.text tvshow.label), el [ alignBottom, paddingXY 10 0, Font.size 15 ] (Element.text (String.fromInt tvshow.year)) ]
                             , column [ paddingEach { top = 20, left = 0, right = 0, bottom = 0 }, spacingXY 0 12, Font.size 14 ]
                                 [ row []
@@ -143,16 +144,6 @@ view model =
                                         )
                                     ]
                                 , row []
-                                    [ el [ Font.color white ] (Element.text "Studio: ")
-                                    , row []
-                                        (List.map
-                                            (\studio ->
-                                                Element.text (studio ++ " ")
-                                            )
-                                            tvshow.studio
-                                        )
-                                    ]
-                                , row []
                                     [ el [ Font.color white ] (Element.text "Cast: ")
                                     , row []
                                         (List.map
@@ -162,8 +153,18 @@ view model =
                                             (List.take 5 tvshow.cast)
                                         )
                                     ]
+                                , row []
+                                    [ el [ Font.color white ] (Element.text "Studio: ")
+                                    , row []
+                                        (List.map
+                                            (\studio ->
+                                                Element.text (studio ++ " ")
+                                            )
+                                            tvshow.studio
+                                        )
+                                    ]
                                 , row [] [ el [ Font.color white ] (Element.text "Rated: "), Element.text tvshow.mpaa ]
-                                , row [] [ el [ Font.color white ] (Element.text "Episodes: "), Element.text (String.fromInt tvshow.episode ++ " total" ++ " " ++ "(" ++ String.fromInt (tvshow.episode - tvshow.watchepisode) ++ " unwatched)") ]
+                                , row [] [ el [ Font.color white ] (Element.text "Episodes: "), Element.text (String.fromInt tvshow.episode ++ " total" ++ " " ++ "(" ++ String.fromInt (tvshow.episode - tvshow.watchedpisode) ++ " unwatched)") ]
                                 , Element.html
                                     (div [ style "margin" "2em 0em" ]
                                         [ input [ type_ "checkbox", id "description" ] []
