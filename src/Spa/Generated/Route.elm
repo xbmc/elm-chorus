@@ -8,6 +8,10 @@ import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), Parser)
 
 
+type alias Season =
+    { tvshowid : Int, seasonid : Int }
+
+
 type Route
     = Top
     | Addons
@@ -53,6 +57,7 @@ type Route
     | Music__Videos__Videoid_Int { videoid : Int }
     | Music__Genre__Genre_String { genre : String }
     | Tvshows__Tvshowid_Int { tvshowid : Int }
+    | Tvshows__Seasons__Seasonid_Int { tvshowid : Int, seasonid : Int }
 
 
 fromUrl : Url -> Maybe Route
@@ -123,6 +128,9 @@ routes =
         , (Parser.s "tvshows" </> Parser.int)
             |> Parser.map (\tvshowid -> { tvshowid = tvshowid })
             |> Parser.map Tvshows__Tvshowid_Int
+        , (Parser.s "tvshows" </> Parser.int </> Parser.int)
+            |> Parser.map Season
+            |> Parser.map Tvshows__Seasons__Seasonid_Int
         ]
 
 
@@ -263,6 +271,9 @@ toString route =
 
                 Tvshows__Tvshowid_Int { tvshowid } ->
                     [ "tvshows", String.fromInt tvshowid ]
+
+                Tvshows__Seasons__Seasonid_Int { tvshowid, seasonid } ->
+                    [ "tvshows", String.fromInt tvshowid, String.fromInt seasonid ]
     in
     segments
         |> String.join "/"

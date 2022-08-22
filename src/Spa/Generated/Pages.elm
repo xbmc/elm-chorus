@@ -51,6 +51,7 @@ import Pages.Thumbsup
 import Pages.Top
 import Pages.Tvshows
 import Pages.Tvshows.Recent
+import Pages.Tvshows.Seasons.Seasonid_Int
 import Pages.Tvshows.Tvshowid_Int
 import Pages.Videoplayer.Movieid_Int
 import Shared
@@ -109,6 +110,7 @@ type Model
     | Music__Videos__Videoid_Int__Model Pages.Music.Videos.Videoid_Int.Model
     | Music__Genre__Genre_String__Model Pages.Music.Genre.Genre_String.Model
     | Tvshows__Tvshowid_Int__Model Pages.Tvshows.Tvshowid_Int.Model
+    | Tvshows__Seasons__Seasonid_Int__Model Pages.Tvshows.Seasons.Seasonid_Int.Model
 
 
 type Msg
@@ -156,6 +158,7 @@ type Msg
     | Music__Videos__Videoid_Int__Msg Pages.Music.Videos.Videoid_Int.Msg
     | Music__Genre__Genre_String__Msg Pages.Music.Genre.Genre_String.Msg
     | Tvshows__Tvshowid_Int__Msg Pages.Tvshows.Tvshowid_Int.Msg
+    | Tvshows__Seasons__Seasonid_Int__Msg Pages.Tvshows.Seasons.Seasonid_Int.Msg
 
 
 
@@ -297,6 +300,9 @@ init route =
         Route.Tvshows__Tvshowid_Int params ->
             pages.tvshows__tvshowid_int.init params
 
+        Route.Tvshows__Seasons__Seasonid_Int params ->
+            pages.tvshows__seasons__seasonid_int.init params
+
 
 
 -- UPDATE
@@ -436,6 +442,9 @@ update bigMsg bigModel =
 
         ( Tvshows__Tvshowid_Int__Msg msg, Tvshows__Tvshowid_Int__Model model ) ->
             pages.tvshows__tvshowid_int.update msg model
+
+        ( Tvshows__Seasons__Seasonid_Int__Msg msg, Tvshows__Seasons__Seasonid_Int__Model model ) ->
+            pages.tvshows__seasons__seasonid_int.update msg model
 
         _ ->
             ( bigModel, Cmd.none )
@@ -580,6 +589,9 @@ bundle bigModel =
         Tvshows__Tvshowid_Int__Model model ->
             pages.tvshows__tvshowid_int.bundle model
 
+        Tvshows__Seasons__Seasonid_Int__Model model ->
+            pages.tvshows__seasons__seasonid_int.bundle model
+
 
 view : Model -> Document Msg
 view model =
@@ -690,6 +702,7 @@ pages :
     , music__videos__videoid_int : Upgraded Pages.Music.Videos.Videoid_Int.Params Pages.Music.Videos.Videoid_Int.Model Pages.Music.Videos.Videoid_Int.Msg
     , music__genre__genre_string : Upgraded Pages.Music.Genre.Genre_String.Params Pages.Music.Genre.Genre_String.Model Pages.Music.Genre.Genre_String.Msg
     , tvshows__tvshowid_int : Upgraded Pages.Tvshows.Tvshowid_Int.Params Pages.Tvshows.Tvshowid_Int.Model Pages.Tvshows.Tvshowid_Int.Msg
+    , tvshows__seasons__seasonid_int : Upgraded Pages.Tvshows.Seasons.Seasonid_Int.Params Pages.Tvshows.Seasons.Seasonid_Int.Model Pages.Tvshows.Seasons.Seasonid_Int.Msg
     }
 pages =
     { top = Pages.Top.page |> upgrade Top__Model Top__Msg
@@ -736,4 +749,5 @@ pages =
     , music__videos__videoid_int = Pages.Music.Videos.Videoid_Int.page |> upgrade Music__Videos__Videoid_Int__Model Music__Videos__Videoid_Int__Msg
     , music__genre__genre_string = Pages.Music.Genre.Genre_String.page |> upgrade Music__Genre__Genre_String__Model Music__Genre__Genre_String__Msg
     , tvshows__tvshowid_int = Pages.Tvshows.Tvshowid_Int.page |> upgrade Tvshows__Tvshowid_Int__Model Tvshows__Tvshowid_Int__Msg
+    , tvshows__seasons__seasonid_int = Pages.Tvshows.Seasons.Seasonid_Int.page |> upgrade Tvshows__Seasons__Seasonid_Int__Model Tvshows__Seasons__Seasonid_Int__Msg
     }

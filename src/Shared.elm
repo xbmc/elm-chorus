@@ -36,7 +36,7 @@ import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Translations
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SeasonObj, SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), EpisodeObj, FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SeasonObj, SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -93,6 +93,7 @@ type alias Model =
     , addonLocalSettings : LocalSettings
     , tabSwitch : SharedType.Tabs
     , season_list : List SeasonObj
+    , episode_list : List EpisodeObj
     }
 
 
@@ -293,6 +294,7 @@ init flags url key =
       , source_list = []
       , file_list = []
       , season_list = []
+      , episode_list = []
       , volumeSlider =
             SingleSlider.init
                 { min = 0
@@ -635,6 +637,9 @@ update msg model =
 
                 ResultO seasonList ->
                     ( { model | season_list = seasonList }, Cmd.none )
+
+                ResultP episodeList ->
+                    ( { model | episode_list = episodeList }, Cmd.none )
 
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
