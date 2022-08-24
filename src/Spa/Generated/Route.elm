@@ -12,6 +12,10 @@ type alias Season =
     { tvshowid : Int, season_no : Int }
 
 
+type alias Episode =
+    { tvshowid : Int, season_no : Int, episodeid : Int }
+
+
 type Route
     = Top
     | Addons
@@ -58,6 +62,7 @@ type Route
     | Music__Genre__Genre_String { genre : String }
     | Tvshows__Tvshowid_Int { tvshowid : Int }
     | Tvshows__Seasons__Seasonid_Int { tvshowid : Int, season_no : Int }
+    | Tvshows__Seasons__Episodes__Episodeid_Int { tvshowid : Int, season_no : Int, episodeid : Int }
 
 
 fromUrl : Url -> Maybe Route
@@ -131,6 +136,9 @@ routes =
         , (Parser.s "tvshows" </> Parser.int </> Parser.int)
             |> Parser.map Season
             |> Parser.map Tvshows__Seasons__Seasonid_Int
+        , (Parser.s "tvshows" </> Parser.int </> Parser.int </> Parser.int)
+            |> Parser.map Episode
+            |> Parser.map Tvshows__Seasons__Episodes__Episodeid_Int
         ]
 
 
@@ -274,6 +282,9 @@ toString route =
 
                 Tvshows__Seasons__Seasonid_Int { tvshowid, season_no } ->
                     [ "tvshows", String.fromInt tvshowid, String.fromInt season_no ]
+
+                Tvshows__Seasons__Episodes__Episodeid_Int { tvshowid, season_no, episodeid } ->
+                    [ "tvshows", String.fromInt tvshowid, String.fromInt season_no, String.fromInt episodeid ]
     in
     segments
         |> String.join "/"

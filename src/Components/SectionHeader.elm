@@ -328,8 +328,8 @@ viewSeasons tvshowid buttonMsg season =
         ]
 
 
-viewEpisode : msg -> EpisodeObj -> Element msg
-viewEpisode buttonMsg episode =
+viewEpisode : Int -> Int -> msg -> EpisodeObj -> Element msg
+viewEpisode tvshowid season_no buttonMsg episode =
     column
         [ Background.color (rgb 1 1 1)
         , Element.height (fill |> minimum 140 |> maximum 190)
@@ -358,7 +358,7 @@ viewEpisode buttonMsg episode =
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
             ]
         , Element.link [ Element.width fill, Element.height fill, alignBottom, paddingEach { left = 10, right = 0, top = 10, bottom = 10 }, Font.color Colors.black ]
-            { url = "" -- TODO : redirect this link to episodeid_int page when it gets implemented
+            { url = Route.toString (Route.Tvshows__Seasons__Episodes__Episodeid_Int { tvshowid = tvshowid, season_no = season_no, episodeid = episode.episodeid })
             , label =
                 column [ spacingXY 0 10 ]
                     [ Element.text episode.title

@@ -10,7 +10,7 @@ import Html exposing (Html, div, img, input, label, p)
 import Html.Attributes exposing (..)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
-import Shared
+import Shared exposing (sendActions)
 import Spa.Document exposing (Document)
 import Spa.Generated.Route as Route exposing (Route)
 import Spa.Page as Page exposing (Page)
@@ -34,6 +34,9 @@ page =
 
 type Msg
     = ReplaceMe
+    | PlayMsg
+    | SetCurrentlyPlaying EpisodeObj
+    | QueueMsg
 
 
 type alias Params =
@@ -70,6 +73,33 @@ update msg model =
     case msg of
         ReplaceMe ->
             ( model, Cmd.none )
+
+        PlayMsg ->
+            let
+                add_episode =
+                    List.map (\episode -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"episodeid": """ ++ String.fromInt episode.episodeid ++ """}}}""") (List.filter (\episodes -> model.season_no == episodes.season) model.episode_list)
+
+                output =
+                    [ """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""" ]
+                        ++ add_episode
+                        ++ [ """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""" ]
+            in
+            ( model, sendActions output )
+
+        SetCurrentlyPlaying episode ->
+            ( model
+            , sendActions
+                [ {- clear the queue -} """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}"""
+                , {- add the next episode -} """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"episodeid": """ ++ String.fromInt episode.episodeid ++ """}}}"""
+                , {- play -} """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}"""
+                ]
+            )
+
+        QueueMsg ->
+            ( model
+            , sendActions
+                (List.map (\episode -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"episodeid": """ ++ String.fromInt episode.episodeid ++ """}}}""") (List.filter (\episodes -> model.season_no == episodes.season) model.episode_list))
+            )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -131,7 +161,7 @@ view model =
                                     ]
                                 , el [ htmlAttribute (Html.Attributes.style "margin" "auto"), paddingEach { top = 0, left = 0, right = 0, bottom = 50 } ]
                                     (Input.button []
-                                        { onPress = Nothing
+                                        { onPress = Just PlayMsg
                                         , label = Element.html (Filled.play_arrow 45 (MITypes.Color <| Colors.whiteIcon))
                                         }
                                     )
@@ -188,11 +218,11 @@ view model =
                                 ]
                             , row [ spacingXY 10 0 ]
                                 [ Input.button [ paddingXY 12 8, Background.color Colors.navTextHover ]
-                                    { onPress = Nothing -- TODO : make it functional once EpisodeObj have been created
+                                    { onPress = Just PlayMsg
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Play"), Element.html (Filled.play_circle_filled 16 (MITypes.Color <| whiteIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
-                                    { onPress = Nothing -- TODO : make it functional once EpisodeObj have been created
+                                    { onPress = Just QueueMsg
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Queue"), Element.html (Filled.add_circle 16 (MITypes.Color <| greyIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
@@ -217,7 +247,7 @@ view model =
                     , column [ Element.height fill, Element.width fill, paddingXY 35 35, spacingXY 5 7, Background.color (Element.rgba255 245 245 245 1) ]
                         [ wrappedRow [ spacingXY 15 20 ]
                             (List.map
-                                (\episode -> Components.SectionHeader.viewEpisode ReplaceMe episode)
+                                (\episode -> Components.SectionHeader.viewEpisode model.tvshowid model.season_no (SetCurrentlyPlaying episode) episode)
                                 (List.filter (\episodes -> model.season_no == episodes.season) model.episode_list)
                             )
                         ]
