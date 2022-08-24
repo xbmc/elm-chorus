@@ -769,6 +769,7 @@ seasonDecoder =
         |> required "tvshowid" int
         |> custom (at [ "art", "poster" ] string)
         |> required "watchedepisodes" int
+        |> required "season" int
 
 
 type alias MovieObj =
@@ -818,7 +819,8 @@ type alias SeasonObj =
     , episode : Int
     , tvshowid : Int
     , poster : String
-    , watchedepisode : Int
+    , watchedepisodes : Int
+    , season : Int
     }
 
 
@@ -837,6 +839,7 @@ episodeDecoder =
         |> required "tvshowid" int
         |> custom (at [ "art", "thumb" ] string)
         |> required "title" string
+        |> required "season" int
 
 
 type alias EpisodeObj =
@@ -846,6 +849,7 @@ type alias EpisodeObj =
     , tvshowid : Int
     , poster : String
     , title : String
+    , season : Int
     }
 
 

@@ -9,7 +9,7 @@ import Url.Parser as Parser exposing ((</>), Parser)
 
 
 type alias Season =
-    { tvshowid : Int, seasonid : Int }
+    { tvshowid : Int, season_no : Int }
 
 
 type Route
@@ -57,7 +57,7 @@ type Route
     | Music__Videos__Videoid_Int { videoid : Int }
     | Music__Genre__Genre_String { genre : String }
     | Tvshows__Tvshowid_Int { tvshowid : Int }
-    | Tvshows__Seasons__Seasonid_Int { tvshowid : Int, seasonid : Int }
+    | Tvshows__Seasons__Seasonid_Int { tvshowid : Int, season_no : Int }
 
 
 fromUrl : Url -> Maybe Route
@@ -272,8 +272,8 @@ toString route =
                 Tvshows__Tvshowid_Int { tvshowid } ->
                     [ "tvshows", String.fromInt tvshowid ]
 
-                Tvshows__Seasons__Seasonid_Int { tvshowid, seasonid } ->
-                    [ "tvshows", String.fromInt tvshowid, String.fromInt seasonid ]
+                Tvshows__Seasons__Seasonid_Int { tvshowid, season_no } ->
+                    [ "tvshows", String.fromInt tvshowid, String.fromInt season_no ]
     in
     segments
         |> String.join "/"

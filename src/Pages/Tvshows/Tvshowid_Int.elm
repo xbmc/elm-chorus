@@ -56,7 +56,7 @@ init shared { params } =
     ( { tvshowid = params.tvshowid, tvshow = getTvShow params.tvshowid shared.tvshow_list, tvshow_list = shared.tvshow_list, season_list = shared.season_list, episode_list = shared.episode_list }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["season","episode","tvshowid","art","watchedepisodes"]}, "id": "libSeasons"}"""
-        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["tvshowid","seasonid","episode","title","art"]}, "id": "libEpisodes"}"""
+        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["tvshowid","seasonid","episode","title","art","season"]}, "id": "libEpisodes"}"""
         ]
     )
 
