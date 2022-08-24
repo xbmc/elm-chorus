@@ -36,7 +36,8 @@ page =
 
 type Msg
     = PlayMsg
-    | SetCurretnlyPlaying SeasonObj
+    | SetCurrentlyPlaying SeasonObj
+    | QueueMsg
 
 
 type alias Params =
@@ -77,7 +78,7 @@ update msg model =
             in
             ( model, sendActions output )
 
-        SetCurretnlyPlaying season ->
+        SetCurrentlyPlaying season ->
             let
                 add_episode =
                     List.map (\episode -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"episodeid": """ ++ String.fromInt episode.episodeid ++ """}}}""") (List.filter (\episodes -> season.seasonid == episodes.seasonid) model.episode_list)
@@ -88,6 +89,9 @@ update msg model =
                         ++ [ """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""" ]
             in
             ( model, sendActions output )
+
+        QueueMsg ->
+            ( model, sendActions (List.map (\episode -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"episodeid": """ ++ String.fromInt episode.episodeid ++ """}}}""") model.episode_list) )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -204,7 +208,7 @@ view model =
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Play"), Element.html (Filled.play_circle_filled 16 (MITypes.Color <| whiteIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
-                                    { onPress = Nothing -- TODO : make it functional once EpisodeObj have been created
+                                    { onPress = Just QueueMsg
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Queue"), Element.html (Filled.add_circle 16 (MITypes.Color <| greyIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
@@ -234,7 +238,7 @@ view model =
                         [ wrappedRow [ spacingXY 15 0 ]
                             (List.map
                                 (\season ->
-                                    Components.SectionHeader.viewSeasons model.tvshowid (SetCurretnlyPlaying season) season
+                                    Components.SectionHeader.viewSeasons model.tvshowid (SetCurrentlyPlaying season) season
                                 )
                                 model.season_list
                             )
