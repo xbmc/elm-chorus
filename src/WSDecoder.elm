@@ -834,22 +834,44 @@ episodeDecoder : Decoder EpisodeObj
 episodeDecoder =
     Decode.succeed EpisodeObj
         |> required "label" string
+        |> required "episodeid" int
         |> required "episode" int
         |> required "seasonid" int
         |> required "tvshowid" int
         |> custom (at [ "art", "thumb" ] string)
         |> required "title" string
         |> required "season" int
+        |> required "file" string
+        |> custom (at [ "art", "tvshow.fanart" ] string)
+        |> required "director" (list string)
+        |> required "writer" (list string)
+        |> required "cast" (list castDecoder)
+        |> custom streamDetailDecoder
+        |> required "plot" string
+        |> required "rating" Decode.float
+        |> required "runtime" int
+        |> required "firstaired" string
 
 
 type alias EpisodeObj =
     { label : String
+    , episodeid : Int
     , episode : Int
     , seasonid : Int
     , tvshowid : Int
     , poster : String
     , title : String
     , season : Int
+    , file : String
+    , season_poster : String
+    , director : List String
+    , writer : List String
+    , cast : List CastObj
+    , streamdetails : StreamDetailObj
+    , plot : String
+    , rating : Float
+    , runtime : Int
+    , firstaired : String
     }
 
 

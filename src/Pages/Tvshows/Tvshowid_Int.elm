@@ -35,7 +35,8 @@ page =
 
 
 type Msg
-    = ReplaceMe
+    = PlayMsg
+    | SetCurretnlyPlaying SeasonObj
 
 
 type alias Params =
@@ -56,7 +57,7 @@ init shared { params } =
     ( { tvshowid = params.tvshowid, tvshow = getTvShow params.tvshowid shared.tvshow_list, tvshow_list = shared.tvshow_list, season_list = shared.season_list, episode_list = shared.episode_list }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["season","episode","tvshowid","art","watchedepisodes"]}, "id": "libSeasons"}"""
-        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["tvshowid","seasonid","episode","title","art","season"]}, "id": "libEpisodes"}"""
+        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["tvshowid","seasonid","episode","title","art","season","file","firstaired","director","writer","cast","streamdetails","plot","rating","runtime"]}, "id": "libEpisodes"}"""
         ]
     )
 
@@ -64,8 +65,29 @@ init shared { params } =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ReplaceMe ->
-            ( model, Cmd.none )
+        PlayMsg ->
+            let
+                add_episode =
+                    List.map (\episode -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"episodeid": """ ++ String.fromInt episode.episodeid ++ """}}}""") model.episode_list
+
+                output =
+                    [ """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""" ]
+                        ++ add_episode
+                        ++ [ """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""" ]
+            in
+            ( model, sendActions output )
+
+        SetCurretnlyPlaying season ->
+            let
+                add_episode =
+                    List.map (\episode -> """{"jsonrpc": "2.0", "id": 1, "method": "Playlist.Add", "params": {"playlistid": 0, "item": {"episodeid": """ ++ String.fromInt episode.episodeid ++ """}}}""") (List.filter (\episodes -> season.seasonid == episodes.seasonid) model.episode_list)
+
+                output =
+                    [ """{"jsonrpc": "2.0", "id": 0, "method": "Playlist.Clear", "params": {"playlistid": 0}}""" ]
+                        ++ add_episode
+                        ++ [ """{"jsonrpc": "2.0", "id": 0, "method": "Player.Open", "params": {"item": {"playlistid": 0}}}""" ]
+            in
+            ( model, sendActions output )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -127,7 +149,7 @@ view model =
                                     ]
                                 , el [ htmlAttribute (Html.Attributes.style "margin" "auto"), paddingEach { top = 0, left = 0, right = 0, bottom = 50 } ]
                                     (Input.button []
-                                        { onPress = Nothing
+                                        { onPress = Just PlayMsg
                                         , label = Element.html (Filled.play_arrow 45 (MITypes.Color <| Colors.whiteIcon))
                                         }
                                     )
@@ -178,7 +200,7 @@ view model =
                                 ]
                             , row [ spacingXY 10 0 ]
                                 [ Input.button [ paddingXY 12 8, Background.color Colors.navTextHover ]
-                                    { onPress = Nothing -- TODO : make it functional once EpisodeObj have been created
+                                    { onPress = Just PlayMsg
                                     , label = row [] [ el [ Font.color white, paddingEach { top = 0, left = 0, right = 10, bottom = 0 } ] (Element.text "Play"), Element.html (Filled.play_circle_filled 16 (MITypes.Color <| whiteIcon)) ]
                                     }
                                 , Input.button [ paddingXY 12 8, Background.color (Element.rgba255 71 74 75 1) ]
@@ -212,7 +234,7 @@ view model =
                         [ wrappedRow [ spacingXY 15 0 ]
                             (List.map
                                 (\season ->
-                                    Components.SectionHeader.viewSeasons model.tvshowid ReplaceMe season
+                                    Components.SectionHeader.viewSeasons model.tvshowid (SetCurretnlyPlaying season) season
                                 )
                                 model.season_list
                             )
