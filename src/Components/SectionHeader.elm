@@ -317,7 +317,7 @@ viewSeasons tvshowid buttonMsg season =
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg )) -- TODO: make it functional once EpisodeObjs have been created
             ]
         , Element.link [ Element.width fill, Element.height fill, alignBottom, paddingEach { left = 10, right = 0, top = 10, bottom = 10 }, Font.color Colors.black ]
-            { url = Route.toString (Route.Tvshows__Seasons__Seasonid_Int { tvshowid = tvshowid, seasonid = season.seasonid })
+            { url = Route.toString (Route.Tvshows__Seasons__Seasonid_Int { tvshowid = tvshowid, season_no = season.season })
             , label =
                 column []
                     [ Element.text season.label

@@ -37,12 +37,12 @@ type Msg
 
 
 type alias Params =
-    { tvshowid : Int, seasonid : Int }
+    { tvshowid : Int, season_no : Int }
 
 
 type alias Model =
     { season_list : List SeasonObj
-    , seasonid : Int
+    , season_no : Int
     , tvshowid : Int
     , season : Maybe SeasonObj
     , tvshow_list : List TvshowObj
@@ -57,8 +57,8 @@ init shared { params } =
       , tvshow = getTvShow params.tvshowid shared.tvshow_list
       , tvshow_list = shared.tvshow_list
       , season_list = shared.season_list
-      , seasonid = params.seasonid
-      , season = getSeason params.seasonid shared.season_list
+      , season_no = params.season_no
+      , season = getSeason params.season_no shared.season_list
       , episode_list = shared.episode_list
       }
     , Cmd.none
@@ -89,7 +89,7 @@ subscriptions model =
 
 getSeason : Int -> List SeasonObj -> Maybe SeasonObj
 getSeason id seasonlist =
-    List.head (List.filter (\season -> id == season.seasonid) seasonlist)
+    List.head (List.filter (\season -> id == season.season) seasonlist)
 
 
 getTvShow : Int -> List TvshowObj -> Maybe TvshowObj
@@ -178,7 +178,7 @@ view model =
                                         )
                                     ]
                                 , row [] [ el [ Font.color white ] (Element.text "Rated: "), Element.text tvshow.mpaa ]
-                                , row [] [ el [ Font.color white ] (Element.text "Episodes: "), Element.text (String.fromInt season.episode ++ " total" ++ " " ++ "(" ++ String.fromInt (season.episode - season.watchedepisode) ++ " unwatched)") ]
+                                , row [] [ el [ Font.color white ] (Element.text "Episodes: "), Element.text (String.fromInt season.episode ++ " total" ++ " " ++ "(" ++ String.fromInt (season.episode - season.watchedepisodes) ++ " unwatched)") ]
                                 , Element.html
                                     (div [ style "margin" "2em 0em" ]
                                         [ input [ type_ "checkbox", id "description" ] []
@@ -218,12 +218,12 @@ view model =
                         [ wrappedRow [ spacingXY 15 20 ]
                             (List.map
                                 (\episode -> Components.SectionHeader.viewEpisode ReplaceMe episode)
-                                (List.filter (\episodes -> model.seasonid == episodes.seasonid) model.episode_list)
+                                (List.filter (\episodes -> model.season_no == episodes.season) model.episode_list)
                             )
                         ]
                     ]
 
             _ ->
-                Element.text (String.fromInt model.seasonid)
+                Element.text (String.fromInt model.season_no)
         ]
     }
