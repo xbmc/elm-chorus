@@ -904,6 +904,11 @@ type alias StreamVideo =
     }
 
 
+type alias StreamSubtitle =
+    { language : String
+    }
+
+
 decodeAudio =
     Decode.succeed StreamAudio
         |> required "channels" Decode.int
@@ -918,22 +923,23 @@ decodeVideo =
         |> required "width" Decode.int
 
 
+decodeSubtitle =
+    Decode.succeed StreamSubtitle
+        |> required "language" Decode.string
+
+
 streamDetailDecoder : Decoder StreamDetailObj
 streamDetailDecoder =
     Decode.succeed StreamDetailObj
         |> custom (at [ "streamdetails", "audio" ] (Decode.list decodeAudio))
         |> custom (at [ "streamdetails", "video" ] (Decode.list decodeVideo))
-
-
-
--- |> custom (at [ "streamdetails", "subtitle" ] (list string))
+        |> custom (at [ "streamdetails", "subtitle" ] (Decode.list decodeSubtitle))
 
 
 type alias StreamDetailObj =
     { audio : List StreamAudio
     , video : List StreamVideo
-
-    -- subtitle : List String
+    , subtitle : List StreamSubtitle
     }
 
 
