@@ -890,28 +890,50 @@ type alias CastObj =
     }
 
 
+type alias StreamAudio =
+    { channel : Int
+    , codec : String
+    , language : String
+    }
+
+
+type alias StreamVideo =
+    { codec : String
+    , height : Int
+    , width : Int
+    }
+
+
+decodeAudio =
+    Decode.succeed StreamAudio
+        |> required "channels" Decode.int
+        |> required "codec" Decode.string
+        |> required "language" Decode.string
+
+
+decodeVideo =
+    Decode.succeed StreamVideo
+        |> required "codec" Decode.string
+        |> required "height" Decode.int
+        |> required "width" Decode.int
+
+
 streamDetailDecoder : Decoder StreamDetailObj
 streamDetailDecoder =
     Decode.succeed StreamDetailObj
-        |> custom (at [ "streamdetails", "audio" ] (Decode.index 0 (Decode.field "codec" Decode.string)))
-        |> custom (at [ "streamdetails", "video" ] (Decode.index 0 (Decode.field "codec" Decode.string)))
-        |> custom (at [ "streamdetails", "audio" ] (Decode.index 0 (Decode.field "language" Decode.string)))
-        |> custom (at [ "streamdetails", "audio" ] (Decode.index 0 (Decode.field "channels" Decode.int)))
-        |> custom (at [ "streamdetails", "video" ] (Decode.index 0 (Decode.field "height" Decode.int)))
-        |> custom (at [ "streamdetails", "video" ] (Decode.index 0 (Decode.field "width" Decode.int)))
-        |> custom (at [ "streamdetails", "video" ] (Decode.index 0 (Decode.field "language" Decode.string)))
-        |> custom (at [ "streamdetails", "subtitle" ] (list string))
+        |> custom (at [ "streamdetails", "audio" ] (Decode.list decodeAudio))
+        |> custom (at [ "streamdetails", "video" ] (Decode.list decodeVideo))
+
+
+
+-- |> custom (at [ "streamdetails", "subtitle" ] (list string))
 
 
 type alias StreamDetailObj =
-    { audio_codec : String
-    , video_codec : String
-    , audio_language : String
-    , audio_channel : Int
-    , video_height : Int
-    , video_width : Int
-    , video_language : String
-    , subtitle : List String
+    { audio : List StreamAudio
+    , video : List StreamVideo
+
+    -- subtitle : List String
     }
 
 
