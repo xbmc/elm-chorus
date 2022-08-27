@@ -258,18 +258,40 @@ view model =
                                 , row [] [ el [ Font.color white ] (Element.text "Rated: "), Element.text movie.mpaa ]
                                 ]
                             , column [ paddingXY 0 20, spacingXY 0 10 ]
-                                [ row [ spacingXY 5 0 ]
-                                    [ el [ Font.color white ] (Element.text "Video:")
-                                    , Element.text (String.toUpper movie.streamdetails.video_codec)
-                                    , Element.text (String.toUpper (String.fromInt movie.streamdetails.video_height ++ "P"))
-                                    , Element.text (String.toUpper ("(" ++ String.fromInt movie.streamdetails.video_width ++ " X " ++ String.fromInt movie.streamdetails.video_height ++ ")"))
-                                    ]
-                                , row [ paddingXY 0 0, spacingXY 5 0 ]
-                                    [ el [ Font.color white ] (Element.text "Audio:")
-                                    , Element.text (String.toUpper movie.streamdetails.audio_codec)
-                                    , Element.text (String.toUpper (String.fromInt movie.streamdetails.audio_channel))
-                                    , Element.text (String.toUpper ("(" ++ movie.streamdetails.audio_language ++ ")"))
-                                    ]
+                                [ case List.isEmpty movie.streamdetails.video of
+                                    False ->
+                                        row []
+                                            (List.map
+                                                (\details ->
+                                                    row [ spacingXY 5 0 ]
+                                                        [ el [ Font.color white ] (Element.text "Video:")
+                                                        , Element.text (String.toUpper details.codec)
+                                                        , Element.text (String.toUpper (String.fromInt details.height ++ "P"))
+                                                        , Element.text (String.toUpper ("(" ++ String.fromInt details.width ++ " X " ++ String.fromInt details.height ++ ")"))
+                                                        ]
+                                                )
+                                                movie.streamdetails.video
+                                            )
+
+                                    True ->
+                                        Element.none
+                                , case List.isEmpty movie.streamdetails.video of
+                                    False ->
+                                        row []
+                                            (List.map
+                                                (\details ->
+                                                    row [ paddingXY 0 0, spacingXY 5 0 ]
+                                                        [ el [ Font.color white ] (Element.text "Audio:")
+                                                        , Element.text (String.toUpper details.codec)
+                                                        , Element.text (String.toUpper (String.fromInt details.channel))
+                                                        , Element.text (String.toUpper ("(" ++ details.language ++ ")"))
+                                                        ]
+                                                )
+                                                movie.streamdetails.audio
+                                            )
+
+                                    True ->
+                                        Element.none
                                 ]
                             , row [ spacingXY 10 0 ]
                                 [ Input.button [ paddingXY 12 8, Background.color Colors.navTextHover ]
