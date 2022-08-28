@@ -880,12 +880,14 @@ castDecoder =
     Decode.succeed CastObj
         |> required "name" string
         |> required "role" string
+        |> optional "order" (nullable int) Nothing
         |> optional "thumbnail" string ""
 
 
 type alias CastObj =
     { name : String
     , role : String
+    , order : Maybe Int
     , thumbnail : String
     }
 
