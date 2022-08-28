@@ -141,15 +141,15 @@ view model =
                     [ row [ Element.height fill, Element.width fill, Background.color (Element.rgba255 50 53 55 1) ]
                         [ column [ Element.width (px 250), Element.height (px 250), Element.htmlAttribute (Html.Attributes.class "card-parent"), alignTop ]
                             [ case season.poster of
-                                "" ->
+                                Nothing ->
                                     image [ Element.height (fill |> maximum 250), Element.width (fillPortion 2 |> maximum 240) ]
                                         { src = "/thumbnail_default.png"
                                         , description = "Default Thumbnail"
                                         }
 
-                                _ ->
+                                Just poster ->
                                     image [ Element.height (fill |> maximum 360), Element.width (fillPortion 2 |> maximum 240) ]
-                                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode season.poster ] []
+                                        { src = crossOrigin "http://localhost:8080" [ "image", percentEncode poster ] []
                                         , description = "Thumbnail"
                                         }
                             , column [ Element.htmlAttribute (Html.Attributes.class "card"), Element.height (px 360), Element.width (fill |> minimum 230 |> maximum 240), Background.color cardHover ]

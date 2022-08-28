@@ -1,7 +1,7 @@
 module WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), DefaultElement, EpisodeObj, FileObj, FileType(..), Item, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, Option, PType(..), ParamsResponse, Path, PlayerObj(..), PlaylistObj, ResultResponse(..), SeasonObj, SettingDefault(..), SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, encodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, prepareDownloadDecoder, resultResponseDecoder, stringInDefaultElementToString)
 
 import Json.Decode as Decode exposing (Decoder, at, bool, float, int, list, nullable, string)
-import Json.Decode.Pipeline exposing (custom, optional, required)
+import Json.Decode.Pipeline exposing (custom, optional, optionalAt, required)
 import Json.Encode as Encode
 import Method exposing (Method(..))
 import Request exposing (Property(..))
@@ -767,7 +767,7 @@ seasonDecoder =
         |> required "seasonid" int
         |> required "episode" int
         |> required "tvshowid" int
-        |> custom (at [ "art", "poster" ] string)
+        |> optionalAt [ "art", "poster" ] (nullable string) Nothing
         |> required "watchedepisodes" int
         |> required "season" int
 
@@ -818,7 +818,7 @@ type alias SeasonObj =
     , seasonid : Int
     , episode : Int
     , tvshowid : Int
-    , poster : String
+    , poster : Maybe String
     , watchedepisodes : Int
     , season : Int
     }
