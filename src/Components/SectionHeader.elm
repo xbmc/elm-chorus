@@ -298,15 +298,15 @@ viewSeasons tvshowid buttonMsg season =
         , Element.htmlAttribute (Html.Attributes.style "box-shadow" "0px 0px 2px #888888")
         ]
         [ case season.poster of
-            "" ->
+            Nothing ->
                 image [ alignTop, width fill, height fill ]
                     { src = "/thumbnail_default.png"
                     , description = "Default thumbnail"
                     }
 
-            _ ->
+            Just poster ->
                 image [ alignTop, width fill, height fill ]
-                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode season.poster ] []
+                    { src = crossOrigin "http://localhost:8080" [ "image", percentEncode poster ] []
                     , description = "Poster"
                     }
         , column [ Element.htmlAttribute (Html.Attributes.class "card"), Element.height (px 255), Element.width (fill |> minimum 170 |> maximum 170), Background.color cardHover ]
