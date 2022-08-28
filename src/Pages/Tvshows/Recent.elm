@@ -2,25 +2,21 @@ module Pages.Tvshows.Recent exposing (Model, Msg, Params, page)
 
 import Colors exposing (greyIcon)
 import Components.SectionHeader
-import Components.VerticalNav
 import Components.VerticalNavTvshows
 import Element exposing (..)
 import Element.Background as Background
-import Element.Border as Border
-import Element.Events
 import Element.Font as Font
 import Element.Input as Input
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Material.Icons as Filled
 import Material.Icons.Types as MITypes exposing (Icon)
-import Request
 import Shared exposing (sendAction, sendActions)
+import SharedUtil exposing (sortByTitle)
 import Spa.Document exposing (Document)
-import Spa.Generated.Route as Route exposing (Route)
+import Spa.Generated.Route exposing (Route)
 import Spa.Page as Page exposing (Page)
 import Spa.Url as Url exposing (Url)
-import Svg.Attributes
 import Url exposing (percentEncode)
 import Url.Builder exposing (crossOrigin)
 import WSDecoder exposing (ItemDetails, TvshowObj)
@@ -60,8 +56,8 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { currentlyPlaying = shared.currentlyPlaying, tvshow_list = shared.tvshow_list, route = url.route }
-    , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTvshows", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "properties" : ["art", "rating", "thumbnail", "playcount", "file","year","dateadded","mpaa","genre","season","studio","episode","watchedepisodes","plot","cast"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libTvshows"}"""
+    ( { currentlyPlaying = shared.currentlyPlaying, tvshow_list = [], route = url.route }
+    , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart","dateadded","mpaa","season","studio","episode","watchedepisodes","cast"] }, "id": "libTvShows"}"""
     )
 
 
@@ -97,7 +93,7 @@ save model shared =
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( { model | tvshow_list = shared.tvshow_list }, Cmd.none )
+    ( { model | tvshow_list = sortByTitle shared.tvshow_list }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
