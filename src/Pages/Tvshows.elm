@@ -68,8 +68,8 @@ type alias Model =
 
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
-    ( { currentlyPlaying = shared.currentlyPlaying, tvshow_list = sortByTitle shared.tvshow_list, route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }
-    , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "filter": {"field": "playcount", "operator": "is", "value": "0"}, "properties" : ["art", "rating", "thumbnail", "playcount", "file","dateadded","year"], "sort": { "order": "ascending", "method": "label", "ignorearticle": true } }, "id": "libMovies"}"""
+    ( { currentlyPlaying = shared.currentlyPlaying, tvshow_list = [], route = url.route, currentButton = Title Asc, seed = Random.initialSeed 1453 }
+    , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart","dateadded","mpaa","season","studio","episode","watchedepisodes","cast"] }, "id": "libTvShows"}"""
     )
 
 
@@ -175,7 +175,7 @@ save model shared =
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( { model | tvshow_list = shared.tvshow_list }, Cmd.none )
+    ( { model | tvshow_list = sortByTitle shared.tvshow_list }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
