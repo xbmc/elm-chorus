@@ -64,7 +64,7 @@ init shared { params } =
       , season = getSeason params.season_no shared.season_list
       , episode_list = shared.episode_list
       }
-    , Cmd.none
+    , sendActions [ """{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": {"tvshowid": """ ++ String.fromInt params.tvshowid ++ """ ,"properties":["tvshowid","seasonid","episode","title","art","season","file","firstaired","director","writer","cast","streamdetails","plot","rating","runtime"]}, "id": "libEpisodes"}""" ]
     )
 
 
@@ -104,12 +104,25 @@ update msg model =
 
 save : Model -> Shared.Model -> Shared.Model
 save model shared =
-    shared
+    let
+        episode =
+            List.head model.episode_list
+    in
+    case episode of
+        Nothing ->
+            { shared | episode_list = model.episode_list }
+
+        Just episodes ->
+            if episodes.tvshowid /= model.tvshowid then
+                { shared | episode_list = [] }
+
+            else
+                { shared | episode_list = model.episode_list }
 
 
 load : Shared.Model -> Model -> ( Model, Cmd Msg )
 load shared model =
-    ( model, Cmd.none )
+    ( { model | episode_list = shared.episode_list }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
