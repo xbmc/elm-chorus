@@ -390,6 +390,8 @@ albumDecoder =
         |> required "year" int
         |> required "rating" Decode.float
         |> required "fanart" string
+        |> required "style" (list string)
+        |> required "albumlabel" string
 
 
 type alias AlbumObj =
@@ -403,6 +405,8 @@ type alias AlbumObj =
     , year : Int
     , rating : Float
     , fanart : String
+    , style : List String
+    , albumlabel : String
     }
 
 

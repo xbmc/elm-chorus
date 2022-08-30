@@ -25,3 +25,12 @@ type SortDirection
 type VideoModal
     = Open
     | Closed
+
+
+type AlbumSort
+    = Title SortDirection
+    | DateAdded SortDirection
+    | Year SortDirection
+    | Artist SortDirection
+    | Random SortDirection
+    | Rating SortDirection
