@@ -65,13 +65,13 @@ sortByRandom mySeed list =
         mySeed
 
 
-checkfilterbutton : List FilterButton -> List FilterButton
-checkfilterbutton filterbutton =
+checkFilterButton : List FilterButton -> List FilterButton
+checkFilterButton filterbutton =
     List.filter (\obj -> obj.state == True && obj.name /= "") filterbutton
 
 
-updatefilter : Int -> List FilterButton -> List FilterButton
-updatefilter idx list =
+updateFilter : Int -> List FilterButton -> List FilterButton
+updateFilter idx list =
     let
         toggle id task =
             if id == idx then
@@ -83,8 +83,8 @@ updatefilter idx list =
     List.indexedMap toggle list
 
 
-sort_filter_album : AlbumSort -> List AlbumObj -> List AlbumObj
-sort_filter_album current list =
+sortFilterAlbum : AlbumSort -> List AlbumObj -> List AlbumObj
+sortFilterAlbum current list =
     case current of
         Title Asc ->
             sortByTitle list
@@ -120,25 +120,25 @@ sort_filter_album current list =
             list
 
 
-filter_album : AlbumSort -> List AlbumObj -> List FilterButton -> List FilterButton -> List FilterButton -> List FilterButton -> List AlbumObj
-filter_album current_sort album yearbuttons genrebuttons stylebuttons labelbuttons =
+filterAlbum : AlbumSort -> List AlbumObj -> List FilterButton -> List FilterButton -> List FilterButton -> List FilterButton -> List AlbumObj
+filterAlbum currentSort album yearbuttons genrebuttons stylebuttons labelbuttons =
     let
         first =
-            if List.isEmpty (checkfilterbutton yearbuttons) == True then
+            if List.isEmpty (checkFilterButton yearbuttons) == True then
                 album
 
             else
                 filterByYearAlbum album yearbuttons
 
         second =
-            if List.isEmpty (checkfilterbutton genrebuttons) == True then
+            if List.isEmpty (checkFilterButton genrebuttons) == True then
                 first
 
             else
                 filterByGenreAlbum first genrebuttons
 
         third =
-            if List.isEmpty (checkfilterbutton stylebuttons) == True then
+            if List.isEmpty (checkFilterButton stylebuttons) == True then
                 second
 
             else
@@ -151,14 +151,14 @@ filter_album current_sort album yearbuttons genrebuttons stylebuttons labelbutto
             else
                 filterByAlbumLabel third labelbuttons
     in
-    sort_filter_album current_sort final
+    sortFilterAlbum currentSort final
 
 
 filterByYearAlbum : List AlbumObj -> List FilterButton -> List AlbumObj
 filterByYearAlbum album_list list =
     let
         final =
-            List.concatMap (\filterobj -> List.filter (\album -> String.fromInt album.year == filterobj.name) album_list) (checkfilterbutton list)
+            List.concatMap (\filterobj -> List.filter (\album -> String.fromInt album.year == filterobj.name) album_list) (checkFilterButton list)
     in
     if List.isEmpty final == True then
         []
@@ -171,7 +171,7 @@ filterByGenreAlbum : List AlbumObj -> List FilterButton -> List AlbumObj
 filterByGenreAlbum album_list list =
     let
         final =
-            List.concatMap (\filterobj -> List.filter (\album -> List.member filterobj.name album.genre) album_list) (checkfilterbutton list)
+            List.concatMap (\filterobj -> List.filter (\album -> List.member filterobj.name album.genre) album_list) (checkFilterButton list)
     in
     if List.isEmpty final == True then
         []
@@ -184,7 +184,7 @@ filterByStyleAlbum : List AlbumObj -> List FilterButton -> List AlbumObj
 filterByStyleAlbum album_list list =
     let
         final =
-            List.concatMap (\filterobj -> List.filter (\album -> List.member filterobj.name album.style) album_list) (checkfilterbutton list)
+            List.concatMap (\filterobj -> List.filter (\album -> List.member filterobj.name album.style) album_list) (checkFilterButton list)
     in
     if List.isEmpty final == True then
         []
@@ -197,7 +197,7 @@ filterByAlbumLabel : List AlbumObj -> List FilterButton -> List AlbumObj
 filterByAlbumLabel album_list list =
     let
         final =
-            List.concatMap (\filterobj -> List.filter (\album -> filterobj.name == album.albumlabel) album_list) (checkfilterbutton list)
+            List.concatMap (\filterobj -> List.filter (\album -> filterobj.name == album.albumlabel) album_list) (checkFilterButton list)
     in
     if List.isEmpty final == True then
         []

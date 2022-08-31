@@ -210,58 +210,58 @@ update msg model =
         YearsMsg idx ->
             let
                 yearbutton =
-                    updatefilter idx model.yearbuttons
+                    updateFilter idx model.yearbuttons
             in
-            ( { model | temp_album_list = filter_album model.currentButton model.album_list yearbutton model.genrebuttons model.stylebuttons model.labelbuttons, yearbuttons = yearbutton }, Cmd.none )
+            ( { model | temp_album_list = filterAlbum model.currentButton model.album_list yearbutton model.genrebuttons model.stylebuttons model.labelbuttons, yearbuttons = yearbutton }, Cmd.none )
 
         GenreMsg idx ->
             let
                 genrebutton =
-                    updatefilter idx model.genrebuttons
+                    updateFilter idx model.genrebuttons
             in
-            ( { model | temp_album_list = filter_album model.currentButton model.album_list model.yearbuttons genrebutton model.stylebuttons model.labelbuttons, genrebuttons = genrebutton }, Cmd.none )
+            ( { model | temp_album_list = filterAlbum model.currentButton model.album_list model.yearbuttons genrebutton model.stylebuttons model.labelbuttons, genrebuttons = genrebutton }, Cmd.none )
 
         StyleMsg idx ->
             let
                 stylebutton =
-                    updatefilter idx model.stylebuttons
+                    updateFilter idx model.stylebuttons
             in
-            ( { model | temp_album_list = filter_album model.currentButton model.album_list model.yearbuttons model.genrebuttons stylebutton model.labelbuttons, stylebuttons = stylebutton }, Cmd.none )
+            ( { model | temp_album_list = filterAlbum model.currentButton model.album_list model.yearbuttons model.genrebuttons stylebutton model.labelbuttons, stylebuttons = stylebutton }, Cmd.none )
 
         AlbumLabelMsg idx ->
             let
                 labelbutton =
-                    updatefilter idx model.labelbuttons
+                    updateFilter idx model.labelbuttons
             in
-            ( { model | temp_album_list = filter_album model.currentButton model.album_list model.yearbuttons model.genrebuttons model.stylebuttons labelbutton, labelbuttons = labelbutton }, Cmd.none )
+            ( { model | temp_album_list = filterAlbum model.currentButton model.album_list model.yearbuttons model.genrebuttons model.stylebuttons labelbutton, labelbuttons = labelbutton }, Cmd.none )
 
         ToggleOffYear ->
             let
                 yearbutton =
                     List.concatMap (\obj -> [ FilterButton obj.name False ]) model.yearbuttons
             in
-            ( { model | yearbuttons = yearbutton, temp_album_list = filter_album model.currentButton model.album_list yearbutton model.genrebuttons model.stylebuttons model.labelbuttons }, Cmd.none )
+            ( { model | yearbuttons = yearbutton, temp_album_list = filterAlbum model.currentButton model.album_list yearbutton model.genrebuttons model.stylebuttons model.labelbuttons }, Cmd.none )
 
         ToggleOffGenre ->
             let
                 genrebuttons =
                     List.concatMap (\obj -> [ FilterButton obj.name False ]) model.genrebuttons
             in
-            ( { model | temp_album_list = filter_album model.currentButton model.album_list model.yearbuttons genrebuttons model.stylebuttons model.labelbuttons, genrebuttons = genrebuttons }, Cmd.none )
+            ( { model | temp_album_list = filterAlbum model.currentButton model.album_list model.yearbuttons genrebuttons model.stylebuttons model.labelbuttons, genrebuttons = genrebuttons }, Cmd.none )
 
         ToggleOffStyle ->
             let
                 stylebutton =
                     List.concatMap (\obj -> [ FilterButton obj.name False ]) model.stylebuttons
             in
-            ( { model | temp_album_list = filter_album model.currentButton model.album_list model.yearbuttons model.genrebuttons stylebutton model.labelbuttons, stylebuttons = stylebutton }, Cmd.none )
+            ( { model | temp_album_list = filterAlbum model.currentButton model.album_list model.yearbuttons model.genrebuttons stylebutton model.labelbuttons, stylebuttons = stylebutton }, Cmd.none )
 
         ToggleOffLabel ->
             let
                 labelbutton =
                     List.concatMap (\obj -> [ FilterButton obj.name False ]) model.labelbuttons
             in
-            ( { model | temp_album_list = filter_album model.currentButton model.album_list model.yearbuttons model.genrebuttons model.stylebuttons labelbutton, labelbuttons = labelbutton }, Cmd.none )
+            ( { model | temp_album_list = filterAlbum model.currentButton model.album_list model.yearbuttons model.genrebuttons model.stylebuttons labelbutton, labelbuttons = labelbutton }, Cmd.none )
 
         ToggleOffAll ->
             let
@@ -277,7 +277,7 @@ update msg model =
                 labelbuttons =
                     List.concatMap (\obj -> [ FilterButton obj.name False ]) model.labelbuttons
             in
-            ( { model | stylebuttons = stylebuttons, genrebuttons = genrebuttons, labelbuttons = labelbuttons, yearbuttons = yearbuttons, currentfilter = Default, temp_album_list = sort_filter_album model.currentButton model.album_list }, Cmd.none )
+            ( { model | stylebuttons = stylebuttons, genrebuttons = genrebuttons, labelbuttons = labelbuttons, yearbuttons = yearbuttons, currentfilter = Default, temp_album_list = sortFilterAlbum model.currentButton model.album_list }, Cmd.none )
 
 
 save : Model -> Shared.Model -> Shared.Model
@@ -312,7 +312,7 @@ view model =
                             [ column [ Element.width fill, spacing 10 ]
                                 [ row [ Element.width fill, Font.size 15 ]
                                     [ Element.text "FILTERS"
-                                    , if List.isEmpty (checkfilterbutton (model.yearbuttons ++ model.genrebuttons ++ model.stylebuttons ++ model.labelbuttons)) == False then
+                                    , if List.isEmpty (checkFilterButton (model.yearbuttons ++ model.genrebuttons ++ model.stylebuttons ++ model.labelbuttons)) == False then
                                         Input.button [ alignRight ]
                                             { onPress = Just (ChangeFilterTabMsg Select)
                                             , label =
@@ -322,7 +322,7 @@ view model =
                                       else
                                         Element.none
                                     ]
-                                , if List.isEmpty (checkfilterbutton (model.yearbuttons ++ model.genrebuttons ++ model.stylebuttons ++ model.labelbuttons)) == True then
+                                , if List.isEmpty (checkFilterButton (model.yearbuttons ++ model.genrebuttons ++ model.stylebuttons ++ model.labelbuttons)) == True then
                                     Input.button [ paddingXY 10 10, Background.color (Element.rgba255 168 167 166 1), Font.color Colors.white, mouseOver [ Background.color Colors.navTextHover ] ]
                                         { onPress = Just (ChangeFilterTabMsg Select)
                                         , label = row [ Element.width fill, spacingXY 10 0 ] [ Element.text "Add Filter ", Element.html (Filled.add_circle 15 (MITypes.Color <| Colors.whiteIcon)) ]
@@ -364,7 +364,7 @@ view model =
             , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
                 [ let
                     all_filter_button =
-                        checkfilterbutton (model.yearbuttons ++ model.genrebuttons ++ model.stylebuttons ++ model.labelbuttons)
+                        checkFilterButton (model.yearbuttons ++ model.genrebuttons ++ model.stylebuttons ++ model.labelbuttons)
                   in
                   case List.isEmpty all_filter_button of
                     False ->
@@ -445,7 +445,7 @@ filterfieldbutton buttonMsg name filterbutton =
         { onPress = Just buttonMsg
         , label =
             el
-                (case List.isEmpty (checkfilterbutton filterbutton) of
+                (case List.isEmpty (checkFilterButton filterbutton) of
                     True ->
                         [ Font.color (Element.rgba255 43 47 48 1) ]
 
@@ -509,11 +509,11 @@ filterview addfilter toggleOff onButtonPressed filterbuttons =
 
 closeFilterButton : List FilterButton -> msg -> Element msg
 closeFilterButton list buttonMsg =
-    case List.isEmpty (checkfilterbutton list) of
+    case List.isEmpty (checkFilterButton list) of
         False ->
             Input.button [ Element.width fill, paddingXY 10 10, Background.color Colors.navTextHover, Font.color Colors.white ]
                 { onPress = Just buttonMsg
-                , label = row [ Element.width fill, spacingXY 10 0 ] [ row [ width (px 140), clipX ] [ Element.text (String.join "," (List.map .name (checkfilterbutton list))) ], el [ alignRight ] (Element.html (Filled.remove_circle 15 (MITypes.Color <| Colors.whiteIcon))) ]
+                , label = row [ Element.width fill, spacingXY 10 0 ] [ row [ width (px 140), clipX ] [ Element.text (String.join "," (List.map .name (checkFilterButton list))) ], el [ alignRight ] (Element.html (Filled.remove_circle 15 (MITypes.Color <| Colors.whiteIcon))) ]
                 }
 
         True ->
