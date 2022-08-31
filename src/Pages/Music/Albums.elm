@@ -348,19 +348,19 @@ view model =
                         ]
 
                 Select ->
-                    selectfilterview model.labelbuttons model.stylebuttons model.genrebuttons model.yearbuttons
+                    selectFilterView model.labelbuttons model.stylebuttons model.genrebuttons model.yearbuttons
 
                 YearFilter ->
-                    filterview (ChangeFilterTabMsg Select) ToggleOffYear YearsMsg model.yearbuttons
+                    filterView (ChangeFilterTabMsg Select) ToggleOffYear YearsMsg model.yearbuttons
 
                 GenreFilter ->
-                    filterview (ChangeFilterTabMsg Select) ToggleOffGenre GenreMsg model.genrebuttons
+                    filterView (ChangeFilterTabMsg Select) ToggleOffGenre GenreMsg model.genrebuttons
 
                 StyleFilter ->
-                    filterview (ChangeFilterTabMsg Select) ToggleOffStyle StyleMsg model.stylebuttons
+                    filterView (ChangeFilterTabMsg Select) ToggleOffStyle StyleMsg model.stylebuttons
 
                 AlbumLabelFilter ->
-                    filterview (ChangeFilterTabMsg Select) ToggleOffLabel AlbumLabelMsg model.labelbuttons
+                    filterView (ChangeFilterTabMsg Select) ToggleOffLabel AlbumLabelMsg model.labelbuttons
             , column [ Element.height fill, Element.width (fillPortion 6), paddingXY 0 0, spacingXY 5 7, Background.color Colors.background ]
                 [ let
                     all_filter_button =
@@ -439,8 +439,8 @@ currentButtonText currentButton name ( isCurrent, button ) =
             row [ Font.color Colors.navText ] [ Element.text name ]
 
 
-filterfieldbutton : msg -> String -> List FilterButton -> Element msg
-filterfieldbutton buttonMsg name filterbutton =
+filterFieldButton : msg -> String -> List FilterButton -> Element msg
+filterFieldButton buttonMsg name filterbutton =
     Input.button [ paddingXY 30 0 ]
         { onPress = Just buttonMsg
         , label =
@@ -456,22 +456,22 @@ filterfieldbutton buttonMsg name filterbutton =
         }
 
 
-selectfilterview : List FilterButton -> List FilterButton -> List FilterButton -> List FilterButton -> Element Msg
-selectfilterview labelbutton stylebutton genrebutton filterbutton =
+selectFilterView : List FilterButton -> List FilterButton -> List FilterButton -> List FilterButton -> Element Msg
+selectFilterView labelbutton stylebutton genrebutton filterbutton =
     column [ Element.height fill, Element.width (fillPortion 1), paddingXY 5 30, spacing 10, Font.color Colors.greyscaleGray, Background.color Colors.sidebar ]
         [ Input.button [ paddingXY 10 10 ]
             { onPress = Just (ChangeFilterTabMsg Default)
             , label = row [ Font.size 14 ] [ Element.html (Filled.keyboard_arrow_left 20 (MITypes.Color <| Colors.darkGreyIcon)), Element.text "SELECT A FILTER" ]
             }
-        , filterfieldbutton (ChangeFilterTabMsg YearFilter) "Year" filterbutton
-        , filterfieldbutton (ChangeFilterTabMsg GenreFilter) "Genre" genrebutton
-        , filterfieldbutton (ChangeFilterTabMsg StyleFilter) "Style" stylebutton
-        , filterfieldbutton (ChangeFilterTabMsg AlbumLabelFilter) "Label" labelbutton
+        , filterFieldButton (ChangeFilterTabMsg YearFilter) "Year" filterbutton
+        , filterFieldButton (ChangeFilterTabMsg GenreFilter) "Genre" genrebutton
+        , filterFieldButton (ChangeFilterTabMsg StyleFilter) "Style" stylebutton
+        , filterFieldButton (ChangeFilterTabMsg AlbumLabelFilter) "Label" labelbutton
         ]
 
 
-filterview : msg -> msg -> (Int -> msg) -> List FilterButton -> Element msg
-filterview addfilter toggleOff onButtonPressed filterbuttons =
+filterView : msg -> msg -> (Int -> msg) -> List FilterButton -> Element msg
+filterView addfilter toggleOff onButtonPressed filterbuttons =
     column [ Element.height fill, Element.width (fillPortion 1), paddingXY 5 30, spacing 16, Font.color Colors.greyscaleGray, Background.color Colors.sidebar ]
         [ Input.button [ paddingXY 10 0 ]
             { onPress = Just addfilter
