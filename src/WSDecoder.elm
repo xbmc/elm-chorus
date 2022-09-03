@@ -330,6 +330,8 @@ artistDecoder =
         |> required "artistid" int
         |> required "thumbnail" string
         |> required "genre" (list string)
+        |> required "mood" (list string)
+        |> required "style" (list string)
 
 
 type alias ArtistObj =
@@ -337,6 +339,8 @@ type alias ArtistObj =
     , artistid : Int
     , thumbnail : String
     , genre : List String
+    , mood : List String
+    , style : List String
     }
 
 
@@ -357,6 +361,8 @@ videoDecoder =
         |> required "genre" (list string)
         |> required "year" int
         |> required "file" string
+        |> required "director" (list string)
+        |> required "studio" (list string)
 
 
 type alias VideoObj =
@@ -368,6 +374,8 @@ type alias VideoObj =
     , genre : List String
     , year : Int
     , file : String
+    , director : List String
+    , studio : List String
     }
 
 
