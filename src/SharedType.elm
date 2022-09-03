@@ -27,10 +27,11 @@ type VideoModal
     | Closed
 
 
-type AlbumSort
+type ObjectSort
     = Title SortDirection
     | DateAdded SortDirection
     | Year SortDirection
     | Artist SortDirection
     | Random SortDirection
     | Rating SortDirection
+    | Album SortDirection
