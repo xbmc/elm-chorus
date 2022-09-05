@@ -33,7 +33,25 @@ view header currentRoute links listPagesWithFilter =
                 )
 
         True ->
-            column [ Element.height (px 250), Element.width (fillPortion 1), Font.color Colors.greyscaleGray, Element.Background.color Colors.sidebar, paddingXY 0 20 ]
+            let
+                width =
+                    case currentRoute of
+                        Route.Tvshows ->
+                            150
+
+                        Route.Movies ->
+                            150
+
+                        _ ->
+                            250
+            in
+            column
+                [ Element.height (px width)
+                , Element.width (fillPortion 1)
+                , Font.color Colors.greyscaleGray
+                , Element.Background.color Colors.sidebar
+                , paddingXY 0 20
+                ]
                 [ column [ Element.height fill, Element.width fill, paddingXY 16 8, spacing 16 ]
                     ([ header |> String.toUpper |> Element.text ]
                         ++ List.map
