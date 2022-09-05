@@ -61,7 +61,7 @@ type alias Model =
 init : Shared.Model -> Url Params -> ( Model, Cmd Msg )
 init shared url =
     ( { currentlyPlaying = shared.currentlyPlaying, movie_list = shared.movie_list, route = url.route }
-    , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties" : ["art", "rating", "thumbnail", "playcount", "file","year","dateadded","genre","director","cast","streamdetails","mpaa","runtime","writer","plot"] }, "id": "libMovies"}"""
+    , sendAction """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": {"properties" : ["art", "rating", "thumbnail", "playcount", "file","year","dateadded","genre","director","cast","streamdetails","mpaa","runtime","writer","plot","resume","set","tag","studio"] }, "id": "libMovies"}"""
     )
 
 

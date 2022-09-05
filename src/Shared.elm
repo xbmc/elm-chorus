@@ -36,7 +36,7 @@ import Spa.Generated.Route as Route exposing (Route)
 import Time
 import Translations
 import Url exposing (Url)
-import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), EpisodeObj, FileObj, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SeasonObj, SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
+import WSDecoder exposing (AlbumObj, ArtistObj, Connection(..), EpisodeObj, FileObj, InProgressTvShow, ItemDetails, LeftSidebarMenuHover(..), LocalPlaylists, LocalSettings, MovieObj, PType(..), ParamsResponse, PlayerObj(..), PlaylistObj, ResultResponse(..), SeasonObj, SettingsObj, SongObj, SourceObj, TvshowObj, VideoObj, decodeLocalSettings, getMediaType, localPlaylistDecoder, localPlaylistEncoder, paramsResponseDecoder, resultResponseDecoder)
 
 
 
@@ -94,6 +94,7 @@ type alias Model =
     , tabSwitch : SharedType.Tabs
     , season_list : List SeasonObj
     , episode_list : List EpisodeObj
+    , inProgressTvShows : List InProgressTvShow
     }
 
 
@@ -322,13 +323,14 @@ init flags url key =
       , interfaceLocalSettings = decodedInterfaceSettings
       , addonLocalSettings = decodedAddonSettings
       , tabSwitch = Kodi SharedType.Audio
+      , inProgressTvShows = []
       }
     , sendActions
         [ """{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": [ "artist", "duration", "album", "track", "genre", "albumid" ] }, "id": "libSongs"}"""
         , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "properties": ["playcount", "artist", "genre", "rating", "thumbnail", "year", "mood", "style", "dateadded", "fanart"] }, "id": "libAlbums"}"""
         , """{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "params": { "properties": [ "thumbnail", "fanart", "born", "formed", "died", "disbanded", "yearsactive", "mood", "style", "genre" ] }, "id": 1}"""
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMusicVideos", "params": { "properties": [ "title", "thumbnail", "artist", "album", "genre", "lastplayed", "year", "runtime", "fanart", "file", "streamdetails","dateadded" ] }, "id": "libMusicVideos"}"""
-        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "properties" : ["art", "rating", "thumbnail", "playcount", "file","year","dateadded","genre","director","cast","streamdetails","mpaa","runtime","writer"] }, "id": "libMovies"}"""
+        , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "properties" : ["art", "rating", "thumbnail", "playcount", "file","year","dateadded","genre","director","cast","streamdetails","mpaa","runtime","writer","plot","set","resume","tag","studio"] }, "id": "libMovies"}"""
         , """{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["art", "genre", "plot", "title", "originaltitle", "year", "rating", "thumbnail", "playcount", "file", "fanart","dateadded","mpaa","season","studio","episode","watchedepisodes","cast"] }, "id": "libTvShows"}"""
         , """{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "video" }, "id": 1 }""" --get video and music sources
         , """{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "music" }, "id": 1 }"""
@@ -640,6 +642,9 @@ update msg model =
 
                 ResultP episodeList ->
                     ( { model | episode_list = episodeList }, Cmd.none )
+
+                ResultQ inprogress ->
+                    ( { model | inProgressTvShows = inprogress }, Cmd.none )
 
         ToggleRightSidebar ->
             ( { model | rightSidebarExtended = not model.rightSidebarExtended }
