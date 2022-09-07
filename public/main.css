@@ -373,6 +373,14 @@ h2 {
   line-height: 1.5em;
   cursor: pointer;
 }
+.card-link {
+  z-index: 1;
+  position: absolute !important;
+  height: 100%;
+}
+.card-button {
+  z-index: 2;
+}
 
 @keyframes popup {
   0% {

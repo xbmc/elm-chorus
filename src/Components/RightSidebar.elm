@@ -2,7 +2,7 @@ module Components.RightSidebar exposing (view)
 
 import Colors exposing (..)
 import Components.LayoutType exposing (ShowRightSidebarMenu)
-import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, centerY, column, el, fill, height, htmlAttribute, image, padding, paddingXY, px, rgb, row, spacing, text, width)
+import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, centerY, clipX, column, el, fill, height, htmlAttribute, image, padding, paddingXY, px, rgb, row, spacing, text, width)
 import Element.Background as Background
 import Element.Font as Font
 import Element.Input as Input
@@ -228,7 +228,7 @@ audioTab currentlyPlaying playing =
                             False ->
                                 el [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0, Font.color white, Font.size 20 ] (text "---")
                         , column [ padding 20, spacing 10 ]
-                            [ row [] [ el [ Font.color white ] (text item.title) ]
+                            [ row [] [ el [ Font.color white, height (px 15), width (px 230), clipX ] (text item.title) ]
                             , row []
                                 (List.map
                                     (\artist ->
@@ -270,7 +270,7 @@ videoTab currentlyPlaying playing =
                             False ->
                                 el [ alignRight, height (px 30), width (px 30), alignLeft, paddingXY 20 0, Font.color white, Font.size 20 ] (text "---")
                         , column [ padding 20, spacing 10 ]
-                            [ row [] [ el [ Font.color white ] (text item.title) ]
+                            [ row [] [ el [ Font.color white, height (px 15), width (px 230), clipX ] (text item.title) ]
                             , row []
                                 (List.map
                                     (\artist ->

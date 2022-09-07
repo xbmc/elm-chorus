@@ -71,9 +71,9 @@ moreVertMenu showMenu moreVertItems =
 
 artistLabel : ArtistObj -> Element msg
 artistLabel artist =
-    Element.link [ Element.width fill, Element.height fill, paddingXY 7 16, Font.center, Font.color Colors.black ]
+    Element.link [ Element.width fill, Element.height fill, paddingXY 7 16, Font.color Colors.black ]
         { url = Route.toString (Route.Music__Artist__Artistid_Int { artistid = artist.artistid })
-        , label = Element.text artist.label
+        , label = el [ height (px 15), width (px 250), clipX ] (Element.text artist.label)
         }
 
 
@@ -83,7 +83,7 @@ videoLabel video =
         { url = Route.toString (Route.Music__Videos__Videoid_Int { videoid = video.videoid })
         , label =
             column []
-                [ Element.text video.label
+                [ el [ height (px 15), width (px 250), clipX ] (Element.text video.label)
                 , wrappedRow [ paddingEach { left = 0, right = 0, top = 10, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
                     (List.map
                         (\artist ->
@@ -122,6 +122,10 @@ viewArtists buttonMsg artist =
                 [ materialButton ( Filled.thumb_up, buttonMsg )
                 , materialButtonBig ( Filled.more_vert, buttonMsg )
                 ]
+            , Element.link [ width fill, height fill, Element.htmlAttribute (Html.Attributes.class "card-link") ]
+                { url = Route.toString (Route.Music__Artist__Artistid_Int { artistid = artist.artistid })
+                , label = Element.none
+                }
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
             ]
         , el [ alignLeft ] (artistLabel artist)
@@ -154,6 +158,10 @@ viewVideos buttonMsg video =
                 [ materialButton ( Filled.thumb_up, buttonMsg )
                 , materialButtonBig ( Filled.more_vert, buttonMsg )
                 ]
+            , Element.link [ width fill, height fill, Element.htmlAttribute (Html.Attributes.class "card-link") ]
+                { url = Route.toString (Route.Music__Videos__Videoid_Int { videoid = video.videoid })
+                , label = Element.none
+                }
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
             ]
         , videoLabel video
@@ -188,12 +196,16 @@ viewAlbums buttonMsg album =
                 , materialButtonBig ( Filled.more_vert, buttonMsg )
                 ]
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
+            , Element.link [ width fill, height fill, Element.htmlAttribute (Html.Attributes.class "card-link") ]
+                { url = Route.toString (Route.Music__Album__Albumid_Int { albumid = album.albumid })
+                , label = Element.none
+                }
             ]
         , Element.link [ alignBottom, paddingEach { left = 10, right = 0, top = 5, bottom = 0 }, Font.color Colors.black ]
             { url = Route.toString (Route.Music__Album__Albumid_Int { albumid = album.albumid })
             , label =
                 column []
-                    [ Element.text album.label
+                    [ el [ height (px 15), width (px 135), clipX ] (Element.text album.label)
                     , wrappedRow [ paddingEach { left = 0, right = 0, top = 5, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
                         (List.map
                             (\artist ->
@@ -234,12 +246,16 @@ viewMovies buttonMsg movie =
                 , materialButtonBig ( Filled.more_vert, buttonMsg ) -- TODO : Add Dropdown
                 ]
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
+            , Element.link [ width fill, height fill, Element.htmlAttribute (Html.Attributes.class "card-link") ]
+                { url = Route.toString (Route.Videoplayer__Movieid_Int { movieid = movie.movieid })
+                , label = Element.none
+                }
             ]
         , Element.link [ Element.width fill, Element.height fill, alignBottom, paddingEach { left = 10, right = 0, top = 10, bottom = 10 }, Font.color Colors.black ]
             { url = Route.toString (Route.Videoplayer__Movieid_Int { movieid = movie.movieid })
             , label =
                 column []
-                    [ Element.text movie.label
+                    [ el [ height (px 15), width (px 150) ] (Element.text movie.label)
                     , el [ paddingEach { left = 0, right = 0, top = 5, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
                         (Element.text (String.fromInt movie.year))
                     ]
@@ -275,12 +291,16 @@ viewTvShows buttonMsg tvshow =
                 , materialButtonBig ( Filled.more_vert, buttonMsg ) -- TODO : Add Dropdown
                 ]
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
+            , Element.link [ width fill, height fill, Element.htmlAttribute (Html.Attributes.class "card-link") ]
+                { url = Route.toString (Route.Tvshows__Tvshowid_Int { tvshowid = tvshow.tvshowid })
+                , label = Element.none
+                }
             ]
         , Element.link [ Element.width fill, Element.height fill, alignBottom, paddingEach { left = 10, right = 0, top = 10, bottom = 10 }, Font.color Colors.black ]
             { url = Route.toString (Route.Tvshows__Tvshowid_Int { tvshowid = tvshow.tvshowid })
             , label =
                 column []
-                    [ Element.text tvshow.label
+                    [ el [ height (px 15), width (px 150), clipX ] (Element.text tvshow.label)
                     , el [ paddingEach { left = 0, right = 0, top = 5, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
                         (Element.text (Round.round 1 tvshow.rating))
                     ]
@@ -314,13 +334,17 @@ viewSeasons tvshowid buttonMsg season =
                 [ materialButton ( Filled.check_box_outline_blank, buttonMsg ) -- TODO : checkbox to Set Watched
                 , materialButtonBig ( Filled.more_vert, buttonMsg ) -- TODO : Add Dropdown
                 ]
-            , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg )) -- TODO: make it functional once EpisodeObjs have been created
+            , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
+            , Element.link [ width fill, height fill, Element.htmlAttribute (Html.Attributes.class "card-link") ]
+                { url = Route.toString (Route.Tvshows__Seasons__Seasonid_Int { tvshowid = tvshowid, season_no = season.season })
+                , label = Element.none
+                }
             ]
         , Element.link [ Element.width fill, Element.height fill, alignBottom, paddingEach { left = 10, right = 0, top = 10, bottom = 10 }, Font.color Colors.black ]
             { url = Route.toString (Route.Tvshows__Seasons__Seasonid_Int { tvshowid = tvshowid, season_no = season.season })
             , label =
                 column []
-                    [ Element.text season.label
+                    [ el [ height (px 15), width (px 150), clipX ] (Element.text season.label)
                     , el [ paddingEach { left = 0, right = 0, top = 5, bottom = 0 }, Font.color Colors.greyscaleGray, Font.size 13 ]
                         (Element.text (String.fromInt season.episode ++ " episodes"))
                     ]
@@ -355,13 +379,17 @@ viewEpisode tvshowid season_no buttonMsg episode =
                 , materialButton ( Filled.thumb_up, buttonMsg )
                 , materialButtonBig ( Filled.more_vert, buttonMsg )
                 ]
+            , Element.link [ width fill, height fill, Element.htmlAttribute (Html.Attributes.class "card-link") ]
+                { url = Route.toString (Route.Tvshows__Seasons__Episodes__Episodeid_Int { tvshowid = tvshowid, season_no = season_no, episodeid = episode.episodeid })
+                , label = Element.none
+                }
             , el [ alignBottom, padding 10 ] (materialButtonBig ( Filled.play_arrow, buttonMsg ))
             ]
         , Element.link [ Element.width fill, Element.height fill, alignBottom, paddingEach { left = 10, right = 0, top = 10, bottom = 10 }, Font.color Colors.black ]
             { url = Route.toString (Route.Tvshows__Seasons__Episodes__Episodeid_Int { tvshowid = tvshowid, season_no = season_no, episodeid = episode.episodeid })
             , label =
                 column [ spacingXY 0 10 ]
-                    [ Element.text episode.title
+                    [ el [ height (px 15), width (px 250), clipX ] (Element.text episode.title)
                     , el [ Font.color Colors.greyscaleGray, Font.size 13 ] (Element.text ("Episode " ++ String.fromInt episode.episode))
                     ]
             }
@@ -370,7 +398,7 @@ viewEpisode tvshowid season_no buttonMsg episode =
 
 materialButton : ( Icon msg, msg ) -> Element msg
 materialButton ( icon, action ) =
-    Input.button [ paddingXY 5 3 ]
+    Input.button [ paddingXY 5 3, Element.htmlAttribute (Html.Attributes.class "card-button") ]
         { onPress = Just action
         , label = Element.html (icon 20 (MITypes.Color <| Colors.whiteIcon))
         }
@@ -378,7 +406,7 @@ materialButton ( icon, action ) =
 
 materialButtonBig : ( Icon msg, msg ) -> Element msg
 materialButtonBig ( icon, action ) =
-    Input.button [ paddingXY 5 3 ]
+    Input.button [ paddingXY 5 3, Element.htmlAttribute (Html.Attributes.class "card-button") ]
         { onPress = Just action
         , label = Element.html (icon 30 (MITypes.Color <| Colors.whiteIcon))
         }
