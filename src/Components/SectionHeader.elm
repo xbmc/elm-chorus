@@ -107,13 +107,13 @@ viewArtists buttonMsg artist =
         ]
         [ case artist.thumbnail of
             "" ->
-                image [ width fill, height (px 150) ]
+                image [ width fill, height (fill |> minimum 150 |> maximum 150) ]
                     { src = "/thumbnail_default.png"
                     , description = "Hero Image"
                     }
 
             _ ->
-                image [ width fill, height (px 150) ]
+                image [ width fill, height (fill |> minimum 150 |> maximum 150) ]
                     { src = crossOrigin "http://localhost:8080" [ "image", percentEncode artist.thumbnail ] []
                     , description = "Thumbnail"
                     }
@@ -180,13 +180,13 @@ viewAlbums buttonMsg album =
         ]
         [ case album.thumbnail of
             "" ->
-                image [ alignTop, width fill, height fill ]
+                image [ alignTop, width fill, height (fill |> minimum 160 |> maximum 160) ]
                     { src = "/thumbnail_default.png"
                     , description = "Thumbnail"
                     }
 
             _ ->
-                image [ alignTop, width fill, height fill ]
+                image [ alignTop, width fill, height (fill |> minimum 160 |> maximum 160) ]
                     { src = crossOrigin "http://localhost:8080" [ "image", percentEncode album.thumbnail ] []
                     , description = "Thumbnail"
                     }
@@ -229,13 +229,13 @@ viewMovies buttonMsg movie =
         ]
         [ case movie.poster of
             "" ->
-                image [ alignTop, width fill, height fill ]
+                image [ alignTop, width fill, height (fill |> minimum 260 |> maximum 260) ]
                     { src = "/thumbnail_default.png"
                     , description = "Default thumbnail"
                     }
 
             _ ->
-                image [ alignTop, width fill, height fill ]
+                image [ alignTop, width fill, height (fill |> minimum 260 |> maximum 260) ]
                     { src = crossOrigin "http://localhost:8080" [ "image", percentEncode movie.poster ] []
                     , description = "Poster"
                     }
@@ -274,13 +274,13 @@ viewTvShows buttonMsg tvshow =
         ]
         [ case tvshow.thumbnail of
             "" ->
-                image [ alignTop, width fill, height fill ]
+                image [ alignTop, width fill, height (fill |> minimum 260 |> maximum 260) ]
                     { src = "/thumbnail_default.png"
                     , description = "Default thumbnail"
                     }
 
             _ ->
-                image [ alignTop, width fill, height fill ]
+                image [ alignTop, width fill, height (fill |> minimum 260 |> maximum 260) ]
                     { src = crossOrigin "http://localhost:8080" [ "image", percentEncode tvshow.thumbnail ] []
                     , description = "Poster"
                     }
@@ -319,13 +319,13 @@ viewSeasons tvshowid buttonMsg season =
         ]
         [ case season.poster of
             Nothing ->
-                image [ alignTop, width fill, height fill ]
+                image [ alignTop, width fill, height (fill |> minimum 255 |> maximum 255) ]
                     { src = "/thumbnail_default.png"
                     , description = "Default thumbnail"
                     }
 
             Just poster ->
-                image [ alignTop, width fill, height fill ]
+                image [ alignTop, width fill, height (fill |> minimum 255 |> maximum 255) ]
                     { src = crossOrigin "http://localhost:8080" [ "image", percentEncode poster ] []
                     , description = "Poster"
                     }
@@ -363,13 +363,13 @@ viewEpisode tvshowid season_no buttonMsg episode =
         ]
         [ case episode.poster of
             "" ->
-                image [ width fill, height (px 135) ]
+                image [ width fill, height (fill |> minimum 135 |> maximum 135) ]
                     { src = "/thumbnail_default.png"
                     , description = "Hero Image"
                     }
 
             _ ->
-                image [ width fill, height (px 135) ]
+                image [ width fill, height (fill |> minimum 135 |> maximum 135) ]
                     { src = crossOrigin "http://localhost:8080" [ "image", percentEncode episode.poster ] []
                     , description = "Thumbnail"
                     }
