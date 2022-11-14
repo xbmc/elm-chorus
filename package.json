@@ -32,7 +32,7 @@
     "elm-test": "0.19.1-revision9",
     "node-elm-compiler": "^5.0.6",
     "npm-run-all": "4.1.5",
-    "parcel": "^2.0.0",
+    "parcel": "^2.8.0",
     "parcel-reporter-static-files-copy": "^1.4.0",
     "parcel-transformer-elm-svg-modules": "^1.0.6"
   },
